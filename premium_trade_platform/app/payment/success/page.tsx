@@ -14,10 +14,10 @@ export default function PaymentSuccess() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate verification process
+    // Faster verification process
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 2000)
+    }, 1000)
 
     return () => clearTimeout(timer)
   }, [])
