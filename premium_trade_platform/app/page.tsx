@@ -9,6 +9,7 @@ import Link from "next/link"
 import { LoadingAnimation, SectionReveal, NavLinkAnimation, CategoryCardAnimation } from "@/components/loading-animation"
 import { usePageLoading } from "@/hooks/use-page-loading"
 import { CrownLogoWithBrand } from "@/components/ui/crown-logo"
+import { AuthModal } from "@/components/auth/auth-modal"
 
 export default function StaticLandingPage() {
   const { isLoading, navigateWithLoading } = usePageLoading()
