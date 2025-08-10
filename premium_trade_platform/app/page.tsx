@@ -105,8 +105,24 @@ export default function StaticLandingPage() {
                       </nav>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Button className="gradient-primary text-primary-foreground hover:scale-105 px-6 py-2 rounded-full font-medium shadow-lg transition-all duration-300 glow-primary">
-                        Join Now
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setAuthDefaultTab("login")
+                          setAuthModalOpen(true)
+                        }}
+                        className="border-primary/20 text-foreground hover:text-primary hover:border-primary/40 px-6 py-2 rounded-full font-medium transition-all duration-300"
+                      >
+                        Iniciar Sesión
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setAuthDefaultTab("register")
+                          setAuthModalOpen(true)
+                        }}
+                        className="gradient-primary text-primary-foreground hover:scale-105 px-6 py-2 rounded-full font-medium shadow-lg transition-all duration-300"
+                      >
+                        Únete Ahora
                       </Button>
                     </div>
                   </div>
