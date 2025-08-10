@@ -65,7 +65,7 @@ export default function MarketplacePage() {
           )
         `)
         .eq('status', 'active')
-        .order(sortBy === 'newest' ? 'created_at' : sortBy === 'price_low' ? 'price' : 'price', 
+        .order(sortBy === 'newest' ? 'created_at' : sortBy === 'price_low' ? 'price' : 'price',
                { ascending: sortBy === 'price_low' })
 
       if (error) throw error
@@ -74,11 +74,11 @@ export default function MarketplacePage() {
         id: item.id,
         title: item.title,
         description: item.description,
-        price: item.price,
+        price: parseFloat(item.price),
         currency: item.currency || 'USD',
         category: item.category,
         location: item.location || 'Location not specified',
-        image_url: item.image_url || '/placeholder.svg',
+        image_url: (item.images && item.images[0]) || '/placeholder.svg',
         seller_id: item.seller_id,
         seller_name: item.users?.full_name || 'Anonymous',
         seller_company: item.users?.company_name || 'Company not specified',
