@@ -88,9 +88,9 @@ export default function MarketplacePage() {
       }))
 
       setProducts(formattedProducts)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading products:', error)
-      toast.error('Failed to load products')
+      toast.error('Failed to load products: ' + (error.message || JSON.stringify(error)))
     } finally {
       setLoading(false)
     }
