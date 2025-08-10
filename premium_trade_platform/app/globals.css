@@ -1,0 +1,156 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium B2B Theme Colors - Enhanced */
+    --background: 215 28% 6%; /* #0A1628 - Deep Navy */
+    --foreground: 210 20% 98%; /* #FAFBFC - Crisp White */
+
+    --muted: 215 25% 10%; /* #141B2D - Muted Navy */
+    --muted-foreground: 215 15% 65%; /* #9DAAB8 - Professional Gray */
+
+    --card: 215 25% 8%; /* #101827 - Card Navy */
+    --card-foreground: 210 20% 98%; /* #FAFBFC */
+
+    --popover: 215 28% 6%; /* #0A1628 */
+    --popover-foreground: 210 20% 98%; /* #FAFBFC */
+
+    /* Primary Colors - Premium Gold Enhanced */
+    --primary: 45 100% 50%; /* #FFD700 - Brighter Gold */
+    --primary-foreground: 215 28% 6%; /* #0A1628 - Dark text on gold */
+
+    /* Secondary Colors */
+    --secondary: 215 20% 15%; /* #1E293B - Professional Dark */
+    --secondary-foreground: 210 20% 98%; /* #FAFBFC */
+
+    /* Accent Colors - Trust Blue Enhanced */
+    --accent: 217 91% 60%; /* #3B82F6 - Enhanced Trust Blue */
+    --accent-foreground: 210 20% 98%; /* #FAFBFC */
+
+    --destructive: 0 84% 55%; /* #DC2626 - Professional Red */
+    --destructive-foreground: 210 20% 98%; /* #FAFBFC */
+
+    --border: 215 25% 12%; /* #1A2332 - Subtle Border */
+    --input: 215 25% 12%; /* #1A2332 */
+    --ring: 45 100% 50%; /* #FFD700 - Gold focus */
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/80;
+  }
+}
+
+/* Premium Gradients - Enhanced */
+.gradient-primary {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(135deg, rgba(16, 24, 39, 0.9) 0%, rgba(10, 22, 40, 0.95) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFFF66 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced Glow Effects */
+.glow-primary {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.2);
+}
+
+.glow-primary-strong {
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3), 0 0 120px rgba(255, 215, 0, 0.1);
+}
+
+.glow-accent {
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4), 0 0 50px rgba(59, 130, 246, 0.2);
+}
+
+.glow-card {
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1), 0 0 40px rgba(59, 130, 246, 0.05);
+}
+
+.glow-card-hover:hover {
+  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.2), 0 0 60px rgba(59, 130, 246, 0.1);
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+}
+
+/* Custom Animations - Enhanced */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.7), 0 0 100px rgba(255, 215, 0, 0.4);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
