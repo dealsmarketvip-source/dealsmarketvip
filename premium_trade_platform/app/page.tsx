@@ -173,7 +173,7 @@ export default function StaticLandingPage() {
               <div className="max-w-7xl mx-auto flex items-center justify-center gap-4 relative z-10">
                 <Crown className="h-6 w-6 text-primary-foreground animate-bounce" />
                 <span className="text-primary-foreground font-bold text-lg">
-                  Join Verified Companies - €20/month Premium Access
+                  Join Verified Companies - $20/month Premium Access
                 </span>
                 <Button variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-all duration-300 hover:scale-105">
                   <Crown className="mr-2 h-4 w-4" />
