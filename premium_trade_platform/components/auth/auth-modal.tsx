@@ -19,7 +19,8 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) {
-  const { signIn, signUp, loading } = useAuth()
+  const authContext = useAuth()
+  const { signIn, signUp, loading } = authContext || { signIn: async () => ({ error: null }), signUp: async () => ({ error: null }), loading: false }
   const [currentTab, setCurrentTab] = useState(defaultTab)
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep] = useState<"auth" | "verification" | "payment">("auth")
