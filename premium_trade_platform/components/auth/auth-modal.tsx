@@ -464,10 +464,15 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
         <Button
           className="w-full gradient-primary"
           onClick={handlePayment}
+          disabled={paymentLoading}
         >
-          {isVIP ? "Activar Acceso VIP Gratuito" :
-           hasDiscount ? `Pagar ${registerForm.invitationCode === "PREMIUM2024" ? "$10" : "$15"}/mes con Stripe` :
-           "Pagar $20/mes con Stripe"}
+          {paymentLoading ? (
+            "Procesando..."
+          ) : (
+            isVIP ? "Activar Acceso VIP Gratuito" :
+            hasDiscount ? `Pagar ${registerForm.invitationCode === "PREMIUM2024" ? "$10" : "$15"}/mes con Stripe` :
+            "Pagar $20/mes con Stripe"
+          )}
         </Button>
 
         <p className="text-xs text-muted-foreground">
