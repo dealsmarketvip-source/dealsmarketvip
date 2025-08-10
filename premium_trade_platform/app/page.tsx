@@ -216,42 +216,52 @@ export default function StaticLandingPage() {
                 </SectionReveal>
 
                 {/* Categories Grid - New Design */}
-                <div className="mb-20">
-                  <h2 className="text-3xl font-bold text-foreground mb-8 gradient-text">Our Premium Categories</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {categories.map((category, index) => (
-                      <div key={index} className="group">
-                        <div className="gradient-card p-6 rounded-2xl border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-105 glow-card-hover cursor-pointer">
-                          <div className="flex flex-col items-center gap-4 text-center">
-                            <div className="text-4xl group-hover:scale-110 transition-transform duration-500 mb-2">
-                              {category.icon}
+                <SectionReveal delay={0.4}>
+                  <div className="mb-20">
+                    <h2 className="text-3xl font-bold text-foreground mb-8 gradient-text">Our Premium Categories</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {categories.map((category, index) => (
+                        <CategoryCardAnimation key={index} index={index}>
+                          <div className="group">
+                            <div className="gradient-card p-6 rounded-2xl border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-105 glow-card-hover cursor-pointer">
+                              <div className="flex flex-col items-center gap-4 text-center">
+                                <div className="text-4xl group-hover:scale-110 transition-transform duration-500 mb-2">
+                                  {category.icon}
+                                </div>
+                                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                                  {category.name}
+                                </h3>
+                                <p className="text-muted-foreground text-sm leading-relaxed">
+                                  {category.name === 'Oil & Gas' && 'Premium energy commodities and petroleum products'}
+                                  {category.name === 'Commodities' && 'Raw materials and bulk goods trading'}
+                                  {category.name === 'Luxury Assets' && 'High-value collectibles and premium items'}
+                                  {category.name === 'Real Estate' && 'Commercial and luxury property investments'}
+                                  {category.name === 'Financial Instruments' && 'Investment products and financial assets'}
+                                  {category.name === 'Luxury Vehicles' && 'Premium automobiles and collector cars'}
+                                  {category.name === 'Energy & Renewables' && 'Sustainable energy solutions and technologies'}
+                                  {category.name === 'Investment Opportunities' && 'Exclusive business and investment deals'}
+                                </p>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-primary hover:text-primary-foreground hover:bg-primary transition-all duration-300"
+                                  onClick={() => {
+                                    navigateWithLoading("marketplace", () => {
+                                      setActiveSection("marketplace")
+                                      window.location.href = `/marketplace?category=${category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`
+                                    })
+                                  }}
+                                >
+                                  Explore <ArrowRight className="ml-1 h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
-                            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                              {category.name}
-                            </h3>
-                            <p className="text-muted-foreground text-sm leading-relaxed">
-                              {category.name === 'Oil & Gas' && 'Premium energy commodities and petroleum products'}
-                              {category.name === 'Commodities' && 'Raw materials and bulk goods trading'}
-                              {category.name === 'Luxury Assets' && 'High-value collectibles and premium items'}
-                              {category.name === 'Real Estate' && 'Commercial and luxury property investments'}
-                              {category.name === 'Financial Instruments' && 'Investment products and financial assets'}
-                              {category.name === 'Luxury Vehicles' && 'Premium automobiles and collector cars'}
-                              {category.name === 'Energy & Renewables' && 'Sustainable energy solutions and technologies'}
-                              {category.name === 'Investment Opportunities' && 'Exclusive business and investment deals'}
-                            </p>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="text-primary hover:text-primary-foreground hover:bg-primary transition-all duration-300"
-                            >
-                              Explore <ArrowRight className="ml-1 h-4 w-4" />
-                            </Button>
                           </div>
-                        </div>
-                      </div>
-                    ))}
+                        </CategoryCardAnimation>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </SectionReveal>
               </div>
             </div>
           </section>
