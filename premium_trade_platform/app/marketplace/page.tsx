@@ -55,42 +55,58 @@ export default function MarketplacePage() {
       setLoading(true)
       const supabase = createClient()
 
-      // Load products first
+      // Simplified product loading with basic error handling
       const { data: productsData, error: productsError } = await supabase
         .from('products')
         .select('*')
         .eq('status', 'active')
-        .order(sortBy === 'newest' ? 'created_at' : 'price',
-               { ascending: sortBy === 'price_low' })
+        .order('created_at', { ascending: false })
 
-      if (productsError) throw productsError
+      if (productsError) {
+        console.error('Products error:', productsError)
+        throw new Error(`Database error: ${productsError.message}`)
+      }
+
+      if (!productsData) {
+        setProducts([])
+        return
+      }
 
       // Load users data separately
-      const sellerIds = productsData?.map(p => p.seller_id) || []
-      const { data: usersData, error: usersError } = await supabase
-        .from('users')
-        .select('id, full_name, company_name, verification_status')
-        .in('id', sellerIds)
+      const sellerIds = productsData.map((p: any) => p.seller_id).filter(Boolean)
 
-      if (usersError) throw usersError
+      let usersData: any[] = []
+      if (sellerIds.length > 0) {
+        const { data: userData, error: usersError } = await supabase
+          .from('users')
+          .select('id, full_name, company_name, verification_status')
+          .in('id', sellerIds)
+
+        if (usersError) {
+          console.warn('Users error:', usersError)
+          // Continue without user data
+        } else {
+          usersData = userData || []
+        }
+      }
 
       // Create a map of users for quick lookup
       const usersMap = new Map()
-      usersData?.forEach(user => {
+      usersData.forEach(user => {
         usersMap.set(user.id, user)
       })
 
-      const formattedProducts: Product[] = (productsData || []).map(item => {
+      const formattedProducts: Product[] = productsData.map((item: any) => {
         const user = usersMap.get(item.seller_id)
         return {
           id: item.id,
-          title: item.title,
-          description: item.description,
-          price: parseFloat(item.price),
+          title: item.title || 'Untitled Product',
+          description: item.description || 'No description available',
+          price: parseFloat(item.price) || 0,
           currency: item.currency || 'USD',
-          category: item.category,
+          category: item.category || 'uncategorized',
           location: item.location || 'Location not specified',
-          image_url: (item.images && item.images[0]) || '/placeholder.svg',
+          image_url: (item.images && Array.isArray(item.images) && item.images[0]) || '/placeholder.svg',
           seller_id: item.seller_id,
           seller_name: user?.full_name || 'Anonymous',
           seller_company: user?.company_name || 'Company not specified',
