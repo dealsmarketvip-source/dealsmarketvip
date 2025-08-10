@@ -8,6 +8,7 @@ import { Search, Crown, Sparkles, ArrowRight, TrendingUp } from "lucide-react"
 import Link from "next/link"
 import { LoadingAnimation, SectionReveal, NavLinkAnimation, CategoryCardAnimation } from "@/components/loading-animation"
 import { usePageLoading } from "@/hooks/use-page-loading"
+import { CrownLogoWithBrand } from "@/components/ui/crown-logo"
 
 export default function StaticLandingPage() {
   const { isLoading, navigateWithLoading } = usePageLoading()
