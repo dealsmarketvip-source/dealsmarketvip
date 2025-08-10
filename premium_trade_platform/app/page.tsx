@@ -57,6 +57,11 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Supabase Configuration Guide */}
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <SupabaseConfigGuide />
+      </div>
+
       {/* Hero Section */}
       <section className="relative py-20 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto">
