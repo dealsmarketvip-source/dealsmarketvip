@@ -1,5 +1,3 @@
-
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -36,15 +34,18 @@ export default function StaticLandingPage() {
                 <div className="max-w-7xl mx-auto">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-8">
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src="/deals-market-logo.png" 
-                          alt="Deals Market Logo" 
-                          className="w-12 h-12 object-contain glow-primary"
-                        />
+                      <div className="flex items-center gap-4 group cursor-pointer">
+                        <div className="relative">
+                          <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 to-accent/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                          <div className="relative bg-gradient-to-br from-primary to-primary/80 p-3 rounded-2xl shadow-2xl border border-primary/20 group-hover:scale-110 transition-all duration-300 glow-primary">
+                            <div className="w-8 h-8 bg-primary-foreground rounded-lg flex items-center justify-center">
+                              <span className="text-primary font-black text-lg">D</span>
+                            </div>
+                          </div>
+                        </div>
                         <div className="flex flex-col items-start">
-                          <span className="text-foreground text-2xl font-bold tracking-tight gradient-text">DEALSMARKET</span>
-                          <span className="text-muted-foreground text-xs font-medium uppercase tracking-widest">WHERE VERIFIED COMPANIES TRADE EXCELLENCE</span>
+                          <span className="text-foreground text-2xl font-black tracking-tight gradient-text group-hover:scale-105 transition-transform duration-300">DEALSMARKET</span>
+                          <span className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.2em] opacity-80">WHERE VERIFIED COMPANIES TRADE EXCELLENCE</span>
                         </div>
                       </div>
                       <nav className="hidden md:flex items-center gap-2">
