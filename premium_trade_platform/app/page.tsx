@@ -1,10 +1,17 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Crown, Sparkles, ArrowRight, TrendingUp } from "lucide-react"
 import Link from "next/link"
+import { LoadingAnimation, SectionReveal, NavLinkAnimation, CategoryCardAnimation } from "@/components/loading-animation"
+import { usePageLoading } from "@/hooks/use-page-loading"
 
 export default function StaticLandingPage() {
+  const { isLoading, navigateWithLoading } = usePageLoading()
+  const [activeSection, setActiveSection] = useState("home")
   const categories = [
     { name: "Oil & Gas", icon: "⛽" },
     { name: "Commodities", icon: "📦" },
