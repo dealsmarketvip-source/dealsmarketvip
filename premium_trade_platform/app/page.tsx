@@ -226,7 +226,7 @@ export default function StaticLandingPage() {
                       }}
                     >
                       <Crown className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                      Join €20/month
+                      Join $20/month
                     </Button>
                   </div>
                 </SectionReveal>
