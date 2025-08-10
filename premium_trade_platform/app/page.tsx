@@ -185,21 +185,35 @@ export default function StaticLandingPage() {
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-                  <Link href="/marketplace">
-                    <Button className="group gradient-primary text-primary-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-primary pulse-glow">
+                <SectionReveal delay={0.3}>
+                  <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+                    <Button
+                      className="group gradient-primary text-primary-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-primary pulse-glow"
+                      onClick={() => {
+                        navigateWithLoading("marketplace", () => {
+                          setActiveSection("marketplace")
+                          window.location.href = "/marketplace"
+                        })
+                      }}
+                    >
                       <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
                       Browse Marketplace
                       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
-                  </Link>
-                  <Link href="/membership">
-                    <Button className="group bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-accent">
+                    <Button
+                      className="group bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-accent"
+                      onClick={() => {
+                        navigateWithLoading("membership", () => {
+                          setActiveSection("membership")
+                          window.location.href = "/membership"
+                        })
+                      }}
+                    >
                       <Crown className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                       Join €20/month
                     </Button>
-                  </Link>
-                </div>
+                  </div>
+                </SectionReveal>
 
                 {/* Categories Grid - New Design */}
                 <div className="mb-20">
