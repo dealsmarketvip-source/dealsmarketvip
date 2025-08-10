@@ -284,6 +284,13 @@ export default function StaticLandingPage() {
           </section>
         </main>
       </div>
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab={authDefaultTab}
+      />
       </div>
     </>
   )
