@@ -9,7 +9,6 @@ import { motion } from "framer-motion"
 import { ROIPresentation } from "./components/roi-presentation"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
-import { SupabaseConfigGuide } from "@/components/supabase-config-guide"
 
 export default function HomePage() {
   const [showROIPresentation, setShowROIPresentation] = useState(false)
@@ -56,11 +55,6 @@ export default function HomePage() {
           </Button>
         </div>
       </header>
-
-      {/* Supabase Configuration Guide */}
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <SupabaseConfigGuide />
-      </div>
 
       {/* Hero Section */}
       <section className="relative py-20 px-6 overflow-hidden">
