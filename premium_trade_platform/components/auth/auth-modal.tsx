@@ -88,9 +88,14 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
 
   const handleVerification = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here we would verify the email code
+    if (verificationCode.length !== 6) {
+      toast.error("El código debe tener 6 dígitos")
+      return
+    }
+
+    // Faster verification simulation
     toast.success("¡Email verificado! Procediendo al pago...")
-    setStep("payment")
+    setTimeout(() => setStep("payment"), 300)
   }
 
   const renderAuthStep = () => (
