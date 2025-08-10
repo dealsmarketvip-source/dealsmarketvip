@@ -1,292 +1,317 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Crown, Sparkles, ArrowRight, TrendingUp } from "lucide-react"
-import Link from "next/link"
-import { LoadingAnimation, SectionReveal, NavLinkAnimation, CategoryCardAnimation } from "@/components/loading-animation"
-import { usePageLoading } from "@/hooks/use-page-loading"
-import { CrownLogoWithBrand } from "@/components/ui/crown-logo"
-import { AuthModal } from "@/components/auth/auth-modal"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Crown, Users, DollarSign, Globe, ArrowRight, CheckCircle, Zap } from "lucide-react"
+import { motion } from "framer-motion"
+import { ROIPresentation } from "./components/roi-presentation"
+import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
-export default function StaticLandingPage() {
-  const { isLoading, navigateWithLoading } = usePageLoading()
-  const [activeSection, setActiveSection] = useState("home")
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [authDefaultTab, setAuthDefaultTab] = useState<"login" | "register">("login")
-  const categories = [
-    { name: "Oil & Gas", icon: "⛽" },
-    { name: "Commodities", icon: "📦" },
-    { name: "Luxury Assets", icon: "💎" },
-    { name: "Real Estate", icon: "🏢" },
-    { name: "Financial Instruments", icon: "💰" },
-    { name: "Luxury Vehicles", icon: "🏎️" },
-    { name: "Energy & Renewables", icon: "🔋" },
-    { name: "Investment Opportunities", icon: "📈" },
-  ]
+export default function HomePage() {
+  const [showROIPresentation, setShowROIPresentation] = useState(false)
+  const { user } = useAuth()
+  const router = useRouter()
+
+  // Redirect to marketplace if already authenticated
+  useEffect(() => {
+    if (user) {
+      router.push('/marketplace')
+    }
+  }, [user, router])
+
+  const handleGetStarted = () => {
+    setShowROIPresentation(true)
+  }
+
+  const handleROIComplete = () => {
+    setShowROIPresentation(false)
+    router.push('/marketplace')
+  }
+
+  if (showROIPresentation) {
+    return <ROIPresentation onComplete={handleROIComplete} />
+  }
 
   return (
-    <>
-      {/* Global Loading Overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
-          <LoadingAnimation isLoading={true}>
-            <div></div>
-          </LoadingAnimation>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="w-full py-6 px-6 bg-background/80 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Crown className="h-8 w-8 text-primary" />
+            <div>
+              <div className="text-2xl font-bold text-foreground">DEALSMARKET</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                WHERE VERIFIED COMPANIES TRADE EXCELLENCE
+              </div>
+            </div>
+          </div>
+          <Button onClick={handleGetStarted} className="gradient-primary">
+            <Crown className="mr-2 h-4 w-4" />
+            Join Premium
+          </Button>
         </div>
-      )}
+      </header>
 
-      <div className="min-h-screen bg-background relative overflow-hidden pb-0">
-      <div className="relative z-10">
-        <main className="relative">
-          <section className="flex flex-col items-center relative mx-auto overflow-hidden min-h-screen">
-            {/* Background Effects - Restored Strong Glows */}
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse glow-primary"></div>
-              <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse glow-accent" style={{animationDelay: '1s'}}></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl glow-primary-strong"></div>
-            </div>
+      {/* Hero Section */}
+      <section className="relative py-20 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-8"
+            >
+              <div className="space-y-4">
+                <Badge className="gradient-primary text-primary-foreground font-bold text-lg px-4 py-2">
+                  Join Verified Companies - $20/month Premium Access
+                </Badge>
+                <h1 className="text-5xl lg:text-6xl font-bold text-foreground">
+                  Million-Dollar
+                  <span className="gradient-text block">
+                    Opportunities
+                  </span>
+                  <span className="text-3xl lg:text-4xl text-muted-foreground block mt-2">
+                    For Verified Companies
+                  </span>
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  Access exclusive deals from 500+ verified companies worldwide. 
+                  Premium members see average profits of $125,000 per deal.
+                </p>
+              </div>
 
-            <div className="w-full relative z-10">
-              {/* Header */}
-              <header className="w-full py-6 px-6 bg-background/80 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-8">
-                      <CrownLogoWithBrand />
-                      <nav className="hidden md:flex items-center gap-2">
-                        <NavLinkAnimation isActive={activeSection === "marketplace"}>
-                          <Link
-                            href="/marketplace"
-                            className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              navigateWithLoading("marketplace", () => {
-                                setActiveSection("marketplace")
-                                window.location.href = "/marketplace"
-                              })
-                            }}
-                          >
-                            Marketplace
-                          </Link>
-                        </NavLinkAnimation>
-                        <NavLinkAnimation isActive={activeSection === "membership"}>
-                          <Link
-                            href="/membership"
-                            className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              navigateWithLoading("membership", () => {
-                                setActiveSection("membership")
-                                window.location.href = "/membership"
-                              })
-                            }}
-                          >
-                            Membership
-                          </Link>
-                        </NavLinkAnimation>
-                        <NavLinkAnimation isActive={activeSection === "verification"}>
-                          <Link
-                            href="/verification"
-                            className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              navigateWithLoading("verification", () => {
-                                setActiveSection("verification")
-                                window.location.href = "/verification"
-                              })
-                            }}
-                          >
-                            Verification
-                          </Link>
-                        </NavLinkAnimation>
-                      </nav>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setAuthDefaultTab("login")
-                          setAuthModalOpen(true)
-                        }}
-                        className="border-primary/20 text-foreground hover:text-primary hover:border-primary/40 px-6 py-2 rounded-full font-medium transition-all duration-300"
-                      >
-                        Sign In
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setAuthDefaultTab("register")
-                          setAuthModalOpen(true)
-                        }}
-                        className="gradient-primary text-primary-foreground hover:scale-105 px-6 py-2 rounded-full font-medium shadow-lg transition-all duration-300"
-                      >
-                        Join Now
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Search Bar */}
-                  <div className="max-w-2xl mx-auto">
-                    <div className="flex items-center gap-0 rounded-2xl overflow-hidden transition-all duration-300 shadow-lg">
-                      <Select>
-                        <SelectTrigger className="w-[160px] bg-card border-0 rounded-none h-14 text-foreground glow-card">
-                          <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="oil-gas">Oil & Gas</SelectItem>
-                          <SelectItem value="commodities">Commodities</SelectItem>
-                          <SelectItem value="real-estate">Real Estate</SelectItem>
-                          <SelectItem value="luxury">Luxury Assets</SelectItem>
-                          <SelectItem value="financial">Financial Instruments</SelectItem>
-                          <SelectItem value="vehicles">Luxury Vehicles</SelectItem>
-                          <SelectItem value="energy">Energy & Renewables</SelectItem>
-                          <SelectItem value="investment">Investment Opportunities</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <div className="relative flex-1">
-                        <Input
-                          className="border-0 rounded-none h-14 bg-card text-foreground placeholder:text-muted-foreground focus:ring-0 focus:ring-offset-0 glow-card"
-                          placeholder="What premium deal are you looking for?"
-                        />
-                      </div>
-                      <Button className="h-14 px-6 gradient-primary rounded-none hover:scale-105 transition-all duration-300 glow-primary">
-                        <Search className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">$50M+</div>
+                  <div className="text-sm text-muted-foreground">Monthly Volume</div>
                 </div>
-              </header>
-            </div>
-
-            {/* VIP Banner */}
-            <div className="w-full gradient-primary py-4 px-6 relative overflow-hidden glow-primary-strong">
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-2 left-10">
-                  <Sparkles className="h-4 w-4 text-primary-foreground animate-pulse" />
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">500+</div>
+                  <div className="text-sm text-muted-foreground">Verified Companies</div>
                 </div>
-                <div className="absolute top-1 right-20">
-                  <Crown className="h-5 w-5 text-primary-foreground animate-pulse" style={{animationDelay: '0.5s'}} />
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">98%</div>
+                  <div className="text-sm text-muted-foreground">Success Rate</div>
                 </div>
               </div>
-              <div className="max-w-7xl mx-auto flex items-center justify-center gap-4 relative z-10">
-                <Crown className="h-6 w-6 text-primary-foreground animate-bounce" />
-                <span className="text-primary-foreground font-bold text-lg">
-                  Join Verified Companies - $20/month Premium Access
-                </span>
-                <Button variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-all duration-300 hover:scale-105">
-                  <Crown className="mr-2 h-4 w-4" />
-                  Get Verified
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg" 
+                  className="gradient-primary text-lg h-14 px-8"
+                  onClick={handleGetStarted}
+                >
+                  <Crown className="mr-2 h-5 w-5" />
+                  Start Premium Access
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-lg h-14 px-8"
+                  onClick={handleGetStarted}
+                >
+                  View ROI Analysis
                 </Button>
               </div>
-            </div>
 
-            {/* Hero Content */}
-            <div className="w-full flex-1 py-20 px-4 relative z-10">
-              <div className="max-w-6xl mx-auto text-center">
-                <div className="mb-12">
-                  <h1 className="text-foreground text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                    EXCLUSIVE <span className="gradient-text inline-block animate-pulse glow-text">B2B DEALS</span>
-                  </h1>
-                  <div className="mb-8">
-                    <img
-                      src="https://djx5h8pabpett.cloudfront.net/wp-content/uploads/2022/09/Lamborghini_Manchester_2_2022_620-1-scaled.jpg"
-                      alt="Luxury Vehicle Showroom - Premium B2B Trading"
-                      className="w-full max-w-4xl mx-auto rounded-3xl shadow-2xl border border-border/20 hover:scale-[1.02] transition-transform duration-700 glow-card"
-                    />
-                  </div>
-                  <p className="text-muted-foreground text-xl md:text-2xl max-w-3xl mx-auto">
-                    Connecting verified companies across Europe and the Middle East for high-value commodity trading, luxury assets, and premium business opportunities
-                  </p>
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Zap className="h-4 w-4 text-green-600" />
+                  <span className="font-semibold text-green-800 dark:text-green-200">625,000% ROI Potential</span>
                 </div>
-
-                <SectionReveal delay={0.3}>
-                  <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-                    <Button
-                      className="group gradient-primary text-primary-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-primary pulse-glow"
-                      onClick={() => {
-                        setActiveSection("marketplace")
-                        window.location.href = "/marketplace"
-                      }}
-                    >
-                      <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                      Browse Marketplace
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                    <Button
-                      className="group bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent text-accent-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-accent"
-                      onClick={() => {
-                        setActiveSection("membership")
-                        window.location.href = "/membership"
-                      }}
-                    >
-                      <Crown className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                      Join $20/month
-                    </Button>
-                  </div>
-                </SectionReveal>
-
-                {/* Categories Grid - New Design */}
-                <SectionReveal delay={0.4}>
-                  <div className="mb-20">
-                    <h2 className="text-3xl font-bold text-foreground mb-8 gradient-text">Our Premium Categories</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {categories.map((category, index) => (
-                        <CategoryCardAnimation key={index} index={index}>
-                          <div className="group">
-                            <div className="gradient-card p-6 rounded-2xl border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-105 glow-card-hover cursor-pointer">
-                              <div className="flex flex-col items-center gap-4 text-center">
-                                <div className="text-4xl group-hover:scale-110 transition-transform duration-500 mb-2">
-                                  {category.icon}
-                                </div>
-                                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                                  {category.name}
-                                </h3>
-                                <p className="text-muted-foreground text-sm leading-relaxed">
-                                  {category.name === 'Oil & Gas' && 'Premium energy commodities and petroleum products'}
-                                  {category.name === 'Commodities' && 'Raw materials and bulk goods trading'}
-                                  {category.name === 'Luxury Assets' && 'High-value collectibles and premium items'}
-                                  {category.name === 'Real Estate' && 'Commercial and luxury property investments'}
-                                  {category.name === 'Financial Instruments' && 'Investment products and financial assets'}
-                                  {category.name === 'Luxury Vehicles' && 'Premium automobiles and collector cars'}
-                                  {category.name === 'Energy & Renewables' && 'Sustainable energy solutions and technologies'}
-                                  {category.name === 'Investment Opportunities' && 'Exclusive business and investment deals'}
-                                </p>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-primary hover:text-primary-foreground hover:bg-primary transition-all duration-300"
-                                  onClick={() => {
-                                    navigateWithLoading("marketplace", () => {
-                                      setActiveSection("marketplace")
-                                      window.location.href = `/marketplace?category=${category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`
-                                    })
-                                  }}
-                                >
-                                  Explore <ArrowRight className="ml-1 h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        </CategoryCardAnimation>
-                      ))}
-                    </div>
-                  </div>
-                </SectionReveal>
+                <div className="text-sm text-green-700 dark:text-green-300">
+                  Just one deal covers 520+ years of membership costs
+                </div>
               </div>
-            </div>
-          </section>
-        </main>
-      </div>
+            </motion.div>
 
-      {/* Authentication Modal */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        defaultTab={authDefaultTab}
-      />
-      </div>
-    </>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-primary/10 p-8">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fbb4e3e92cab047208a04cf5bc83d08ce%2F0283b7c72289489999c68d7349faf914?format=webp&width=800"
+                  alt="Premium Trading Platform"
+                  className="w-full h-auto rounded-lg shadow-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent"></div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-4">Why Premium Members Choose Us</h2>
+            <p className="text-xl text-muted-foreground">Exclusive benefits that pay for themselves with your first deal</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Users className="h-12 w-12 text-primary mb-4" />
+                <CardTitle>Verified Network</CardTitle>
+                <CardDescription>
+                  Access 500+ pre-screened companies with verified credentials
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <DollarSign className="h-12 w-12 text-green-500 mb-4" />
+                <CardTitle>High-Value Deals</CardTitle>
+                <CardDescription>
+                  Average deal value of $125,000 with payment protection included
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Globe className="h-12 w-12 text-blue-500 mb-4" />
+                <CardTitle>Global Reach</CardTitle>
+                <CardDescription>
+                  Access deals from 50+ countries with 24/7 premium support
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-4">Success Stories</h2>
+            <p className="text-xl text-muted-foreground">Real results from our premium members</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="p-6">
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-8 w-8 text-primary" />
+                  <div>
+                    <div className="font-bold">Energy Corp Solutions</div>
+                    <div className="text-sm text-muted-foreground">Oil & Gas Trading</div>
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-green-500">$2.4M profit</div>
+                <div className="text-sm text-muted-foreground">in 3 months</div>
+                <div className="text-xs text-muted-foreground">ROI: 12,000,000%</div>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6">
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-8 w-8 text-primary" />
+                  <div>
+                    <div className="font-bold">Global Commodities Ltd</div>
+                    <div className="text-sm text-muted-foreground">Precious Metals</div>
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-green-500">$850K profit</div>
+                <div className="text-sm text-muted-foreground">in 6 weeks</div>
+                <div className="text-xs text-muted-foreground">ROI: 4,250,000%</div>
+              </CardContent>
+            </Card>
+
+            <Card className="p-6">
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-8 w-8 text-primary" />
+                  <div>
+                    <div className="font-bold">International Logistics Pro</div>
+                    <div className="text-sm text-muted-foreground">Supply Chain</div>
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-green-500">$1.8M profit</div>
+                <div className="text-sm text-muted-foreground">in 4 months</div>
+                <div className="text-xs text-muted-foreground">ROI: 9,000,000%</div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-6 bg-gradient-to-r from-primary/10 to-primary/5">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <h2 className="text-4xl font-bold text-foreground">
+            Ready to Access Million-Dollar Opportunities?
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            Join 500+ verified companies already profiting from exclusive deals
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <Card className="p-6 border-primary/50">
+              <div className="text-center space-y-4">
+                <Crown className="h-12 w-12 text-primary mx-auto" />
+                <div>
+                  <div className="font-bold text-lg">Premium Membership</div>
+                  <div className="text-sm text-muted-foreground">$20/month</div>
+                </div>
+                <Button 
+                  className="w-full gradient-primary" 
+                  onClick={handleGetStarted}
+                >
+                  Start Premium Access
+                </Button>
+              </div>
+            </Card>
+
+            <Card className="p-6 border-green-500/50">
+              <div className="text-center space-y-4">
+                <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
+                <div>
+                  <div className="font-bold text-lg">Access Code</div>
+                  <div className="text-sm text-muted-foreground">Instant verification</div>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-green-500 text-green-600 hover:bg-green-50"
+                  onClick={handleGetStarted}
+                >
+                  Enter Access Code
+                </Button>
+              </div>
+            </Card>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            30-day money-back guarantee • Cancel anytime • $1M+ transaction protection
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 border-t border-border">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <Crown className="h-6 w-6 text-primary" />
+            <span className="text-xl font-bold">DEALSMARKET</span>
+          </div>
+          <p className="text-muted-foreground">
+            © 2024 DealsMarket. All rights reserved. Where verified companies trade excellence.
+          </p>
+        </div>
+      </footer>
+    </div>
   )
 }
