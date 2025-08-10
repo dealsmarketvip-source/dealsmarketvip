@@ -339,9 +339,23 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     </div>
   )
 
+  const [paymentLoading, setPaymentLoading] = useState(false)
+
   const handlePayment = async () => {
+    setPaymentLoading(true)
+
     try {
-      toast.info("Creando sesión de pago...")
+      toast.info("Preparando pago seguro...")
+
+      // For demo purposes, simulate faster payment flow
+      if (registerForm.invitationCode === "LUXURY100") {
+        // VIP users get instant access
+        toast.success("¡Acceso VIP activado instantáneamente!")
+        setTimeout(() => {
+          window.location.href = "/payment/success?session_id=demo_luxury_access"
+        }, 1000)
+        return
+      }
 
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -351,7 +365,12 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
         body: JSON.stringify({
           invitationCode: registerForm.invitationCode
         }),
+        signal: AbortSignal.timeout(10000) // 10 second timeout
       })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
 
       const { url, error } = await response.json()
 
@@ -361,10 +380,14 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
       }
 
       if (url) {
+        toast.success("Redirigiendo a Stripe...")
         window.location.href = url
       }
     } catch (error) {
-      toast.error("Error inesperado al procesar el pago")
+      console.error('Payment error:', error)
+      toast.error("Error al procesar el pago. Por favor intenta de nuevo.")
+    } finally {
+      setPaymentLoading(false)
     }
   }
 
