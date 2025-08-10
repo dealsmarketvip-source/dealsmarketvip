@@ -20,20 +20,18 @@ export function usePageLoading() {
   // Simulate loading for different sections
   const navigateWithLoading = (sectionName: string, callback: () => void) => {
     const loadingTexts: Record<string, string> = {
-      marketplace: "Cargando Marketplace...",
-      membership: "Cargando Membresías...",
-      verification: "Cargando Verificación...",
-      vip: "Cargando Zona VIP...",
-      default: "Cargando contenido..."
+      marketplace: "Loading Marketplace...",
+      membership: "Loading Membership...",
+      verification: "Loading Verification...",
+      vip: "Loading VIP Zone...",
+      default: "Loading content..."
     }
 
     startLoading(loadingTexts[sectionName] || loadingTexts.default)
-    
-    // Instant navigation for production
+
+    // Instant navigation for production - no artificial delays
     callback()
-    setTimeout(() => {
-      stopLoading()
-    }, 100)
+    stopLoading()
   }
 
   return {
