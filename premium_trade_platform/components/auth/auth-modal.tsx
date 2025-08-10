@@ -334,49 +334,121 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     </div>
   )
 
-  const renderPaymentStep = () => (
-    <div className="text-center space-y-6">
-      <div className="space-y-2">
-        <CrownLogo size="lg" className="mx-auto text-primary" />
-        <h3 className="text-xl font-semibold">Suscripción Premium</h3>
-        <p className="text-muted-foreground">
-          Únete a empresas verificadas por solo <span className="font-bold text-primary">$20/mes</span>
+  const handlePayment = async () => {
+    try {
+      toast.info("Creando sesión de pago...")
+
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          invitationCode: registerForm.invitationCode
+        }),
+      })
+
+      const { url, error } = await response.json()
+
+      if (error) {
+        toast.error("Error al crear sesión de pago: " + error)
+        return
+      }
+
+      if (url) {
+        window.location.href = url
+      }
+    } catch (error) {
+      toast.error("Error inesperado al procesar el pago")
+    }
+  }
+
+  const renderPaymentStep = () => {
+    const hasInvitationCode = registerForm.invitationCode.trim() !== ""
+    const isVIP = registerForm.invitationCode === "LUXURY100"
+    const hasDiscount = ["PREMIUM2024", "BETA50", "LUXURY100"].includes(registerForm.invitationCode)
+
+    return (
+      <div className="text-center space-y-6">
+        <div className="space-y-2">
+          <CrownLogo size="lg" className="mx-auto text-primary" />
+          <h3 className="text-xl font-semibold">
+            {isVIP ? "¡Felicidades! Acceso VIP" : "Suscripción Premium"}
+          </h3>
+          <p className="text-muted-foreground">
+            {hasInvitationCode ? (
+              hasDiscount ? (
+                <span>
+                  Precio especial: <span className="line-through text-muted-foreground/60">$20/mes</span>{" "}
+                  <span className="font-bold text-primary">
+                    {isVIP ? "¡GRATIS primer mes!" :
+                     registerForm.invitationCode === "PREMIUM2024" ? "$10/mes" :
+                     "$15/mes"}
+                  </span>
+                </span>
+              ) : (
+                <span>Únete a empresas verificadas por <span className="font-bold text-primary">$20/mes</span></span>
+              )
+            ) : (
+              <span>Únete a empresas verificadas por <span className="font-bold text-primary">$20/mes</span></span>
+            )}
+          </p>
+          {hasInvitationCode && (
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+              <Shield className="h-3 w-3" />
+              Código aplicado: {registerForm.invitationCode}
+            </div>
+          )}
+        </div>
+
+        <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl p-6 space-y-4">
+          <h4 className="font-semibold text-lg">
+            {isVIP ? "Beneficios VIP:" : "Beneficios Premium:"}
+          </h4>
+          <ul className="text-left space-y-2 text-sm">
+            <li className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-primary" />
+              {hasInvitationCode ? "Verificación empresarial instantánea" : "Verificación empresarial completa"}
+            </li>
+            <li className="flex items-center gap-2">
+              <CrownLogo size="sm" className="text-primary" />
+              Acceso a deals exclusivos de lujo
+            </li>
+            <li className="flex items-center gap-2">
+              <Building className="h-4 w-4 text-primary" />
+              Networking con empresas verificadas
+            </li>
+            {isVIP && (
+              <>
+                <li className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-primary" />
+                  Acceso prioritario a subastas premium
+                </li>
+                <li className="flex items-center gap-2">
+                  <CrownLogo size="sm" className="text-primary" />
+                  Gestor de cuenta dedicado
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+
+        <Button
+          className="w-full gradient-primary"
+          onClick={handlePayment}
+        >
+          {isVIP ? "Activar Acceso VIP Gratuito" :
+           hasDiscount ? `Pagar ${registerForm.invitationCode === "PREMIUM2024" ? "$10" : "$15"}/mes con Stripe` :
+           "Pagar $20/mes con Stripe"}
+        </Button>
+
+        <p className="text-xs text-muted-foreground">
+          Pago seguro procesado por Stripe. Cancela en cualquier momento.
+          {hasInvitationCode && " Tu código de invitación será aplicado automáticamente."}
         </p>
       </div>
-
-      <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl p-6 space-y-4">
-        <h4 className="font-semibold text-lg">Beneficios Premium:</h4>
-        <ul className="text-left space-y-2 text-sm">
-          <li className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-primary" />
-            Verificación empresarial completa
-          </li>
-          <li className="flex items-center gap-2">
-            <CrownLogo size="sm" className="text-primary" />
-            Acceso a deals exclusivos de lujo
-          </li>
-          <li className="flex items-center gap-2">
-            <Building className="h-4 w-4 text-primary" />
-            Networking con empresas verificadas
-          </li>
-        </ul>
-      </div>
-
-      <Button 
-        className="w-full gradient-primary"
-        onClick={() => {
-          toast.success("Redirigiendo a pago seguro...")
-          // Here we would integrate with Stripe
-        }}
-      >
-        Pagar $20/mes con Stripe
-      </Button>
-
-      <p className="text-xs text-muted-foreground">
-        Pago seguro procesado por Stripe. Cancela en cualquier momento.
-      </p>
-    </div>
-  )
+    )
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
