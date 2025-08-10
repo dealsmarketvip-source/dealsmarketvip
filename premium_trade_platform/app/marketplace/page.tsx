@@ -53,39 +53,52 @@ export default function MarketplacePage() {
   const loadProducts = async () => {
     try {
       setLoading(true)
-      // Load real products from database
-      const { data, error } = await supabase
+      const supabase = createClient()
+
+      // Load products first
+      const { data: productsData, error: productsError } = await supabase
         .from('products')
-        .select(`
-          *,
-          users!seller_id (
-            full_name,
-            company_name,
-            verification_status
-          )
-        `)
+        .select('*')
         .eq('status', 'active')
-        .order(sortBy === 'newest' ? 'created_at' : sortBy === 'price_low' ? 'price' : 'price',
+        .order(sortBy === 'newest' ? 'created_at' : 'price',
                { ascending: sortBy === 'price_low' })
 
-      if (error) throw error
+      if (productsError) throw productsError
 
-      const formattedProducts: Product[] = (data || []).map(item => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        price: parseFloat(item.price),
-        currency: item.currency || 'USD',
-        category: item.category,
-        location: item.location || 'Location not specified',
-        image_url: (item.images && item.images[0]) || '/placeholder.svg',
-        seller_id: item.seller_id,
-        seller_name: item.users?.full_name || 'Anonymous',
-        seller_company: item.users?.company_name || 'Company not specified',
-        created_at: item.created_at,
-        status: item.status,
-        verified_seller: item.users?.verification_status === 'verified'
-      }))
+      // Load users data separately
+      const sellerIds = productsData?.map(p => p.seller_id) || []
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('id, full_name, company_name, verification_status')
+        .in('id', sellerIds)
+
+      if (usersError) throw usersError
+
+      // Create a map of users for quick lookup
+      const usersMap = new Map()
+      usersData?.forEach(user => {
+        usersMap.set(user.id, user)
+      })
+
+      const formattedProducts: Product[] = (productsData || []).map(item => {
+        const user = usersMap.get(item.seller_id)
+        return {
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          price: parseFloat(item.price),
+          currency: item.currency || 'USD',
+          category: item.category,
+          location: item.location || 'Location not specified',
+          image_url: (item.images && item.images[0]) || '/placeholder.svg',
+          seller_id: item.seller_id,
+          seller_name: user?.full_name || 'Anonymous',
+          seller_company: user?.company_name || 'Company not specified',
+          created_at: item.created_at,
+          status: item.status,
+          verified_seller: user?.verification_status === 'verified'
+        }
+      })
 
       setProducts(formattedProducts)
     } catch (error: any) {
