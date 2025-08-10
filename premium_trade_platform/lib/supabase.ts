@@ -8,8 +8,15 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 // Validate environment variables
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Missing Supabase environment variables')
+const isSupabaseConfigured = supabaseUrl &&
+  supabaseAnonKey &&
+  !supabaseUrl.includes('placeholder') &&
+  !supabaseUrl.includes('demo') &&
+  !supabaseAnonKey.includes('placeholder') &&
+  !supabaseAnonKey.includes('demo')
+
+if (!isSupabaseConfigured) {
+  console.warn('Supabase is not properly configured. Using fallback configuration.')
 }
 
 // Client-side Supabase client
