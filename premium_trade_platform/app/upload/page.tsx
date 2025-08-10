@@ -56,6 +56,8 @@ export default function UploadProductPage() {
     setLoading(true)
     
     try {
+      const supabase = createClient()
+
       // Get the user ID from the profile
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (!authUser) throw new Error("Not authenticated")
