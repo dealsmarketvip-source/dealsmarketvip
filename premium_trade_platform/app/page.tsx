@@ -206,10 +206,8 @@ export default function StaticLandingPage() {
                     <Button
                       className="group gradient-primary text-primary-foreground hover:scale-105 px-12 py-5 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 glow-primary pulse-glow"
                       onClick={() => {
-                        navigateWithLoading("marketplace", () => {
-                          setActiveSection("marketplace")
-                          window.location.href = "/marketplace"
-                        })
+                        setActiveSection("marketplace")
+                        window.location.href = "/marketplace"
                       }}
                     >
                       <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
