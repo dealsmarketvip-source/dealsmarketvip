@@ -189,12 +189,11 @@ export default function StaticLandingPage() {
                   <h1 className="text-foreground text-5xl md:text-7xl font-bold mb-6 leading-tight">
                     EXCLUSIVE <span className="gradient-text inline-block animate-pulse glow-text">B2B DEALS</span>
                   </h1>
-                  <div className="mb-8 relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 to-accent/50 rounded-3xl blur opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 glow-primary-strong" />
+                  <div className="mb-8">
                     <img
                       src="https://djx5h8pabpett.cloudfront.net/wp-content/uploads/2022/09/Lamborghini_Manchester_2_2022_620-1-scaled.jpg"
                       alt="Luxury Vehicle Showroom - Premium B2B Trading"
-                      className="relative w-full max-w-4xl mx-auto rounded-3xl shadow-2xl border border-border/20 hover:scale-[1.02] transition-transform duration-700 glow-card"
+                      className="w-full max-w-4xl mx-auto rounded-3xl shadow-2xl border border-border/20 hover:scale-[1.02] transition-transform duration-700 glow-card"
                     />
                   </div>
                   <p className="text-muted-foreground text-xl md:text-2xl max-w-3xl mx-auto">
