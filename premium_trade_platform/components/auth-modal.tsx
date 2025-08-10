@@ -41,6 +41,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       return
     }
 
+    // Check if Supabase is properly configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('demo')) {
+      toast.error("Configuración de autenticación no disponible. Por favor, configura Supabase correctamente.")
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -61,7 +68,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       onClose()
       resetForm()
     } catch (error) {
-      toast.error("Error al crear la cuenta")
+      console.error('Auth error:', error)
+      toast.error("Error al crear la cuenta. Verifica la configuración de Supabase.")
     } finally {
       setLoading(false)
     }
