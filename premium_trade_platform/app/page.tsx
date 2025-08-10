@@ -9,6 +9,7 @@ import { motion } from "framer-motion"
 import { ROIPresentation } from "./components/roi-presentation"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
+import { SupabaseConfigGuide } from "@/components/supabase-config-guide"
 
 export default function HomePage() {
   const [showROIPresentation, setShowROIPresentation] = useState(false)
