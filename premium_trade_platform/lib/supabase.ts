@@ -71,6 +71,13 @@ export const supabaseAdmin = createSupabaseClient<Database>(
 export const auth = {
   // Sign up new user with access code
   async signUp(email: string, password: string, accessCode?: string, metadata?: Record<string, any>) {
+    if (!isSupabaseConfigured) {
+      return {
+        data: null,
+        error: { message: 'Supabase is not properly configured. Please check environment variables.' }
+      }
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
