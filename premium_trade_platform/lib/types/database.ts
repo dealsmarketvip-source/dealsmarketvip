@@ -98,6 +98,27 @@ export interface DocumentMetadata {
   uploaded_at: string;
 }
 
+export interface Product {
+  id: string;
+  seller_id: string;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  currency: string;
+  condition: string;
+  location?: string;
+  images: string[];
+  specifications: Record<string, any>;
+  status: string;
+  featured: boolean;
+  verified: boolean;
+  views_count: number;
+  created_at: string;
+  updated_at: string;
+  expires_at?: string;
+}
+
 // Database schema type for Supabase
 export interface Database {
   public: {
