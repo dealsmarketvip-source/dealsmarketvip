@@ -24,7 +24,17 @@ export default function StaticLandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden pb-0">
+    <>
+      {/* Global Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
+          <LoadingAnimation isLoading={true}>
+            <div></div>
+          </LoadingAnimation>
+        </div>
+      )}
+
+      <div className="min-h-screen bg-background relative overflow-hidden pb-0">
       <div className="relative z-10">
         <main className="relative">
           <section className="flex flex-col items-center relative mx-auto overflow-hidden min-h-screen">
@@ -267,6 +277,7 @@ export default function StaticLandingPage() {
           </section>
         </main>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
