@@ -12,14 +12,14 @@ export const createServerClient = () => createServerComponentClient<Database>({ 
 
 // Direct Supabase client for server-side operations
 export const supabase = createSupabaseClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder_anon_key_for_build_only'
 )
 
 // Admin client for administrative operations (use service role key)
 export const supabaseAdmin = createSupabaseClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_service_role_key_for_build_only'
 )
 
 // Authentication utilities
