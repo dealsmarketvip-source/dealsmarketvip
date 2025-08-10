@@ -78,7 +78,10 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
       if (error) {
         toast.error("Error al crear cuenta: " + error.message)
       } else {
-        toast.success("¡Cuenta creada! Revisa tu email para verificar tu cuenta.")
+        // Generate and log verification code for development
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString()
+        console.log("🔐 Código de verificación para desarrollo:", verificationCode)
+        toast.success("¡Cuenta creada! Código de verificación: " + verificationCode)
         setStep("verification")
       }
     } catch (error) {
