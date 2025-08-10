@@ -227,20 +227,36 @@ export default function MarketplacePage() {
 
   if (!user && !hasAccess) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CrownLogoWithBrand className="justify-center mb-4" />
-            <CardTitle>Access Required</CardTitle>
-            <CardDescription>Please sign in to access the marketplace</CardDescription>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 flex items-center justify-center p-4">
+        <Card className="w-full max-w-lg shadow-2xl border-border/50 bg-card/95 backdrop-blur-xl">
+          <CardHeader className="text-center pb-6 pt-8 px-8">
+            <div className="mb-6">
+              <CrownLogoWithBrand className="justify-center mb-6" />
+            </div>
+            <div className="space-y-3">
+              <CardTitle className="text-3xl font-bold text-foreground">
+                Access Required
+              </CardTitle>
+              <CardDescription className="text-lg text-muted-foreground leading-relaxed px-4">
+                Please sign in to access the marketplace
+              </CardDescription>
+            </div>
           </CardHeader>
-          <CardContent className="text-center">
-            <Link href="/">
-              <Button className="gradient-primary">
-                <Crown className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-            </Link>
+          <CardContent className="text-center pb-8 px-8">
+            <div className="space-y-6">
+              <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <Lock className="h-8 w-8 text-primary" />
+              </div>
+              <Link href="/">
+                <Button size="lg" className="gradient-primary w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                  <Crown className="mr-3 h-5 w-5" />
+                  Sign In to Continue
+                </Button>
+              </Link>
+              <p className="text-sm text-muted-foreground/80 mt-4">
+                Join 500+ verified companies trading excellence
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
