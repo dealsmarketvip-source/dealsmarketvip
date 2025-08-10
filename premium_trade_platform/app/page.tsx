@@ -56,9 +56,51 @@ export default function StaticLandingPage() {
                         </div>
                       </div>
                       <nav className="hidden md:flex items-center gap-2">
-                        <Link href="/marketplace" className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50">Marketplace</Link>
-                        <Link href="/membership" className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50">Membership</Link>
-                        <Link href="/verification" className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50">Verification</Link>
+                        <NavLinkAnimation isActive={activeSection === "marketplace"}>
+                          <Link
+                            href="/marketplace"
+                            className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              navigateWithLoading("marketplace", () => {
+                                setActiveSection("marketplace")
+                                window.location.href = "/marketplace"
+                              })
+                            }}
+                          >
+                            Marketplace
+                          </Link>
+                        </NavLinkAnimation>
+                        <NavLinkAnimation isActive={activeSection === "membership"}>
+                          <Link
+                            href="/membership"
+                            className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              navigateWithLoading("membership", () => {
+                                setActiveSection("membership")
+                                window.location.href = "/membership"
+                              })
+                            }}
+                          >
+                            Membership
+                          </Link>
+                        </NavLinkAnimation>
+                        <NavLinkAnimation isActive={activeSection === "verification"}>
+                          <Link
+                            href="/verification"
+                            className="text-muted-foreground hover:text-primary px-4 py-2 rounded-full font-medium transition-all duration-300 hover:bg-muted/50"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              navigateWithLoading("verification", () => {
+                                setActiveSection("verification")
+                                window.location.href = "/verification"
+                              })
+                            }}
+                          >
+                            Verification
+                          </Link>
+                        </NavLinkAnimation>
                       </nav>
                     </div>
                     <div className="flex items-center gap-4">
