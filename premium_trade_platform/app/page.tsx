@@ -14,6 +14,8 @@ import { AuthModal } from "@/components/auth/auth-modal"
 export default function StaticLandingPage() {
   const { isLoading, navigateWithLoading } = usePageLoading()
   const [activeSection, setActiveSection] = useState("home")
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authDefaultTab, setAuthDefaultTab] = useState<"login" | "register">("login")
   const categories = [
     { name: "Oil & Gas", icon: "⛽" },
     { name: "Commodities", icon: "📦" },
