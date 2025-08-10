@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Plus, Filter, DollarSign, MapPin, Calendar, Crown, Lock } from "lucide-react"
 import { CrownLogoWithBrand } from "@/components/ui/crown-logo"
 import { useAuth } from "@/hooks/use-auth"
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase"
 import Link from "next/link"
 import { toast } from "sonner"
 
