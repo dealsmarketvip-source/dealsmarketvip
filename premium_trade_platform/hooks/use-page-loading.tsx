@@ -29,13 +29,13 @@ export function usePageLoading() {
 
     startLoading(loadingTexts[sectionName] || loadingTexts.default)
     
-    // Simulate network delay
+    // Faster network simulation
     setTimeout(() => {
       callback()
       setTimeout(() => {
         stopLoading()
-      }, 500)
-    }, 800)
+      }, 200)
+    }, 300)
   }
 
   return {
