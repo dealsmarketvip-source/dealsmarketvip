@@ -113,7 +113,7 @@ export default function StaticLandingPage() {
                         }}
                         className="border-primary/20 text-foreground hover:text-primary hover:border-primary/40 px-6 py-2 rounded-full font-medium transition-all duration-300"
                       >
-                        Iniciar Sesión
+                        Sign In
                       </Button>
                       <Button
                         onClick={() => {
@@ -122,7 +122,7 @@ export default function StaticLandingPage() {
                         }}
                         className="gradient-primary text-primary-foreground hover:scale-105 px-6 py-2 rounded-full font-medium shadow-lg transition-all duration-300"
                       >
-                        Únete Ahora
+                        Join Now
                       </Button>
                     </div>
                   </div>
