@@ -8,8 +8,15 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 // Validate environment variables
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Missing Supabase environment variables')
+const isSupabaseConfigured = supabaseUrl &&
+  supabaseAnonKey &&
+  !supabaseUrl.includes('placeholder') &&
+  !supabaseUrl.includes('demo') &&
+  !supabaseAnonKey.includes('placeholder') &&
+  !supabaseAnonKey.includes('demo')
+
+if (!isSupabaseConfigured) {
+  console.warn('Supabase is not properly configured. Using fallback configuration.')
 }
 
 // Client-side Supabase client
@@ -64,6 +71,13 @@ export const supabaseAdmin = createSupabaseClient<Database>(
 export const auth = {
   // Sign up new user with access code
   async signUp(email: string, password: string, accessCode?: string, metadata?: Record<string, any>) {
+    if (!isSupabaseConfigured) {
+      return {
+        data: null,
+        error: { message: 'Supabase is not properly configured. Please check environment variables.' }
+      }
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
