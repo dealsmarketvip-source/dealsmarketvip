@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CrownLogo } from "@/components/ui/crown-logo"
-import { Mail, Lock, User, Building, Phone, MapPin, Eye, EyeOff, Shield } from "lucide-react"
+import { Mail, Lock, User, Building, Phone, MapPin, Eye, EyeOff, Shield, Key, CheckCircle2, AlertCircle } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { toast } from "sonner"
 
@@ -38,6 +38,11 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     invitationCode: ""
   })
   const [verificationCode, setVerificationCode] = useState("")
+  const [codeValidation, setCodeValidation] = useState<{
+    isValid: boolean | null,
+    message: string,
+    isChecking: boolean
+  }>({ isValid: null, message: "", isChecking: false })
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,9 +59,46 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     }
   }
 
+  // Validar código de invitación
+  const validateInvitationCode = async (code: string) => {
+    if (!code.trim()) {
+      setCodeValidation({ isValid: null, message: "", isChecking: false })
+      return
+    }
+
+    setCodeValidation({ isValid: null, message: "", isChecking: true })
+
+    // Simular validación del código (en producción esto sería una llamada a la API)
+    setTimeout(() => {
+      const validCodes = [
+        { code: "PREMIUM2024", message: "✨ Código Premium válido - 50% descuento" },
+        { code: "LUXURY100", message: "👑 Código VIP válido - Primer mes GRATIS" },
+        { code: "BETA50", message: "🚀 Código Beta válido - 25% descuento" },
+        { code: "ENTERPRISE", message: "💼 Código Enterprise válido - Acceso completo" }
+      ]
+
+      const foundCode = validCodes.find(c => c.code === code)
+
+      if (foundCode) {
+        setCodeValidation({
+          isValid: true,
+          message: foundCode.message,
+          isChecking: false
+        })
+        toast.success(foundCode.message)
+      } else {
+        setCodeValidation({
+          isValid: false,
+          message: "❌ Código inválido o expirado",
+          isChecking: false
+        })
+      }
+    }, 800)
+  }
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (registerForm.password !== registerForm.confirmPassword) {
       toast.error("Las contraseñas no coinciden")
       return
@@ -64,6 +106,12 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
 
     if (registerForm.password.length < 8) {
       toast.error("La contraseña debe tener al menos 8 caracteres")
+      return
+    }
+
+    // Verificar código de invitación si se proporcionó
+    if (registerForm.invitationCode && codeValidation.isValid !== true) {
+      toast.error("Por favor verifica que tu código de invitación sea válido")
       return
     }
 
@@ -75,7 +123,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
         country: registerForm.country,
         invitation_code: registerForm.invitationCode
       })
-      
+
       if (error) {
         toast.error("Error al crear cuenta: " + error.message)
       } else {
@@ -237,20 +285,87 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="invitationCode">Código de Invitación (Opcional)</Label>
+            <Label htmlFor="invitationCode" className="flex items-center gap-2">
+              <motion.div
+                animate={{
+                  rotate: [0, 360],
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <Key className="h-4 w-4 text-primary glow-primary" />
+              </motion.div>
+              Código de Invitación (Opcional)
+            </Label>
             <div className="relative">
-              <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <motion.div
+                animate={{
+                  scale: codeValidation.isValid === true ? [1, 1.2, 1] : 1,
+                  rotate: codeValidation.isValid === true ? [0, 15, -15, 0] : 0
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              </motion.div>
               <Input
                 id="invitationCode"
-                placeholder="PREMIUM2024"
-                className="pl-9"
+                placeholder="PREMIUM2024, LUXURY100, BETA50"
+                className={`pl-9 pr-12 transition-all duration-300 ${
+                  codeValidation.isValid === true ? 'border-green-500 glow-accent' :
+                  codeValidation.isValid === false ? 'border-red-500' : ''
+                }`}
                 value={registerForm.invitationCode}
-                onChange={(e) => setRegisterForm(prev => ({ ...prev, invitationCode: e.target.value }))}
+                onChange={(e) => {
+                  const code = e.target.value.toUpperCase()
+                  setRegisterForm(prev => ({ ...prev, invitationCode: code }))
+                  validateInvitationCode(code)
+                }}
               />
+              <div className="absolute right-3 top-3">
+                {codeValidation.isChecking && (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Key className="h-4 w-4 text-primary" />
+                  </motion.div>
+                )}
+                {codeValidation.isValid === true && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  </motion.div>
+                )}
+                {codeValidation.isValid === false && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                  >
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                  </motion.div>
+                )}
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Con un código válido serás verificado automáticamente
-            </p>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{
+                opacity: codeValidation.message ? 1 : 0,
+                y: codeValidation.message ? 0 : -10
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <p className={`text-xs ${
+                codeValidation.isValid === true ? 'text-green-500' :
+                codeValidation.isValid === false ? 'text-red-500' :
+                'text-muted-foreground'
+              }`}>
+                {codeValidation.message || "Con un código válido serás verificado automáticamente"}
+              </p>
+            </motion.div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
