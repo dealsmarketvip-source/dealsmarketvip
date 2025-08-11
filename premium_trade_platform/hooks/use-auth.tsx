@@ -11,6 +11,8 @@ interface AuthContextType {
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error: any }>
   signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ error: any }>
+  signInWithCode: (accessCode: string) => Promise<{ error: any, data?: any }>
+  validateInvitationCode: (code: string) => Promise<{ isValid: boolean, message: string }>
   signOut: () => Promise<{ error: any }>
   updateProfile: (updates: Partial<User>) => Promise<{ error: any }>
 }
@@ -83,9 +85,66 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
     setLoading(true)
-    const result = await auth.signUp(email, password, metadata)
+
+    // Si hay un código de invitación, validarlo primero
+    if (metadata?.invitation_code) {
+      const validation = await validateInvitationCode(metadata.invitation_code)
+      if (!validation.isValid) {
+        setLoading(false)
+        return { error: new Error(validation.message) }
+      }
+    }
+
+    const result = await auth.signUp(email, password, metadata?.invitation_code, metadata)
     setLoading(false)
     return result
+  }
+
+  const signInWithCode = async (accessCode: string) => {
+    setLoading(true)
+    const result = await auth.signInWithCode(accessCode)
+    setLoading(false)
+    return result
+  }
+
+  const validateInvitationCode = async (code: string): Promise<{ isValid: boolean, message: string }> => {
+    if (!code.trim()) {
+      return { isValid: false, message: "Código requerido" }
+    }
+
+    try {
+      // Códigos válidos predefinidos para demo/desarrollo
+      const validCodes = [
+        { code: "PREMIUM2024", message: "✨ Código Premium válido - 50% descuento" },
+        { code: "LUXURY100", message: "👑 Código VIP válido - Primer mes GRATIS" },
+        { code: "BETA50", message: "🚀 Código Beta válido - 25% descuento" },
+        { code: "ENTERPRISE", message: "💼 Código Enterprise válido - Acceso completo" },
+        { code: "INVITED2024", message: "🎯 Código de invitación válido" },
+        { code: "SPECIAL", message: "⭐ Código especial válido" }
+      ]
+
+      const foundCode = validCodes.find(c => c.code === code.toUpperCase())
+
+      if (foundCode) {
+        return { isValid: true, message: foundCode.message }
+      }
+
+      // Intentar validar con la base de datos si Supabase está configurado
+      try {
+        const { data, error } = await db.invitationCodes.validate(code)
+        if (data && !error) {
+          return { isValid: true, message: "✅ Código de invitación válido" }
+        }
+      } catch (dbError) {
+        // Si la base de datos no está configurada, usar solo códigos predefinidos
+        console.warn('Database validation failed, using predefined codes only')
+      }
+
+      return { isValid: false, message: "❌ Código inválido o expirado" }
+    } catch (error) {
+      console.error('Error validating invitation code:', error)
+      return { isValid: false, message: "❌ Error al validar código" }
+    }
   }
 
   const signOut = async () => {
@@ -113,6 +172,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signIn,
     signUp,
+    signInWithCode,
+    validateInvitationCode,
     signOut,
     updateProfile
   }
