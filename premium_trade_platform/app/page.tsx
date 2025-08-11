@@ -38,44 +38,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="w-full py-6 px-6 bg-background/80 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <motion.div
-              className="h-8 w-8 text-primary glow-primary-strong"
-              animate={{
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              <Crown className="h-8 w-8" />
-            </motion.div>
-            <div>
-              <div className="text-2xl font-bold text-foreground glow-text gradient-text">DEALSMARKET</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                <Store className="h-3 w-3" />
-                WHERE VERIFIED COMPANIES TRADE EXCELLENCE
-              </div>
-            </div>
-          </div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button onClick={handleGetStarted} className="gradient-primary glow-primary-strong pulse-glow">
-              <Crown className="mr-2 h-4 w-4" />
-              Join
-              <ShoppingBag className="ml-2 h-4 w-4" />
-            </Button>
-          </motion.div>
-        </div>
-      </header>
 
       {/* Hero Section */}
       <section className="relative py-20 px-6 overflow-hidden">
