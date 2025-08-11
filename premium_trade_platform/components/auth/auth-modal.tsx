@@ -311,15 +311,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
 
           <div className="space-y-2">
             <Label htmlFor="invitationCode" className="flex items-center gap-2">
-              <motion.div
-                animate={{
-                  rotate: [0, 360],
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                <Key className="h-4 w-4 text-primary glow-primary" />
-              </motion.div>
+              <Key className="h-4 w-4 text-primary" />
               Código de Invitación (Opcional)
             </Label>
             <div className="relative">
