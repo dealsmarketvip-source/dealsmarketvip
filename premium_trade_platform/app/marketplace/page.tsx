@@ -378,32 +378,10 @@ export default function MarketplacePage() {
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
             <div>
-              <motion.h1
-                className="text-4xl font-bold text-white mb-2 glow-text flex items-center gap-3"
-                animate={{
-                  textShadow: [
-                    "0 2px 8px rgba(255, 215, 0, 0.3)",
-                    "0 4px 16px rgba(255, 215, 0, 0.5)",
-                    "0 2px 8px rgba(255, 215, 0, 0.3)"
-                  ]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                <motion.div
-                  animate={{
-                    rotate: [0, 360],
-                    scale: [1, 1.1, 1]
-                  }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                >
-                  <ShoppingCart className="h-10 w-10 text-primary glow-primary-strong" />
-                </motion.div>
+              <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+                <ShoppingCart className="h-10 w-10 text-primary" />
                 Marketplace
-              </motion.h1>
+              </h1>
               <motion.p
                 className="text-gray-300"
                 animate={{ opacity: [0.7, 1, 0.7] }}
