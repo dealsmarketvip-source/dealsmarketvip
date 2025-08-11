@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CrownLogo } from "@/components/ui/crown-logo"
-import { Mail, Lock, User, Building, Phone, MapPin, Eye, EyeOff, Shield, Key, CheckCircle2, AlertCircle } from "lucide-react"
+import { Mail, Lock, User, Building, Phone, MapPin, Eye, EyeOff, Shield, Key, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { toast } from "sonner"
 
