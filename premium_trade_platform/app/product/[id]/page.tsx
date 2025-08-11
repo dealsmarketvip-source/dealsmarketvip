@@ -211,11 +211,33 @@ export default function ProductPage() {
         })
       } catch (error) {
         console.error('Error sharing:', error)
+        // Fallback to clipboard if share fails
+        copyToClipboard()
       }
     } else {
       // Fallback: copy URL to clipboard
-      navigator.clipboard.writeText(window.location.href)
-      toast.success("Enlace copiado al portapapeles")
+      copyToClipboard()
+    }
+  }
+
+  const copyToClipboard = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success("Enlace copiado al portapapeles")
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        const textArea = document.createElement('textarea')
+        textArea.value = window.location.href
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+        toast.success("Enlace copiado")
+      }
+    } catch (error) {
+      console.error('Error copying to clipboard:', error)
+      toast.error("No se pudo copiar el enlace")
     }
   }
 
