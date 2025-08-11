@@ -88,6 +88,71 @@ export default function MarketplacePage() {
   const fetchProducts = async () => {
     try {
       setLoading(true)
+
+      // Early check for Supabase configuration to prevent all database errors
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('demo')) {
+        console.warn('Supabase not configured, showing demo products directly')
+        const demoProducts = [
+          {
+            id: 'demo-1',
+            title: 'iPhone 14 Pro Max 256GB',
+            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
+            price: 1200,
+            currency: 'EUR',
+            images: [],
+            seller_id: 'demo-seller',
+            status: 'active',
+            condition: 'new',
+            category: 'electronics',
+            views_count: 125,
+            favorites_count: 8,
+            shipping_included: true,
+            shipping_cost: 0,
+            location: 'Madrid, España',
+            featured: true,
+            verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            seller: {
+              id: 'demo-seller',
+              full_name: 'Vendedor Demo',
+              verification_status: 'verified' as const,
+              profile_image_url: undefined
+            }
+          },
+          {
+            id: 'demo-2',
+            title: 'MacBook Pro 14" M3',
+            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
+            price: 2200,
+            currency: 'EUR',
+            images: [],
+            seller_id: 'demo-seller-2',
+            status: 'active',
+            condition: 'like_new',
+            category: 'electronics',
+            views_count: 89,
+            favorites_count: 12,
+            shipping_included: false,
+            shipping_cost: 15,
+            location: 'Barcelona, España',
+            featured: false,
+            verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            seller: {
+              id: 'demo-seller-2',
+              full_name: 'TechStore Demo',
+              verification_status: 'verified' as const,
+              profile_image_url: undefined
+            }
+          }
+        ]
+        setProducts(demoProducts as any)
+        setTotalProducts(2)
+        return
+      }
       
       const searchFilters = {
         ...filters,
