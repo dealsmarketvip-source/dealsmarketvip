@@ -315,15 +315,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
               Código de Invitación (Opcional)
             </Label>
             <div className="relative">
-              <motion.div
-                animate={{
-                  scale: codeValidation.isValid === true ? [1, 1.2, 1] : 1,
-                  rotate: codeValidation.isValid === true ? [0, 15, -15, 0] : 0
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              </motion.div>
+              <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="invitationCode"
                 placeholder="PREMIUM2024, LUXURY100, BETA50"
