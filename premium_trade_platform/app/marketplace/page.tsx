@@ -309,7 +309,7 @@ export default function MarketplacePage() {
                       <SelectValue placeholder="Todas las categorías" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todas las categorías</SelectItem>
+                      <SelectItem value="all">Todas las categorías</SelectItem>
                       {CATEGORIES.map((category) => (
                         <SelectItem key={category.value} value={category.value}>
                           {category.label}
@@ -341,7 +341,7 @@ export default function MarketplacePage() {
                       <SelectValue placeholder="Cualquier estado" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Cualquier estado</SelectItem>
+                      <SelectItem value="all">Cualquier estado</SelectItem>
                       <SelectItem value="new">Nuevo</SelectItem>
                       <SelectItem value="like_new">Como nuevo</SelectItem>
                       <SelectItem value="good">Bueno</SelectItem>
