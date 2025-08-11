@@ -130,11 +130,16 @@ export default function MarketplacePage() {
 
     } catch (error) {
       // Improve error logging to avoid [object Object]
-      console.error('Error fetching products:', {
-        error,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
-      })
+      const logError = error instanceof Error ? {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      } : {
+        type: typeof error,
+        value: String(error),
+        raw: error
+      }
+      console.error('Error fetching products:', logError)
 
       // Check if it's a Supabase configuration issue
       let errorMessage: string
