@@ -154,3 +154,28 @@ function PaymentSuccessContent() {
     </div>
   )
 }
+
+export default function PaymentSuccess() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          >
+            <CrownLogo size="lg" className="text-primary mx-auto" />
+          </motion.div>
+          <h2 className="text-xl font-semibold text-foreground">
+            Procesando tu suscripción...
+          </h2>
+          <p className="text-muted-foreground">
+            Esto puede tomar unos segundos
+          </p>
+        </div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
+  )
+}
