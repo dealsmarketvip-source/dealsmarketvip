@@ -28,6 +28,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     loading: false
   }
   const [currentTab, setCurrentTab] = useState(defaultTab)
+  const [codeOnlyForm, setCodeOnlyForm] = useState({ accessCode: "" })
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep] = useState<"auth" | "verification" | "payment">("auth")
   
@@ -149,11 +150,36 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     setTimeout(() => setStep("payment"), 300)
   }
 
+  const handleCodeOnlyLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!codeOnlyForm.accessCode.trim()) {
+      toast.error("Por favor ingresa un código de acceso")
+      return
+    }
+
+    try {
+      const { error, data } = await signInWithCode(codeOnlyForm.accessCode)
+      if (error) {
+        toast.error("Error con el código: " + error.message)
+      } else {
+        toast.success("¡Código válido! Redirigiendo...")
+        setTimeout(() => {
+          onClose()
+          window.location.href = '/marketplace'
+        }, 1000)
+      }
+    } catch (error) {
+      toast.error("Error inesperado al validar código")
+    }
+  }
+
   const renderAuthStep = () => (
-    <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as "login" | "register")}>
-      <TabsList className="grid w-full grid-cols-2 mb-6">
+    <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as "login" | "register" | "code")}>
+      <TabsList className="grid w-full grid-cols-3 mb-6">
         <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
         <TabsTrigger value="register">Crear Cuenta</TabsTrigger>
+        <TabsTrigger value="code">Código Acceso</TabsTrigger>
       </TabsList>
 
       <TabsContent value="login">
@@ -412,6 +438,106 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
             {loading ? "Creando cuenta..." : "Crear Cuenta Premium"}
           </Button>
         </form>
+      </TabsContent>
+
+      <TabsContent value="code">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-center space-y-6"
+        >
+          <div className="space-y-2">
+            <motion.div
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.2, 1]
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <Key className="h-16 w-16 text-primary mx-auto glow-primary-strong" />
+            </motion.div>
+            <h3 className="text-xl font-semibold glow-text">Acceso con Código</h3>
+            <p className="text-muted-foreground">
+              Ingresa tu código de invitación para acceso directo
+            </p>
+          </div>
+
+          <form onSubmit={handleCodeOnlyLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="accessCode">Código de Acceso</Label>
+              <div className="relative">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    rotate: [0, 5, -5, 0]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Key className="absolute left-3 top-3 h-4 w-4 text-primary glow-primary" />
+                </motion.div>
+                <Input
+                  id="accessCode"
+                  placeholder="PREMIUM2024, LUXURY100..."
+                  className="pl-9 text-center text-lg tracking-wider uppercase glow-accent"
+                  value={codeOnlyForm.accessCode}
+                  onChange={(e) => setCodeOnlyForm(prev => ({
+                    ...prev,
+                    accessCode: e.target.value.toUpperCase()
+                  }))}
+                  required
+                />
+              </div>
+            </div>
+
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                type="submit"
+                className="w-full gradient-primary glow-primary-strong pulse-glow shimmer"
+                disabled={loading}
+              >
+                {loading ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Key className="h-4 w-4 mr-2" />
+                  </motion.div>
+                ) : (
+                  <Key className="mr-2 h-4 w-4" />
+                )}
+                {loading ? "Validando código..." : "Acceder con Código"}
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </motion.div>
+              </Button>
+            </motion.div>
+          </form>
+
+          <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg p-4 space-y-2">
+            <p className="text-sm font-medium">Códigos de ejemplo válidos:</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {["PREMIUM2024", "LUXURY100", "BETA50"].map((code) => (
+                <motion.button
+                  key={code}
+                  type="button"
+                  className="px-3 py-1 bg-primary/20 text-primary text-xs rounded-full border border-primary/30 hover:bg-primary/30 transition-colors"
+                  onClick={() => setCodeOnlyForm(prev => ({ ...prev, accessCode: code }))}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {code}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </TabsContent>
     </Tabs>
   )
