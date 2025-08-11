@@ -125,14 +125,23 @@ export default function MarketplacePage() {
       }
 
     } catch (error) {
-      console.error('Error fetching products:', error)
+      // Improve error logging to avoid [object Object]
+      console.error('Error fetching products:', {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      })
 
       // Check if it's a Supabase configuration issue
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      if (errorMessage.includes('placeholder') ||
-          errorMessage.includes('not properly configured') ||
-          errorMessage.includes('Database not configured')) {
-        console.warn('Database not configured, using fallback mode')
+      const errorMessage = error instanceof Error ? error.message : JSON.stringify(error)
+      const isConfigIssue = errorMessage.includes('placeholder') ||
+                           errorMessage.includes('not properly configured') ||
+                           errorMessage.includes('Database not configured') ||
+                           !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+                           process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
+
+      if (isConfigIssue) {
+        console.warn('Database not configured, using demo mode')
         // Show demo products when database is not configured
         const demoProducts = [
           {
@@ -161,12 +170,40 @@ export default function MarketplacePage() {
               verification_status: 'verified' as const,
               profile_image_url: undefined
             }
+          },
+          {
+            id: 'demo-2',
+            title: 'MacBook Pro 14" M3',
+            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
+            price: 2200,
+            currency: 'EUR',
+            images: [],
+            seller_id: 'demo-seller-2',
+            status: 'active',
+            condition: 'like_new',
+            category: 'electronics',
+            views_count: 89,
+            favorites_count: 12,
+            shipping_included: false,
+            shipping_cost: 15,
+            location: 'Barcelona, España',
+            featured: false,
+            verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            seller: {
+              id: 'demo-seller-2',
+              full_name: 'TechStore Demo',
+              verification_status: 'verified' as const,
+              profile_image_url: undefined
+            }
           }
         ]
         setProducts(demoProducts as any)
-        setTotalProducts(1)
+        setTotalProducts(2)
       } else {
-        toast.error("Error al cargar los productos: " + errorMessage)
+        const userFriendlyMessage = error instanceof Error ? error.message : 'Error desconocido'
+        toast.error(`Error al cargar los productos: ${userFriendlyMessage}`)
       }
     } finally {
       setLoading(false)
