@@ -502,20 +502,26 @@ export default function ProfilePage() {
 
         {/* Tabs Section */}
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-800 border-gray-700">
-            <TabsTrigger value="products" className="data-[state=active]:bg-primary">
-              Mis Productos
-            </TabsTrigger>
-            <TabsTrigger value="purchases" className="data-[state=active]:bg-primary">
-              Compras
-            </TabsTrigger>
-            <TabsTrigger value="sales" className="data-[state=active]:bg-primary">
-              Ventas
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-primary">
-              Analíticas
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex justify-between items-center mb-6">
+            <TabsList className="grid grid-cols-3 bg-gray-800 border-gray-700">
+              <TabsTrigger value="products" className="data-[state=active]:bg-primary">
+                Mis Productos
+              </TabsTrigger>
+              <TabsTrigger value="purchases" className="data-[state=active]:bg-primary">
+                Compras
+              </TabsTrigger>
+              <TabsTrigger value="sales" className="data-[state=active]:bg-primary">
+                Ventas
+              </TabsTrigger>
+            </TabsList>
+
+            <Link href="/analytics">
+              <Button className="bg-primary hover:bg-primary/90">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Analíticas Detalladas
+              </Button>
+            </Link>
+          </div>
 
           {/* Products Tab */}
           <TabsContent value="products">
