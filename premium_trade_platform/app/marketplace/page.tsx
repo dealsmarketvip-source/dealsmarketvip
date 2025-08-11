@@ -129,10 +129,15 @@ export default function MarketplacePage() {
 
       // Check if it's a Supabase configuration issue
       const errorMessage = error instanceof Error ? error.message : String(error)
-      if (errorMessage.includes('placeholder') || errorMessage.includes('not properly configured')) {
-        toast.error("Base de datos no configurada. Configuración de desarrollo pendiente.")
+      if (errorMessage.includes('placeholder') ||
+          errorMessage.includes('not properly configured') ||
+          errorMessage.includes('Database not configured')) {
+        console.warn('Database not configured, using fallback mode')
+        // Don't show error toast in development when DB is not configured
+        setProducts([])
+        setTotalProducts(0)
       } else {
-        toast.error("Error al cargar los productos")
+        toast.error("Error al cargar los productos: " + errorMessage)
       }
     } finally {
       setLoading(false)
