@@ -86,21 +86,11 @@ export function Navigation() {
             )}
 
             {!user && (
-              <>
-                <Button
-                  variant="ghost"
-                  onClick={handleLoginClick}
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  Iniciar Sesión
-                </Button>
-
-                <Button onClick={handleJoinClick} className="gradient-primary">
-                  <Crown className="mr-2 h-4 w-4" />
-                  Join
-                  <ShoppingBag className="ml-2 h-4 w-4" />
-                </Button>
-              </>
+              <Button onClick={handleJoinClick} className="gradient-primary">
+                <Crown className="mr-2 h-4 w-4" />
+                Join Now
+                <ShoppingBag className="ml-2 h-4 w-4" />
+              </Button>
             )}
           </div>
 
