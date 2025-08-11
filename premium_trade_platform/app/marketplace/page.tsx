@@ -191,8 +191,8 @@ export default function MarketplacePage() {
   const clearFilters = () => {
     setSearchQuery('')
     setPriceRange([0, 10000])
-    setSelectedCategory('')
-    setSelectedCondition('')
+    setSelectedCategory('all')
+    setSelectedCondition('all')
     setShowVerifiedOnly(false)
     setShowFeaturedOnly(false)
     setFilters({
