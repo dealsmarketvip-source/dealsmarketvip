@@ -170,12 +170,12 @@ export function Navigation() {
                     Iniciar Sesión
                   </Button>
                   
-                  <Button 
+                  <Button
                     onClick={() => {
                       handleJoinClick()
                       setMobileMenuOpen(false)
                     }}
-                    className="gradient-primary glow-primary-strong"
+                    className="gradient-primary"
                   >
                     <Crown className="mr-2 h-4 w-4" />
                     Join
