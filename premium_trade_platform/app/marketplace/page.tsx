@@ -444,7 +444,10 @@ export default function MarketplacePage() {
                     No se encontraron productos
                   </h3>
                   <p className="text-gray-400 mb-6">
-                    Intenta ajustar tus filtros de búsqueda o explora otras categorías
+                    {process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') || !process.env.NEXT_PUBLIC_SUPABASE_URL
+                      ? 'La base de datos no está configurada. Necesitas configurar Supabase para ver productos.'
+                      : 'Intenta ajustar tus filtros de búsqueda o explora otras categorías'
+                    }
                   </p>
                   <Button 
                     onClick={clearFilters}
