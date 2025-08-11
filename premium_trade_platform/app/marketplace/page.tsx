@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -723,7 +724,7 @@ export default function MarketplacePage() {
                                       {formatPrice(product.price)}
                                     </p>
                                     {product.shipping_included ? (
-                                      <p className="text-xs text-green-400">Env��o incluido</p>
+                                      <p className="text-xs text-green-400">Envío incluido</p>
                                     ) : (
                                       <p className="text-xs text-gray-400">+ envío</p>
                                     )}
