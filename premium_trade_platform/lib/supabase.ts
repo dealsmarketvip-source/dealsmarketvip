@@ -1,7 +1,16 @@
 import { createClientComponentClient, createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { Database } from "./types/database"
-import { sendNotificationEmail, EMAIL_TEMPLATES } from "./email"
+
+// Conditional email import to prevent client-side issues
+let emailModule: any = null
+if (typeof window === 'undefined') {
+  try {
+    emailModule = require('./email')
+  } catch (error) {
+    console.warn('Email module not available:', error)
+  }
+}
 
 // Get environment variables with fallbacks
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -126,15 +135,17 @@ export const auth = {
           }
         }
 
-        // Send welcome email (async, don't wait)
-        try {
-          await sendNotificationEmail(EMAIL_TEMPLATES.WELCOME, email, {
-            userName: metadata?.full_name || email.split('@')[0],
-            userType: metadata?.user_type || 'individual'
-          })
-        } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError)
-          // Don't fail the signup if email fails
+        // Send welcome email (async, don't wait) - only on server side
+        if (typeof window === 'undefined' && emailModule) {
+          try {
+            await emailModule.sendNotificationEmail(emailModule.EMAIL_TEMPLATES.WELCOME, email, {
+              userName: metadata?.full_name || email.split('@')[0],
+              userType: metadata?.user_type || 'individual'
+            })
+          } catch (emailError) {
+            console.error('Failed to send welcome email:', emailError)
+            // Don't fail the signup if email fails
+          }
         }
       }
 
