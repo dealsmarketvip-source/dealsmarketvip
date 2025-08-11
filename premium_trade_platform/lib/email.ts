@@ -1,7 +1,14 @@
 import { Resend } from 'resend'
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend only when API key is available
+let resend: Resend | null = null
+
+function getResendClient() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 // Email templates
 export const EMAIL_TEMPLATES = {
@@ -36,7 +43,14 @@ export async function sendEmail({
   replyTo?: string
 }) {
   try {
-    const { data, error } = await resend.emails.send({
+    const resendClient = getResendClient()
+
+    if (!resendClient) {
+      console.warn('Resend API key not configured, email not sent:', { to, subject })
+      return { success: false, error: 'Email service not configured' }
+    }
+
+    const { data, error } = await resendClient.emails.send({
       from,
       to,
       subject,
