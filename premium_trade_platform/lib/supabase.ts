@@ -1,6 +1,7 @@
 import { createClientComponentClient, createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { Database } from "./types/database"
+import { sendNotificationEmail, EMAIL_TEMPLATES } from "./email"
 
 // Get environment variables with fallbacks
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -104,22 +105,36 @@ export const auth = {
         }
       })
 
-      // If signup successful and access code provided, use the code
-      if (data.user && accessCode) {
-        const { data: codeResult } = await supabase
-          .rpc('use_invitation_code', {
-            code_input: accessCode,
-            user_id_input: data.user.id
-          })
+      // If signup successful, handle post-signup tasks
+      if (data.user) {
+        // Use invitation code if provided
+        if (accessCode) {
+          const { data: codeResult } = await supabase
+            .rpc('use_invitation_code', {
+              code_input: accessCode,
+              user_id_input: data.user.id
+            })
 
-        // Store code benefits in user metadata for profile creation
-        if (codeResult?.success) {
-          await supabase.auth.updateUser({
-            data: {
-              ...metadata,
-              code_benefits: codeResult
-            }
+          // Store code benefits in user metadata for profile creation
+          if (codeResult?.success) {
+            await supabase.auth.updateUser({
+              data: {
+                ...metadata,
+                code_benefits: codeResult
+              }
+            })
+          }
+        }
+
+        // Send welcome email (async, don't wait)
+        try {
+          await sendNotificationEmail(EMAIL_TEMPLATES.WELCOME, email, {
+            userName: metadata?.full_name || email.split('@')[0],
+            userType: metadata?.user_type || 'individual'
           })
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError)
+          // Don't fail the signup if email fails
         }
       }
 
