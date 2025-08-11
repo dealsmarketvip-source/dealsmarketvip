@@ -414,12 +414,17 @@ export default function MarketplacePage() {
             </div>
             
             <div className="flex items-center gap-3">
-              <Link href="/upload">
-                <Button className="bg-primary hover:bg-primary/90">
-                  <Package className="h-4 w-4 mr-2" />
-                  Vender Producto
-                </Button>
-              </Link>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link href="/upload">
+                  <Button className="bg-primary hover:bg-primary/90 glow-primary-strong pulse-glow shimmer">
+                    <Package className="h-4 w-4 mr-2" />
+                    Vender Producto
+                  </Button>
+                </Link>
+              </motion.div>
               <Button
                 variant="outline"
                 onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
