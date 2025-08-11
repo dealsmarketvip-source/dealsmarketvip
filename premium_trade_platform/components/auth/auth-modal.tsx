@@ -65,8 +65,8 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     }
   }
 
-  // Validar código de invitación
-  const validateInvitationCode = async (code: string) => {
+  // Validar código de invitación usando el hook real
+  const validateCodeInput = async (code: string) => {
     if (!code.trim()) {
       setCodeValidation({ isValid: null, message: "", isChecking: false })
       return
@@ -74,32 +74,25 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
 
     setCodeValidation({ isValid: null, message: "", isChecking: true })
 
-    // Simular validación del código (en producción esto sería una llamada a la API)
-    setTimeout(() => {
-      const validCodes = [
-        { code: "PREMIUM2024", message: "✨ Código Premium válido - 50% descuento" },
-        { code: "LUXURY100", message: "👑 Código VIP válido - Primer mes GRATIS" },
-        { code: "BETA50", message: "🚀 Código Beta válido - 25% descuento" },
-        { code: "ENTERPRISE", message: "💼 Código Enterprise válido - Acceso completo" }
-      ]
+    try {
+      const result = await validateInvitationCode(code)
 
-      const foundCode = validCodes.find(c => c.code === code)
+      setCodeValidation({
+        isValid: result.isValid,
+        message: result.message,
+        isChecking: false
+      })
 
-      if (foundCode) {
-        setCodeValidation({
-          isValid: true,
-          message: foundCode.message,
-          isChecking: false
-        })
-        toast.success(foundCode.message)
-      } else {
-        setCodeValidation({
-          isValid: false,
-          message: "❌ Código inválido o expirado",
-          isChecking: false
-        })
+      if (result.isValid) {
+        toast.success(result.message)
       }
-    }, 800)
+    } catch (error) {
+      setCodeValidation({
+        isValid: false,
+        message: "❌ Error al validar código",
+        isChecking: false
+      })
+    }
   }
 
   const handleRegister = async (e: React.FormEvent) => {
