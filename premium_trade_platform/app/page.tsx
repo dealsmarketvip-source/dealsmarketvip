@@ -69,63 +69,38 @@ export default function HomePage() {
               </div>
 
               <div className="grid grid-cols-3 gap-6">
-                <motion.div
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-                >
-                  <div className="text-3xl font-bold text-primary glow-primary shimmer">$50M+</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">$50M+</div>
                   <div className="text-sm text-muted-foreground">Monthly Volume</div>
-                </motion.div>
-                <motion.div
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-                >
-                  <div className="text-3xl font-bold text-primary glow-primary shimmer">500+</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">500+</div>
                   <div className="text-sm text-muted-foreground">Verified Companies</div>
-                </motion.div>
-                <motion.div
-                  className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-                >
-                  <div className="text-3xl font-bold text-primary glow-primary shimmer">98%</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">98%</div>
                   <div className="text-sm text-muted-foreground">Success Rate</div>
-                </motion.div>
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+                <Button
+                  size="lg"
+                  className="gradient-primary text-lg h-14 px-8"
+                  onClick={handleGetStarted}
                 >
-                  <Button
-                    size="lg"
-                    className="gradient-primary text-lg h-14 px-8 glow-primary-strong pulse-glow shimmer"
-                    onClick={handleGetStarted}
-                  >
-                    <Crown className="mr-2 h-5 w-5" />
-                    Start Premium Access
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
+                  <Crown className="mr-2 h-5 w-5" />
+                  Start Premium Access
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg h-14 px-8"
+                  onClick={handleGetStarted}
                 >
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="text-lg h-14 px-8 glow-card-hover border-primary/50 hover:bg-primary/10"
-                    onClick={handleGetStarted}
-                  >
-                    View ROI Analysis
-                  </Button>
-                </motion.div>
+                  View ROI Analysis
+                </Button>
               </div>
 
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
