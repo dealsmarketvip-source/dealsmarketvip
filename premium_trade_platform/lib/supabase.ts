@@ -385,11 +385,11 @@ export const db = {
           .eq('status', 'active')
 
         // Apply filters
-        if (filters.category) query = query.eq('category', filters.category)
-        if (filters.subcategory) query = query.eq('subcategory', filters.subcategory)
+        if (filters.category && filters.category !== 'all') query = query.eq('category', filters.category)
+        if (filters.subcategory && filters.subcategory !== 'all') query = query.eq('subcategory', filters.subcategory)
         if (filters.min_price) query = query.gte('price', filters.min_price)
         if (filters.max_price) query = query.lte('price', filters.max_price)
-        if (filters.condition) query = query.eq('condition', filters.condition)
+        if (filters.condition && filters.condition !== 'all') query = query.eq('condition', filters.condition)
         if (filters.location) query = query.ilike('location', `%${filters.location}%`)
         if (filters.seller_verified) query = query.eq('users.verification_status', 'verified')
         if (filters.featured) query = query.eq('featured', true)
