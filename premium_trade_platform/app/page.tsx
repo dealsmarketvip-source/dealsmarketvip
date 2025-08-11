@@ -50,44 +50,18 @@ export default function HomePage() {
               className="space-y-8"
             >
               <div className="space-y-4">
-                <motion.div
-                  animate={{
-                    y: [0, -5, 0],
-                    scale: [1, 1.02, 1]
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  <Badge className="gradient-primary text-primary-foreground font-bold text-lg px-4 py-2 glow-primary-strong shimmer">
-                    Join Verified Companies - $20/month Premium Access
-                  </Badge>
-                </motion.div>
-                <motion.h1
-                  className="text-5xl lg:text-6xl font-bold text-foreground glow-text"
-                  animate={{
-                    textShadow: [
-                      "0 2px 8px rgba(255, 215, 0, 0.3)",
-                      "0 4px 16px rgba(255, 215, 0, 0.5)",
-                      "0 2px 8px rgba(255, 215, 0, 0.3)"
-                    ]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
+                <Badge className="gradient-primary text-primary-foreground font-bold text-lg px-4 py-2">
+                  Join Verified Companies - $20/month Premium Access
+                </Badge>
+                <h1 className="text-5xl lg:text-6xl font-bold text-foreground">
                   Million-Dollar
-                  <span className="gradient-text block pulse-glow">
+                  <span className="gradient-text block">
                     Opportunities
                   </span>
                   <span className="text-3xl lg:text-4xl text-muted-foreground block mt-2">
                     For Verified Companies
                   </span>
-                </motion.h1>
+                </h1>
                 <p className="text-xl text-muted-foreground">
                   Access exclusive deals from 500+ verified companies worldwide. 
                   Premium members see average profits of $125,000 per deal.
