@@ -106,7 +106,11 @@ export default function MarketplacePage() {
         itemsPerPage
       )
 
-      if (error) throw error
+      if (error) {
+        // If error is an object with message property, throw the message
+        const errorMessage = typeof error === 'object' && error.message ? error.message : String(error)
+        throw new Error(errorMessage)
+      }
 
       setProducts(data || [])
       setTotalProducts(count || 0)
@@ -133,7 +137,14 @@ export default function MarketplacePage() {
       })
 
       // Check if it's a Supabase configuration issue
-      const errorMessage = error instanceof Error ? error.message : JSON.stringify(error)
+      let errorMessage: string
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'object' && error !== null && 'message' in error) {
+        errorMessage = String(error.message)
+      } else {
+        errorMessage = String(error)
+      }
       const isConfigIssue = errorMessage.includes('placeholder') ||
                            errorMessage.includes('not properly configured') ||
                            errorMessage.includes('Database not configured') ||
