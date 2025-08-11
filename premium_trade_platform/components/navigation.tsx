@@ -25,11 +25,6 @@ export function Navigation() {
     }
   }
 
-  const handleLoginClick = () => {
-    setAuthTab("login")
-    setShowAuthModal(true)
-  }
-
   const handleSignOut = async () => {
     await signOut()
     router.push('/')
