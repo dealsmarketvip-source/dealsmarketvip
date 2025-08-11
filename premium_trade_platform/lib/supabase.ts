@@ -233,7 +233,12 @@ export const db = {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('*')
+          .select(`
+            *,
+            user_limits(*),
+            verification_documents(*),
+            subscriptions(*)
+          `)
           .eq('id', id)
           .single()
         return { data, error }
@@ -246,7 +251,12 @@ export const db = {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('*')
+          .select(`
+            *,
+            user_limits(*),
+            verification_documents(*),
+            subscriptions(*)
+          `)
           .eq('auth_id', authId)
           .single()
         return { data, error }
@@ -266,6 +276,336 @@ export const db = {
         return { data, error }
       } catch (error: any) {
         return { data: null, error: { message: error.message || 'Update user failed' } }
+      }
+    },
+
+    async getDashboard(userId: string) {
+      try {
+        const [userResult, productsResult, ordersResult, transactionsResult] = await Promise.all([
+          this.getById(userId),
+          db.products.getByUserId(userId),
+          db.orders.getByUserId(userId),
+          db.transactions.getByUserId(userId)
+        ])
+
+        return {
+          data: {
+            user: userResult.data,
+            products: productsResult.data || [],
+            orders: ordersResult.data || [],
+            transactions: transactionsResult.data || []
+          },
+          error: userResult.error
+        }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get dashboard failed' } }
+      }
+    }
+  },
+
+  // Products
+  products: {
+    async create(productData: any) {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .insert(productData)
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Create product failed' } }
+      }
+    },
+
+    async getById(id: string) {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            *,
+            product_images(*),
+            users!seller_id(id, full_name, verification_status, profile_image_url)
+          `)
+          .eq('id', id)
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get product failed' } }
+      }
+    },
+
+    async getByUserId(userId: string) {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('seller_id', userId)
+          .order('created_at', { ascending: false })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get user products failed' } }
+      }
+    },
+
+    async search(filters: any = {}, page = 1, limit = 20) {
+      try {
+        let query = supabase
+          .from('products')
+          .select(`
+            *,
+            users!seller_id(id, full_name, verification_status, profile_image_url)
+          `, { count: 'exact' })
+          .eq('status', 'active')
+
+        // Apply filters
+        if (filters.category) query = query.eq('category', filters.category)
+        if (filters.subcategory) query = query.eq('subcategory', filters.subcategory)
+        if (filters.min_price) query = query.gte('price', filters.min_price)
+        if (filters.max_price) query = query.lte('price', filters.max_price)
+        if (filters.condition) query = query.eq('condition', filters.condition)
+        if (filters.location) query = query.ilike('location', `%${filters.location}%`)
+        if (filters.seller_verified) query = query.eq('users.verification_status', 'verified')
+        if (filters.featured) query = query.eq('featured', true)
+        if (filters.q) {
+          query = query.or(`title.ilike.%${filters.q}%,description.ilike.%${filters.q}%`)
+        }
+
+        // Sorting
+        const sortBy = filters.sort_by || 'created_at'
+        const sortOrder = filters.sort_order === 'asc' ? true : false
+        query = query.order(sortBy, { ascending: sortOrder })
+
+        // Pagination
+        const offset = (page - 1) * limit
+        query = query.range(offset, offset + limit - 1)
+
+        const { data, error, count } = await query
+        return { data, error, count }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Search products failed' }, count: 0 }
+      }
+    },
+
+    async update(id: string, updates: any) {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .update(updates)
+          .eq('id', id)
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Update product failed' } }
+      }
+    },
+
+    async delete(id: string) {
+      try {
+        const { error } = await supabase
+          .from('products')
+          .delete()
+          .eq('id', id)
+        return { error }
+      } catch (error: any) {
+        return { error: { message: error.message || 'Delete product failed' } }
+      }
+    }
+  },
+
+  // Orders
+  orders: {
+    async create(orderData: any) {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .insert(orderData)
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Create order failed' } }
+      }
+    },
+
+    async getById(id: string) {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select(`
+            *,
+            products(*),
+            buyer:users!buyer_id(id, full_name, email),
+            seller:users!seller_id(id, full_name, email),
+            transactions(*)
+          `)
+          .eq('id', id)
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get order failed' } }
+      }
+    },
+
+    async getByUserId(userId: string) {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .select(`
+            *,
+            products(*),
+            buyer:users!buyer_id(id, full_name, email),
+            seller:users!seller_id(id, full_name, email)
+          `)
+          .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
+          .order('created_at', { ascending: false })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get user orders failed' } }
+      }
+    },
+
+    async update(id: string, updates: any) {
+      try {
+        const { data, error } = await supabase
+          .from('orders')
+          .update(updates)
+          .eq('id', id)
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Update order failed' } }
+      }
+    }
+  },
+
+  // Transactions
+  transactions: {
+    async create(transactionData: any) {
+      try {
+        const { data, error } = await supabase
+          .from('transactions')
+          .insert(transactionData)
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Create transaction failed' } }
+      }
+    },
+
+    async getByUserId(userId: string) {
+      try {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select(`
+            *,
+            orders(id, product_id, products(title))
+          `)
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get user transactions failed' } }
+      }
+    }
+  },
+
+  // Favorites
+  favorites: {
+    async add(userId: string, productId: string) {
+      try {
+        const { data, error } = await supabase
+          .from('user_favorites')
+          .insert({ user_id: userId, product_id: productId })
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Add favorite failed' } }
+      }
+    },
+
+    async remove(userId: string, productId: string) {
+      try {
+        const { error } = await supabase
+          .from('user_favorites')
+          .delete()
+          .eq('user_id', userId)
+          .eq('product_id', productId)
+        return { error }
+      } catch (error: any) {
+        return { error: { message: error.message || 'Remove favorite failed' } }
+      }
+    },
+
+    async getByUserId(userId: string) {
+      try {
+        const { data, error } = await supabase
+          .from('user_favorites')
+          .select(`
+            *,
+            products(*,
+              users!seller_id(id, full_name, verification_status, profile_image_url)
+            )
+          `)
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Get user favorites failed' } }
+      }
+    }
+  },
+
+  // Invitation Codes
+  invitationCodes: {
+    async validate(code: string) {
+      try {
+        const { data, error } = await supabase
+          .rpc('validate_invitation_code', { code_input: code })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Validate code failed' } }
+      }
+    },
+
+    async use(code: string, userId?: string) {
+      try {
+        const { data, error } = await supabase
+          .rpc('use_invitation_code', { code_input: code, user_id_input: userId })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Use code failed' } }
+      }
+    }
+  },
+
+  // User Limits
+  limits: {
+    async check(userId: string, limitType: 'products' | 'purchases') {
+      try {
+        const { data, error } = await supabase
+          .rpc('check_user_limit', { user_id_input: userId, limit_type: limitType })
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Check limit failed' } }
+      }
+    },
+
+    async update(userId: string, updates: any) {
+      try {
+        const { data, error } = await supabase
+          .from('user_limits')
+          .update(updates)
+          .eq('user_id', userId)
+          .select()
+          .single()
+        return { data, error }
+      } catch (error: any) {
+        return { data: null, error: { message: error.message || 'Update limits failed' } }
       }
     }
   }
