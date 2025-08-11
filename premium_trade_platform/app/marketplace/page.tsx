@@ -126,7 +126,14 @@ export default function MarketplacePage() {
 
     } catch (error) {
       console.error('Error fetching products:', error)
-      toast.error("Error al cargar los productos")
+
+      // Check if it's a Supabase configuration issue
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (errorMessage.includes('placeholder') || errorMessage.includes('not properly configured')) {
+        toast.error("Base de datos no configurada. Configuración de desarrollo pendiente.")
+      } else {
+        toast.error("Error al cargar los productos")
+      }
     } finally {
       setLoading(false)
     }
