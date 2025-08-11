@@ -27,7 +27,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     validateInvitationCode: async () => ({ isValid: false, message: "" }),
     loading: false
   }
-  const [currentTab, setCurrentTab] = useState(defaultTab)
+  const [currentTab, setCurrentTab] = useState(defaultTab === "login" ? "register" : defaultTab)
   const [codeOnlyForm, setCodeOnlyForm] = useState({ accessCode: "" })
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep] = useState<"auth" | "verification" | "payment">("auth")
