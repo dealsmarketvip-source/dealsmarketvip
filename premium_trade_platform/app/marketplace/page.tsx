@@ -382,13 +382,9 @@ export default function MarketplacePage() {
                 <ShoppingCart className="h-10 w-10 text-primary" />
                 Marketplace
               </h1>
-              <motion.p
-                className="text-gray-300"
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
+              <p className="text-gray-300">
                 Descubre productos únicos de vendedores verificados
-              </motion.p>
+              </p>
             </div>
             
             <div className="flex items-center gap-3">
