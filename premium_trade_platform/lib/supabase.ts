@@ -409,7 +409,19 @@ export const db = {
         const { data, error, count } = await query
         return { data, error, count }
       } catch (error: any) {
-        return { data: null, error: { message: error.message || 'Search products failed' }, count: 0 }
+        console.error('Error in products search:', error)
+        const errorMessage = error?.message || 'Search products failed'
+
+        // Check if it's a configuration issue
+        if (errorMessage.includes('placeholder') || !supabaseUrl || supabaseUrl.includes('placeholder')) {
+          return {
+            data: [],
+            error: { message: 'Database not configured - using fallback mode' },
+            count: 0
+          }
+        }
+
+        return { data: null, error: { message: errorMessage }, count: 0 }
       }
     },
 
