@@ -20,7 +20,13 @@ interface AuthModalProps {
 
 export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalProps) {
   const authContext = useAuth()
-  const { signIn, signUp, loading } = authContext || { signIn: async () => ({ error: null }), signUp: async () => ({ error: null }), loading: false }
+  const { signIn, signUp, signInWithCode, validateInvitationCode, loading } = authContext || {
+    signIn: async () => ({ error: null }),
+    signUp: async () => ({ error: null }),
+    signInWithCode: async () => ({ error: null }),
+    validateInvitationCode: async () => ({ isValid: false, message: "" }),
+    loading: false
+  }
   const [currentTab, setCurrentTab] = useState(defaultTab)
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep] = useState<"auth" | "verification" | "payment">("auth")
