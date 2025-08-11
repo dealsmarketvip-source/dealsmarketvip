@@ -271,7 +271,7 @@ export default function HomePage() {
                   className="w-full gradient-primary"
                   onClick={handleGetStarted}
                 >
-                  Start Premium Access
+                  Join Now
                 </Button>
               </div>
             </Card>
