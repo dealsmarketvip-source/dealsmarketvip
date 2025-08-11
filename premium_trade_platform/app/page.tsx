@@ -90,7 +90,7 @@ export default function HomePage() {
                   onClick={handleGetStarted}
                 >
                   <Crown className="mr-2 h-5 w-5" />
-                  Start Premium Access
+                  Join Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
                 <Button
