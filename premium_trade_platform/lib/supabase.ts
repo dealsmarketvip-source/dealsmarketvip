@@ -69,7 +69,7 @@ export const supabaseAdmin = createSupabaseClient<Database>(
 
 // Authentication utilities
 export const auth = {
-  // Sign up new user with access code
+  // Sign up new user with access code - with real validation
   async signUp(email: string, password: string, accessCode?: string, metadata?: Record<string, any>) {
     if (!isSupabaseConfigured) {
       return {
@@ -79,6 +79,20 @@ export const auth = {
     }
 
     try {
+      // First validate the access code if provided
+      if (accessCode) {
+        const { data: validationResult, error: validationError } = await supabase
+          .rpc('validate_invitation_code', { code_input: accessCode })
+
+        if (validationError || !validationResult) {
+          return {
+            data: null,
+            error: { message: 'Código de invitación inválido o expirado' }
+          }
+        }
+      }
+
+      // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -89,28 +103,66 @@ export const auth = {
           }
         }
       })
+
+      // If signup successful and access code provided, use the code
+      if (data.user && accessCode) {
+        const { data: codeResult } = await supabase
+          .rpc('use_invitation_code', {
+            code_input: accessCode,
+            user_id_input: data.user.id
+          })
+
+        // Store code benefits in user metadata for profile creation
+        if (codeResult?.success) {
+          await supabase.auth.updateUser({
+            data: {
+              ...metadata,
+              code_benefits: codeResult
+            }
+          })
+        }
+      }
+
       return { data, error }
     } catch (error: any) {
       return { data: null, error: { message: error.message || 'Sign up failed' } }
     }
   },
 
-  // Sign in with access code only
+  // Sign in with access code only - REAL validation
   async signInWithCode(accessCode: string) {
+    if (!isSupabaseConfigured) {
+      return {
+        data: null,
+        error: { message: 'Supabase is not properly configured. Please check environment variables.' }
+      }
+    }
+
     try {
-      // For now, create a mock successful response for testing
-      // In production, this would validate against the invitation_codes table
-      return { 
-        data: { 
-          user: { 
-            email: 'test@dealsmarket.vip',
-            id: 'test-user-id'
-          } 
-        }, 
-        error: null 
+      // Validate the invitation code using the database function
+      const { data: validationResult, error: validationError } = await supabase
+        .rpc('validate_invitation_code', { code_input: accessCode })
+
+      if (validationError || !validationResult) {
+        return {
+          data: null,
+          error: { message: 'Código de invitación inválido o expirado' }
+        }
+      }
+
+      // If code is valid, return success response
+      // Note: In a real app, you might want to create a temporary session
+      // or redirect to a signup form with the validated code
+      return {
+        data: {
+          user: null, // No actual user yet, just code validation
+          codeValid: true,
+          accessCode: accessCode
+        },
+        error: null
       }
     } catch (error: any) {
-      return { data: null, error: { message: error.message || 'Authentication failed' } }
+      return { data: null, error: { message: error.message || 'Error validating invitation code' } }
     }
   },
 
