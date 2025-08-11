@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { stripe, SUBSCRIPTION_PLANS } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase'
+import { sendNotificationEmail, EMAIL_TEMPLATES } from '@/lib/email'
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
@@ -156,6 +157,21 @@ async function handleSubscriptionPayment(session: Stripe.Checkout.Session) {
         }
       })
 
+    // Send welcome email for subscription
+    const { data: user } = await supabaseAdmin
+      .from('users')
+      .select('email, full_name')
+      .eq('id', userId)
+      .single()
+
+    if (user) {
+      await sendNotificationEmail(EMAIL_TEMPLATES.SUBSCRIPTION_CREATED, user.email, {
+        userName: user.full_name || 'Usuario',
+        planType: 'Premium',
+        amount: (subscription.items.data[0].price.unit_amount || 0) / 100
+      })
+    }
+
     console.log(`Subscription created for user ${userId}`)
   } catch (error) {
     console.error('Error handling subscription payment:', error)
@@ -287,6 +303,41 @@ async function handleProductPurchase(session: Stripe.Checkout.Session) {
           seller_id: sellerId
         }
       })
+
+    // Send email notifications
+    const [buyerData, sellerData] = await Promise.all([
+      supabaseAdmin
+        .from('users')
+        .select('email, full_name')
+        .eq('id', buyerId)
+        .single(),
+      supabaseAdmin
+        .from('users')
+        .select('email, full_name')
+        .eq('id', sellerId)
+        .single()
+    ])
+
+    // Send purchase confirmation email to buyer
+    if (buyerData.data) {
+      await sendNotificationEmail(EMAIL_TEMPLATES.PRODUCT_PURCHASED, buyerData.data.email, {
+        buyerName: buyerData.data.full_name || 'Comprador',
+        productTitle: product.title,
+        totalAmount: totalAmount,
+        sellerName: sellerData.data?.full_name || 'Vendedor',
+        orderId: order.id
+      })
+    }
+
+    // Send sale notification email to seller
+    if (sellerData.data) {
+      await sendNotificationEmail(EMAIL_TEMPLATES.PRODUCT_SOLD, sellerData.data.email, {
+        sellerName: sellerData.data.full_name || 'Vendedor',
+        productTitle: product.title,
+        salePrice: sellerAmount,
+        buyerName: buyerData.data?.full_name || 'Comprador'
+      })
+    }
 
     console.log(`Product purchase completed for order ${order.id}`)
   } catch (error) {
