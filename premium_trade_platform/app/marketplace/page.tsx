@@ -133,9 +133,38 @@ export default function MarketplacePage() {
           errorMessage.includes('not properly configured') ||
           errorMessage.includes('Database not configured')) {
         console.warn('Database not configured, using fallback mode')
-        // Don't show error toast in development when DB is not configured
-        setProducts([])
-        setTotalProducts(0)
+        // Show demo products when database is not configured
+        const demoProducts = [
+          {
+            id: 'demo-1',
+            title: 'iPhone 14 Pro Max 256GB',
+            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
+            price: 1200,
+            currency: 'EUR',
+            images: [],
+            seller_id: 'demo-seller',
+            status: 'active',
+            condition: 'new',
+            category: 'electronics',
+            views_count: 125,
+            favorites_count: 8,
+            shipping_included: true,
+            shipping_cost: 0,
+            location: 'Madrid, España',
+            featured: true,
+            verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            seller: {
+              id: 'demo-seller',
+              full_name: 'Vendedor Demo',
+              verification_status: 'verified' as const,
+              profile_image_url: undefined
+            }
+          }
+        ]
+        setProducts(demoProducts as any)
+        setTotalProducts(1)
       } else {
         toast.error("Error al cargar los productos: " + errorMessage)
       }
