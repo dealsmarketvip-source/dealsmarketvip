@@ -159,75 +159,35 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 glow-card-hover transition-all duration-300 border-primary/20">
-                <CardHeader>
-                  <motion.div
-                    animate={{ rotateY: [0, 360] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Users className="h-12 w-12 text-primary mb-4 glow-primary" />
-                  </motion.div>
-                  <CardTitle className="glow-text">Verified Network</CardTitle>
-                  <CardDescription>
-                    Access 500+ pre-screened companies with verified credentials
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </motion.div>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Users className="h-12 w-12 text-primary mb-4" />
+                <CardTitle>Verified Network</CardTitle>
+                <CardDescription>
+                  Access 500+ pre-screened companies with verified credentials
+                </CardDescription>
+              </CardHeader>
+            </Card>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 glow-card-hover transition-all duration-300 border-green-500/20">
-                <CardHeader>
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 10, -10, 0]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <DollarSign className="h-12 w-12 text-green-500 mb-4" style={{
-                      filter: "drop-shadow(0 4px 8px rgba(34, 197, 94, 0.3))"
-                    }} />
-                  </motion.div>
-                  <CardTitle className="text-green-400">High-Value Deals</CardTitle>
-                  <CardDescription>
-                    Average deal value of $125,000 with payment protection included
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </motion.div>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <DollarSign className="h-12 w-12 text-green-500 mb-4" />
+                <CardTitle>High-Value Deals</CardTitle>
+                <CardDescription>
+                  Average deal value of $125,000 with payment protection included
+                </CardDescription>
+              </CardHeader>
+            </Card>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 glow-card-hover transition-all duration-300 border-blue-500/20">
-                <CardHeader>
-                  <motion.div
-                    animate={{
-                      rotateX: [0, 360],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                  >
-                    <Globe className="h-12 w-12 text-blue-500 mb-4" style={{
-                      filter: "drop-shadow(0 4px 8px rgba(59, 130, 246, 0.3))"
-                    }} />
-                  </motion.div>
-                  <CardTitle className="text-blue-400">Global Reach</CardTitle>
-                  <CardDescription>
-                    Access deals from 50+ countries with 24/7 premium support
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </motion.div>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Globe className="h-12 w-12 text-blue-500 mb-4" />
+                <CardTitle>Global Reach</CardTitle>
+                <CardDescription>
+                  Access deals from 50+ countries with 24/7 premium support
+                </CardDescription>
+              </CardHeader>
+            </Card>
           </div>
         </div>
       </section>
@@ -241,125 +201,50 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              whileHover={{ scale: 1.03, rotate: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 glow-card-hover border-primary/30">
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <motion.div
-                      animate={{
-                        rotateZ: [0, 15, -15, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 2.5, repeat: Infinity }}
-                    >
-                      <Crown className="h-8 w-8 text-primary glow-primary" />
-                    </motion.div>
-                    <div>
-                      <div className="font-bold glow-text">Energy Corp Solutions</div>
-                      <div className="text-sm text-muted-foreground">Oil & Gas Trading</div>
-                    </div>
+            <Card className="p-6">
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-8 w-8 text-primary" />
+                  <div>
+                    <div className="font-bold">Energy Corp Solutions</div>
+                    <div className="text-sm text-muted-foreground">Oil & Gas Trading</div>
                   </div>
-                  <motion.div
-                    className="text-2xl font-bold text-green-500"
-                    animate={{
-                      textShadow: [
-                        "0 0 10px rgba(34, 197, 94, 0.5)",
-                        "0 0 20px rgba(34, 197, 94, 0.8)",
-                        "0 0 10px rgba(34, 197, 94, 0.5)"
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    $2.4M profit
-                  </motion.div>
-                  <div className="text-sm text-muted-foreground">in 3 months</div>
-                  <div className="text-xs text-muted-foreground">ROI: 12,000,000%</div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                </div>
+                <div className="text-2xl font-bold text-green-500">$2.4M profit</div>
+                <div className="text-sm text-muted-foreground">in 3 months</div>
+                <div className="text-xs text-muted-foreground">ROI: 12,000,000%</div>
+              </CardContent>
+            </Card>
 
-            <motion.div
-              whileHover={{ scale: 1.03, rotate: -1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 glow-card-hover border-primary/30">
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <motion.div
-                      animate={{
-                        rotateZ: [0, -15, 15, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
-                    >
-                      <Crown className="h-8 w-8 text-primary glow-primary" />
-                    </motion.div>
-                    <div>
-                      <div className="font-bold glow-text">Global Commodities Ltd</div>
-                      <div className="text-sm text-muted-foreground">Precious Metals</div>
-                    </div>
+            <Card className="p-6">
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-8 w-8 text-primary" />
+                  <div>
+                    <div className="font-bold">Global Commodities Ltd</div>
+                    <div className="text-sm text-muted-foreground">Precious Metals</div>
                   </div>
-                  <motion.div
-                    className="text-2xl font-bold text-green-500"
-                    animate={{
-                      textShadow: [
-                        "0 0 10px rgba(34, 197, 94, 0.5)",
-                        "0 0 20px rgba(34, 197, 94, 0.8)",
-                        "0 0 10px rgba(34, 197, 94, 0.5)"
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-                  >
-                    $850K profit
-                  </motion.div>
-                  <div className="text-sm text-muted-foreground">in 6 weeks</div>
-                  <div className="text-xs text-muted-foreground">ROI: 4,250,000%</div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                </div>
+                <div className="text-2xl font-bold text-green-500">$850K profit</div>
+                <div className="text-sm text-muted-foreground">in 6 weeks</div>
+                <div className="text-xs text-muted-foreground">ROI: 4,250,000%</div>
+              </CardContent>
+            </Card>
 
-            <motion.div
-              whileHover={{ scale: 1.03, rotate: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 glow-card-hover border-primary/30">
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <motion.div
-                      animate={{
-                        rotateZ: [0, 20, -10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
-                    >
-                      <Crown className="h-8 w-8 text-primary glow-primary" />
-                    </motion.div>
-                    <div>
-                      <div className="font-bold glow-text">International Logistics Pro</div>
-                      <div className="text-sm text-muted-foreground">Supply Chain</div>
-                    </div>
+            <Card className="p-6">
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-8 w-8 text-primary" />
+                  <div>
+                    <div className="font-bold">International Logistics Pro</div>
+                    <div className="text-sm text-muted-foreground">Supply Chain</div>
                   </div>
-                  <motion.div
-                    className="text-2xl font-bold text-green-500"
-                    animate={{
-                      textShadow: [
-                        "0 0 10px rgba(34, 197, 94, 0.5)",
-                        "0 0 20px rgba(34, 197, 94, 0.8)",
-                        "0 0 10px rgba(34, 197, 94, 0.5)"
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-                  >
-                    $1.8M profit
-                  </motion.div>
-                  <div className="text-sm text-muted-foreground">in 4 months</div>
-                  <div className="text-xs text-muted-foreground">ROI: 9,000,000%</div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                </div>
+                <div className="text-2xl font-bold text-green-500">$1.8M profit</div>
+                <div className="text-sm text-muted-foreground">in 4 months</div>
+                <div className="text-xs text-muted-foreground">ROI: 9,000,000%</div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
