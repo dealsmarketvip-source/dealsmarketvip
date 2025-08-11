@@ -139,8 +139,8 @@ export default function HomePage() {
             >
               <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-primary/10 p-8">
                 <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fbb4e3e92cab047208a04cf5bc83d08ce%2F0283b7c72289489999c68d7349faf914?format=webp&width=800"
-                  alt="Premium Trading Platform"
+                  src="https://images.pexels.com/photos/26954166/pexels-photo-26954166.jpeg"
+                  alt="Luxury Sports Car - Premium Performance"
                   className="w-full h-auto rounded-lg shadow-2xl"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent"></div>
