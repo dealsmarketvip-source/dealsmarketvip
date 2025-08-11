@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, Suspense } from "react"
+import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { CrownLogo } from "@/components/ui/crown-logo"
 import { CheckCircle, Crown, Building, Shield, ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 
-function PaymentSuccessContent() {
+export default function PaymentSuccess() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [isLoading, setIsLoading] = useState(true)
@@ -152,30 +152,5 @@ function PaymentSuccessContent() {
         </motion.div>
       </div>
     </div>
-  )
-}
-
-export default function PaymentSuccess() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
-            <CrownLogo size="lg" className="text-primary mx-auto" />
-          </motion.div>
-          <h2 className="text-xl font-semibold text-foreground">
-            Procesando tu suscripción...
-          </h2>
-          <p className="text-muted-foreground">
-            Esto puede tomar unos segundos
-          </p>
-        </div>
-      </div>
-    }>
-      <PaymentSuccessContent />
-    </Suspense>
   )
 }
