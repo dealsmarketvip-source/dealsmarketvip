@@ -175,9 +175,8 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
   }
 
   const renderAuthStep = () => (
-    <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as "login" | "register" | "code")}>
-      <TabsList className="grid w-full grid-cols-3 mb-6">
-        <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
+    <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as "register" | "code")}>
+      <TabsList className="grid w-full grid-cols-2 mb-6">
         <TabsTrigger value="register">Crear Cuenta</TabsTrigger>
         <TabsTrigger value="code">Código Acceso</TabsTrigger>
       </TabsList>
