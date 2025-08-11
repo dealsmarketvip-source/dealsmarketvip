@@ -181,52 +181,6 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
         <TabsTrigger value="code">Código Acceso</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="login">
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="tu@empresa.com"
-                className="pl-9"
-                value={loginForm.email}
-                onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                className="pl-9 pr-9"
-                value={loginForm.password}
-                onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-
-          <Button type="submit" className="w-full gradient-primary" disabled={loading}>
-            {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
-          </Button>
-        </form>
-      </TabsContent>
 
       <TabsContent value="register">
         <form onSubmit={handleRegister} className="space-y-4">
