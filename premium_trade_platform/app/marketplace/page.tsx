@@ -2,427 +2,692 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Plus, Filter, DollarSign, MapPin, Calendar, Crown, Lock } from "lucide-react"
-import { CrownLogoWithBrand } from "@/components/ui/crown-logo"
+import { Badge } from "@/components/ui/badge"
+import { Slider } from "@/components/ui/slider"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { 
+  Search, 
+  Filter, 
+  Heart, 
+  Eye, 
+  Star, 
+  MapPin, 
+  Package, 
+  ShoppingCart,
+  SlidersHorizontal,
+  Grid3X3,
+  List,
+  Truck,
+  Shield,
+  TrendingUp,
+  Clock
+} from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
-import { createClient } from "@/lib/supabase"
-import Link from "next/link"
+import { createClient, db } from "@/lib/supabase"
 import { toast } from "sonner"
+import { ProductWithImages, ProductFilters, User } from "@/lib/types/database"
+import Link from "next/link"
 
-interface Product {
-  id: string
-  title: string
-  description: string
-  price: number
-  currency: string
-  category: string
-  location: string
-  image_url: string
-  seller_id: string
-  seller_name: string
-  seller_company: string
-  created_at: string
-  status: 'active' | 'sold' | 'reserved'
-  verified_seller: boolean
-}
-
-// Mock products for testing when database is not available
-const mockProducts: Product[] = [
-  {
-    id: '1',
-    title: 'Premium Oil & Gas Rights - Texas',
-    description: 'Exclusive drilling rights to 500 acres of prime oil territory in Texas. Estimated reserves: 2.5M barrels.',
-    price: 2500000,
-    currency: 'USD',
-    category: 'oil-gas',
-    location: 'Houston, Texas',
-    image_url: '/placeholder.svg',
-    seller_id: 'seller1',
-    seller_name: 'John Mitchell',
-    seller_company: 'Energy Corp Solutions',
-    created_at: new Date().toISOString(),
-    status: 'active',
-    verified_seller: true
-  },
-  {
-    id: '2',
-    title: 'Gold Mining Concession - South Africa',
-    description: 'Mining rights to 1,200 hectares of gold-rich territory. Geological surveys confirm high-grade deposits.',
-    price: 1800000,
-    currency: 'USD',
-    category: 'commodities',
-    location: 'Johannesburg, South Africa',
-    image_url: '/placeholder.svg',
-    seller_id: 'seller2',
-    seller_name: 'Sarah Williams',
-    seller_company: 'Global Commodities Ltd',
-    created_at: new Date().toISOString(),
-    status: 'active',
-    verified_seller: true
-  },
-  {
-    id: '3',
-    title: 'Commercial Real Estate Portfolio',
-    description: '15 prime commercial properties across major European cities. Total area: 50,000 sqm.',
-    price: 12000000,
-    currency: 'USD',
-    category: 'real-estate',
-    location: 'London, United Kingdom',
-    image_url: '/placeholder.svg',
-    seller_id: 'seller3',
-    seller_name: 'David Thompson',
-    seller_company: 'European Properties Group',
-    created_at: new Date().toISOString(),
-    status: 'active',
-    verified_seller: true
-  },
-  {
-    id: '4',
-    title: 'Rare Earth Metals Collection',
-    description: 'Strategic collection of rare earth minerals including lithium, cobalt, and neodymium.',
-    price: 3200000,
-    currency: 'USD',
-    category: 'commodities',
-    location: 'Sydney, Australia',
-    image_url: '/placeholder.svg',
-    seller_id: 'seller4',
-    seller_name: 'Michael Chen',
-    seller_company: 'Pacific Minerals Corp',
-    created_at: new Date().toISOString(),
-    status: 'active',
-    verified_seller: true
-  },
-  {
-    id: '5',
-    title: 'Luxury Yacht Fleet',
-    description: 'Collection of 5 luxury yachts ranging from 50-120 feet. All fully equipped and maintained.',
-    price: 8500000,
-    currency: 'USD',
-    category: 'luxury-assets',
-    location: 'Monaco',
-    image_url: '/placeholder.svg',
-    seller_id: 'seller5',
-    seller_name: 'Isabella Rodriguez',
-    seller_company: 'Mediterranean Luxury Assets',
-    created_at: new Date().toISOString(),
-    status: 'active',
-    verified_seller: true
-  },
-  {
-    id: '6',
-    title: 'Renewable Energy Farm',
-    description: 'Solar and wind energy farm generating 50MW annually. Includes 10-year government contracts.',
-    price: 4200000,
-    currency: 'USD',
-    category: 'energy',
-    location: 'California, USA',
-    image_url: '/placeholder.svg',
-    seller_id: 'seller6',
-    seller_name: 'Robert Johnson',
-    seller_company: 'Green Energy Solutions',
-    created_at: new Date().toISOString(),
-    status: 'active',
-    verified_seller: true
-  }
+const CATEGORIES = [
+  { value: 'electronics', label: 'Electrónicos' },
+  { value: 'fashion', label: 'Moda' },
+  { value: 'home', label: 'Hogar' },
+  { value: 'vehicles', label: 'Vehículos' },
+  { value: 'sports', label: 'Deportes' },
+  { value: 'books', label: 'Libros' },
+  { value: 'music', label: 'Música' },
+  { value: 'art', label: 'Arte' },
+  { value: 'business', label: 'Negocios' },
+  { value: 'other', label: 'Otros' }
 ]
+
+const SORT_OPTIONS = [
+  { value: 'created_at-desc', label: 'Más recientes' },
+  { value: 'created_at-asc', label: 'Más antiguos' },
+  { value: 'price-asc', label: 'Precio: menor a mayor' },
+  { value: 'price-desc', label: 'Precio: mayor a menor' },
+  { value: 'views_count-desc', label: 'Más vistos' },
+  { value: 'favorites_count-desc', label: 'Más favoritos' }
+]
+
+interface ExtendedProduct extends ProductWithImages {
+  seller?: Pick<User, 'id' | 'full_name' | 'verification_status' | 'profile_image_url'>
+}
 
 export default function MarketplacePage() {
   const { user, userProfile } = useAuth()
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [sortBy, setSortBy] = useState("newest")
+  const [loading, setLoading] = useState(false)
+  const [products, setProducts] = useState<ExtendedProduct[]>([])
+  const [totalProducts, setTotalProducts] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [showFilters, setShowFilters] = useState(false)
+  
+  const [filters, setFilters] = useState<ProductFilters>({
+    sort_by: 'created_at',
+    sort_order: 'desc'
+  })
+  
+  const [searchQuery, setSearchQuery] = useState('')
+  const [priceRange, setPriceRange] = useState([0, 10000])
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [selectedCondition, setSelectedCondition] = useState('')
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false)
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false)
 
-  // For testing, assume user has access if they're logged in
-  // In production, this would check actual subscription status
-  const hasAccess = true // Simplified for testing
+  const itemsPerPage = 20
 
   useEffect(() => {
-    loadProducts()
-  }, [])
+    fetchProducts()
+  }, [filters, currentPage, searchQuery])
 
-  const loadProducts = async () => {
+  const fetchProducts = async () => {
     try {
       setLoading(true)
       
-      // Try to load from database first, fall back to mock data
-      try {
-        const supabase = createClient()
-        
-        const { data: productsData, error: productsError } = await supabase
-          .from('products')
-          .select('*')
-          .eq('status', 'active')
-          .order('created_at', { ascending: false })
-
-        if (productsError) {
-          console.warn('Database not available, using mock data:', productsError.message)
-          throw new Error('Database unavailable')
-        }
-
-        if (productsData && productsData.length > 0) {
-          // Database has data, use it
-          const formattedProducts: Product[] = productsData.map((item: any) => ({
-            id: item.id,
-            title: item.title || 'Untitled Product',
-            description: item.description || 'No description available',
-            price: parseFloat(item.price) || 0,
-            currency: item.currency || 'USD',
-            category: item.category || 'uncategorized',
-            location: item.location || 'Location not specified',
-            image_url: (item.images && Array.isArray(item.images) && item.images[0]) || '/placeholder.svg',
-            seller_id: item.seller_id,
-            seller_name: 'Anonymous',
-            seller_company: 'Company not specified',
-            created_at: item.created_at,
-            status: item.status,
-            verified_seller: true
-          }))
-          
-          setProducts(formattedProducts)
-        } else {
-          // No data in database, use mock data
-          setProducts(mockProducts)
-        }
-      } catch (dbError) {
-        // Database connection failed, use mock data
-        console.log('Using mock data for demonstration')
-        setProducts(mockProducts)
-        toast.success('Marketplace loaded with demo products')
+      const searchFilters = {
+        ...filters,
+        ...(selectedCategory && { category: selectedCategory }),
+        ...(selectedCondition && { condition: selectedCondition }),
+        ...(showVerifiedOnly && { seller_verified: true }),
+        ...(showFeaturedOnly && { featured: true }),
+        ...(priceRange[0] > 0 && { min_price: priceRange[0] }),
+        ...(priceRange[1] < 10000 && { max_price: priceRange[1] }),
+        ...(searchQuery && { q: searchQuery })
       }
 
-    } catch (error: any) {
-      console.error('Error loading products:', error)
-      // Even if everything fails, show mock data
-      setProducts(mockProducts)
-      toast.success('Marketplace loaded with demo products')
+      const { data, error, count } = await db.products.search(
+        searchFilters,
+        currentPage,
+        itemsPerPage
+      )
+
+      if (error) throw error
+
+      setProducts(data || [])
+      setTotalProducts(count || 0)
+
+      // Track search analytics
+      if (userProfile && searchQuery) {
+        const supabase = createClient()
+        await supabase
+          .from('user_searches')
+          .insert({
+            user_id: userProfile.id,
+            search_query: searchQuery,
+            filters_applied: searchFilters,
+            results_count: count || 0
+          })
+      }
+
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      toast.error("Error al cargar los productos")
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
-
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'price_low':
-        return a.price - b.price
-      case 'price_high':
-        return b.price - a.price
-      case 'newest':
-      default:
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  const handleAddToFavorites = async (productId: string) => {
+    if (!userProfile) {
+      toast.error("Debes iniciar sesión para agregar favoritos")
+      return
     }
-  })
 
-  if (!user && !hasAccess) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg shadow-2xl border-border/50 bg-card/95 backdrop-blur-xl">
-          <CardHeader className="text-center pb-6 pt-8 px-8">
-            <div className="mb-6">
-              <CrownLogoWithBrand className="justify-center mb-6" />
-            </div>
-            <div className="space-y-3">
-              <CardTitle className="text-3xl font-bold text-foreground">
-                Access Required
-              </CardTitle>
-              <CardDescription className="text-lg text-muted-foreground leading-relaxed px-4">
-                Please sign in to access the marketplace
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="text-center pb-8 px-8">
-            <div className="space-y-6">
-              <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <Lock className="h-8 w-8 text-primary" />
-              </div>
-              <Link href="/">
-                <Button size="lg" className="gradient-primary w-full h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  <Crown className="mr-3 h-5 w-5" />
-                  Sign In to Continue
-                </Button>
-              </Link>
-              <p className="text-sm text-muted-foreground/80 mt-4">
-                Join 500+ verified companies trading excellence
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    try {
+      const { error } = await db.favorites.add(userProfile.id, productId)
+      if (error) throw error
+      
+      toast.success("Producto agregado a favoritos")
+      fetchProducts() // Refresh to update favorites count
+    } catch (error) {
+      console.error('Error adding to favorites:', error)
+      toast.error("Error al agregar a favoritos")
+    }
   }
 
+  const handleProductClick = async (productId: string) => {
+    // Track product view
+    try {
+      const supabase = createClient()
+      
+      // Increment view count
+      await supabase
+        .from('products')
+        .update({ views_count: products.find(p => p.id === productId)?.views_count ?? 0 + 1 })
+        .eq('id', productId)
+
+      // Track user search click if applicable
+      if (userProfile && searchQuery) {
+        await supabase
+          .from('user_searches')
+          .insert({
+            user_id: userProfile.id,
+            search_query: searchQuery,
+            clicked_product_id: productId,
+            results_count: totalProducts
+          })
+      }
+    } catch (error) {
+      console.error('Error tracking product view:', error)
+    }
+  }
+
+  const applyFilters = () => {
+    const [sortBy, sortOrder] = (filters.sort_by + '-' + filters.sort_order).split('-')
+    setFilters({
+      ...filters,
+      sort_by: sortBy as any,
+      sort_order: sortOrder as any
+    })
+    setCurrentPage(1)
+    fetchProducts()
+  }
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setPriceRange([0, 10000])
+    setSelectedCategory('')
+    setSelectedCondition('')
+    setShowVerifiedOnly(false)
+    setShowFeaturedOnly(false)
+    setFilters({
+      sort_by: 'created_at',
+      sort_order: 'desc'
+    })
+    setCurrentPage(1)
+  }
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(price)
+  }
+
+  const totalPages = Math.ceil(totalProducts / itemsPerPage)
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="w-full py-6 px-6 bg-background/80 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <Link href="/">
-              <CrownLogoWithBrand />
-            </Link>
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                Marketplace
+              </h1>
+              <p className="text-gray-300">
+                Descubre productos únicos de vendedores verificados
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-3">
               <Link href="/upload">
-                <Button className="gradient-primary">
-                  <Plus className="mr-2 h-4 w-4" />
-                  List Product
+                <Button className="bg-primary hover:bg-primary/90">
+                  <Package className="h-4 w-4 mr-2" />
+                  Vender Producto
                 </Button>
               </Link>
-              <Button variant="outline">
-                <Crown className="mr-2 h-4 w-4" />
-                Premium Member
+              <Button
+                variant="outline"
+                onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+                className="border-gray-600"
+              >
+                {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid3X3 className="h-4 w-4" />}
               </Button>
             </div>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search luxury assets, commodities, real estate..."
-                className="pl-9"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          {/* Search and Stats Bar */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+            <div className="lg:col-span-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && fetchProducts()}
+                  className="bg-gray-800 border-gray-600 text-white pl-10 h-12"
+                  placeholder="Buscar productos..."
+                />
+              </div>
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full md:w-[200px]">
-                <Filter className="mr-2 h-4 w-4" />
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="oil-gas">Oil & Gas</SelectItem>
-                <SelectItem value="commodities">Commodities</SelectItem>
-                <SelectItem value="real-estate">Real Estate</SelectItem>
-                <SelectItem value="luxury-assets">Luxury Assets</SelectItem>
-                <SelectItem value="financial">Financial Instruments</SelectItem>
-                <SelectItem value="vehicles">Luxury Vehicles</SelectItem>
-                <SelectItem value="energy">Energy & Renewables</SelectItem>
-                <SelectItem value="investment">Investment Opportunities</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full md:w-[150px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="price_low">Price: Low to High</SelectItem>
-                <SelectItem value="price_high">Price: High to Low</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Premium Marketplace</h1>
-          <p className="text-muted-foreground">
-            Exclusive deals from verified companies worldwide
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <div className="h-48 bg-muted rounded-t-lg"></div>
-                <CardContent className="p-4">
-                  <div className="h-4 bg-muted rounded mb-2"></div>
-                  <div className="h-3 bg-muted rounded mb-4"></div>
-                  <div className="h-6 bg-muted rounded"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : sortedProducts.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-xl font-semibold mb-2">No products found</h3>
-            <p className="text-muted-foreground mb-6">
-              {searchQuery || selectedCategory !== 'all' 
-                ? "Try adjusting your search or filters" 
-                : "Be the first to list a product"}
-            </p>
-            <Link href="/upload">
-              <Button className="gradient-primary">
-                <Plus className="mr-2 h-4 w-4" />
-                List Your Product
+            
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowFilters(!showFilters)}
+                className="border-gray-600 flex-1"
+              >
+                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                Filtros
               </Button>
-            </Link>
+              <Button
+                onClick={fetchProducts}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Buscar
+              </Button>
+            </div>
+
+            <div className="text-right">
+              <p className="text-gray-300">
+                {totalProducts.toLocaleString()} productos encontrados
+              </p>
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                <div className="relative">
-                  <img
-                    src={product.image_url}
-                    alt={product.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  {product.verified_seller && (
-                    <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
-                      <Crown className="w-3 h-3 mr-1" />
-                      Verified
-                    </Badge>
-                  )}
-                </div>
-                <CardHeader>
-                  <CardTitle className="line-clamp-1">{product.title}</CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    {product.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-primary">
-                        ${product.price.toLocaleString()}
-                      </span>
-                      <Badge variant="outline">{product.category}</Badge>
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {product.location}
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      {new Date(product.created_at).toLocaleDateString()}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">{product.seller_company}</span>
-                      <br />
-                      <span className="text-muted-foreground">{product.seller_name}</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full gradient-primary">
-                    <DollarSign className="w-4 h-4 mr-2" />
-                    Contact Seller
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Filters Sidebar */}
+          <div className={`lg:col-span-1 space-y-6 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center justify-between">
+                  Filtros
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={clearFilters}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    Limpiar
                   </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Category Filter */}
+                <div>
+                  <Label className="text-gray-300 mb-3 block">Categoría</Label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Todas las categorías" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Todas las categorías</SelectItem>
+                      {CATEGORIES.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Price Range */}
+                <div>
+                  <Label className="text-gray-300 mb-3 block">
+                    Rango de precio: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+                  </Label>
+                  <Slider
+                    value={priceRange}
+                    onValueChange={setPriceRange}
+                    max={10000}
+                    step={50}
+                    className="w-full"
+                  />
+                </div>
+
+                {/* Condition Filter */}
+                <div>
+                  <Label className="text-gray-300 mb-3 block">Estado</Label>
+                  <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue placeholder="Cualquier estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Cualquier estado</SelectItem>
+                      <SelectItem value="new">Nuevo</SelectItem>
+                      <SelectItem value="like_new">Como nuevo</SelectItem>
+                      <SelectItem value="good">Bueno</SelectItem>
+                      <SelectItem value="fair">Regular</SelectItem>
+                      <SelectItem value="poor">Malo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Quick Filters */}
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="verified-only"
+                      checked={showVerifiedOnly}
+                      onChange={(e) => setShowVerifiedOnly(e.target.checked)}
+                      className="rounded"
+                    />
+                    <Label htmlFor="verified-only" className="text-gray-300 text-sm">
+                      Solo vendedores verificados
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="featured-only"
+                      checked={showFeaturedOnly}
+                      onChange={(e) => setShowFeaturedOnly(e.target.checked)}
+                      className="rounded"
+                    />
+                    <Label htmlFor="featured-only" className="text-gray-300 text-sm">
+                      Solo productos destacados
+                    </Label>
+                  </div>
+                </div>
+
+                {/* Sort Options */}
+                <div>
+                  <Label className="text-gray-300 mb-3 block">Ordenar por</Label>
+                  <Select 
+                    value={`${filters.sort_by}-${filters.sort_order}`}
+                    onValueChange={(value) => {
+                      const [sortBy, sortOrder] = value.split('-')
+                      setFilters(prev => ({
+                        ...prev,
+                        sort_by: sortBy as any,
+                        sort_order: sortOrder as any
+                      }))
+                    }}
+                  >
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SORT_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button 
+                  onClick={applyFilters}
+                  className="w-full bg-primary hover:bg-primary/90"
+                >
+                  Aplicar Filtros
+                </Button>
+              </CardContent>
+            </Card>
           </div>
-        )}
-      </main>
+
+          {/* Products Grid/List */}
+          <div className="lg:col-span-3">
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-4 animate-pulse">
+                    <div className="bg-gray-700 aspect-square rounded-lg mb-4"></div>
+                    <div className="bg-gray-700 h-4 rounded mb-2"></div>
+                    <div className="bg-gray-700 h-4 rounded w-2/3 mb-2"></div>
+                    <div className="bg-gray-700 h-6 rounded w-1/3"></div>
+                  </div>
+                ))}
+              </div>
+            ) : products.length === 0 ? (
+              <Card className="bg-gray-800 border-gray-700">
+                <CardContent className="pt-12 pb-12 text-center">
+                  <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    No se encontraron productos
+                  </h3>
+                  <p className="text-gray-400 mb-6">
+                    Intenta ajustar tus filtros de búsqueda o explora otras categorías
+                  </p>
+                  <Button 
+                    onClick={clearFilters}
+                    variant="outline"
+                    className="border-gray-600"
+                  >
+                    Limpiar filtros
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                {/* Products Display */}
+                <div className={
+                  viewMode === 'grid' 
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+                    : "space-y-4"
+                }>
+                  {products.map((product) => (
+                    <Link 
+                      key={product.id} 
+                      href={`/product/${product.id}`}
+                      onClick={() => handleProductClick(product.id)}
+                    >
+                      <Card className="bg-gray-800 border-gray-700 hover:border-primary/50 transition-all cursor-pointer group">
+                        <CardContent className="p-0">
+                          {viewMode === 'grid' ? (
+                            // Grid View
+                            <>
+                              <div className="relative aspect-square overflow-hidden rounded-t-lg">
+                                {product.images?.length > 0 ? (
+                                  <img 
+                                    src={product.images[0]} 
+                                    alt={product.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                                    <Package className="h-12 w-12 text-gray-400" />
+                                  </div>
+                                )}
+                                
+                                {/* Badges */}
+                                <div className="absolute top-3 left-3 flex gap-2">
+                                  {product.featured && (
+                                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                                      <Star className="h-3 w-3 mr-1" />
+                                      Destacado
+                                    </Badge>
+                                  )}
+                                  {product.seller?.verification_status === 'verified' && (
+                                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                      <Shield className="h-3 w-3 mr-1" />
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="absolute top-3 right-3">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="bg-black/50 hover:bg-black/70 text-white"
+                                    onClick={(e) => {
+                                      e.preventDefault()
+                                      handleAddToFavorites(product.id)
+                                    }}
+                                  >
+                                    <Heart className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                              
+                              <div className="p-4">
+                                <h3 className="text-white font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                  {product.title}
+                                </h3>
+                                
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarImage src={product.seller?.profile_image_url} />
+                                    <AvatarFallback className="text-xs">
+                                      {product.seller?.full_name?.charAt(0) || 'V'}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="text-gray-400 text-sm">
+                                    {product.seller?.full_name || 'Vendedor'}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="text-2xl font-bold text-primary">
+                                      {formatPrice(product.price)}
+                                    </p>
+                                    {product.shipping_included ? (
+                                      <p className="text-xs text-green-400">Envío incluido</p>
+                                    ) : (
+                                      <p className="text-xs text-gray-400">+ envío</p>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="text-right">
+                                    <div className="flex items-center gap-1 text-gray-400 text-sm">
+                                      <Eye className="h-3 w-3" />
+                                      {product.views_count}
+                                    </div>
+                                    <div className="flex items-center gap-1 text-gray-400 text-sm">
+                                      <Heart className="h-3 w-3" />
+                                      {product.favorites_count}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {product.location && (
+                                  <div className="flex items-center gap-1 text-gray-400 text-sm mt-2">
+                                    <MapPin className="h-3 w-3" />
+                                    {product.location}
+                                  </div>
+                                )}
+                              </div>
+                            </>
+                          ) : (
+                            // List View
+                            <div className="flex gap-4 p-4">
+                              <div className="w-32 h-32 flex-shrink-0">
+                                {product.images?.length > 0 ? (
+                                  <img 
+                                    src={product.images[0]} 
+                                    alt={product.title}
+                                    className="w-full h-full object-cover rounded-lg"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-gray-700 flex items-center justify-center rounded-lg">
+                                    <Package className="h-8 w-8 text-gray-400" />
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <div className="flex-1">
+                                <div className="flex justify-between items-start mb-2">
+                                  <h3 className="text-white font-semibold text-lg group-hover:text-primary transition-colors">
+                                    {product.title}
+                                  </h3>
+                                  <div className="flex gap-2">
+                                    {product.featured && (
+                                      <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                                        Destacado
+                                      </Badge>
+                                    )}
+                                    {product.seller?.verification_status === 'verified' && (
+                                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                        Verificado
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                                  {product.description}
+                                </p>
+                                
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2">
+                                      <Avatar className="h-6 w-6">
+                                        <AvatarImage src={product.seller?.profile_image_url} />
+                                        <AvatarFallback className="text-xs">
+                                          {product.seller?.full_name?.charAt(0) || 'V'}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span className="text-gray-400 text-sm">
+                                        {product.seller?.full_name || 'Vendedor'}
+                                      </span>
+                                    </div>
+                                    
+                                    {product.location && (
+                                      <div className="flex items-center gap-1 text-gray-400 text-sm">
+                                        <MapPin className="h-3 w-3" />
+                                        {product.location}
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="text-right">
+                                    <p className="text-2xl font-bold text-primary">
+                                      {formatPrice(product.price)}
+                                    </p>
+                                    <div className="flex items-center gap-3 text-gray-400 text-sm">
+                                      <div className="flex items-center gap-1">
+                                        <Eye className="h-3 w-3" />
+                                        {product.views_count}
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <Heart className="h-3 w-3" />
+                                        {product.favorites_count}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="border-gray-600"
+                    >
+                      Anterior
+                    </Button>
+                    
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      const page = i + 1
+                      return (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          onClick={() => setCurrentPage(page)}
+                          className={currentPage === page ? "bg-primary" : "border-gray-600"}
+                        >
+                          {page}
+                        </Button>
+                      )
+                    })}
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="border-gray-600"
+                    >
+                      Siguiente
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
