@@ -317,7 +317,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
                 onChange={(e) => {
                   const code = e.target.value.toUpperCase()
                   setRegisterForm(prev => ({ ...prev, invitationCode: code }))
-                  validateInvitationCode(code)
+                  validateCodeInput(code)
                 }}
               />
               <div className="absolute right-3 top-3">
