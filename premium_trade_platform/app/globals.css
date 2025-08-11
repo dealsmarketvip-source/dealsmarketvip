@@ -48,23 +48,49 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
   }
 
-  /* Custom Scrollbar */
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced transitions for all interactive elements */
+  button, a, input, select, textarea {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Focus styles with glow */
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5), 0 0 8px rgba(255, 215, 0, 0.3);
+  }
+
+  /* Enhanced Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 12px;
   }
 
   ::-webkit-scrollbar-track {
     @apply bg-muted;
+    border-radius: 6px;
   }
 
   ::-webkit-scrollbar-thumb {
     @apply bg-primary rounded-full;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary/80;
+    @apply bg-primary/90;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  }
+
+  /* Firefox scrollbar */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
   }
 }
 
@@ -85,58 +111,80 @@
   background-clip: text;
 }
 
-/* Subtle Glow Effects - Refined */
+/* Enhanced Glow Effects */
 .glow-primary {
-  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15), 0 2px 10px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.25), 0 2px 10px rgba(255, 215, 0, 0.15);
+  transition: all 0.3s ease;
 }
 
 .glow-primary-strong {
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2), 0 4px 16px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3), 0 4px 16px rgba(255, 215, 0, 0.2), 0 0 0 1px rgba(255, 215, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .glow-accent {
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15), 0 2px 8px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25), 0 2px 8px rgba(59, 130, 246, 0.15);
+  transition: all 0.3s ease;
+}
+
+.glow-accent-strong {
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.3), 0 3px 12px rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-green {
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25), 0 2px 8px rgba(34, 197, 94, 0.15);
+  transition: all 0.3s ease;
 }
 
 .glow-card {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(255, 215, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 .glow-card-hover:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(255, 215, 0, 0.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), 0 6px 16px rgba(255, 215, 0, 0.15), 0 0 0 1px rgba(255, 215, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .glow-text {
-  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4), 0 0 16px rgba(255, 215, 0, 0.2);
 }
 
-/* Custom Animations - Enhanced */
+.glow-text-strong {
+  text-shadow: 0 4px 16px rgba(255, 215, 0, 0.6), 0 2px 8px rgba(255, 215, 0, 0.4), 0 0 24px rgba(255, 215, 0, 0.3);
+}
+
+/* Enhanced Custom Animations */
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
   }
-  50% {
-    transform: translateY(-10px);
+  33% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-4px) rotate(-1deg);
   }
 }
 
 .float-animation {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.2);
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.15), 0 0 60px rgba(255, 215, 0, 0.1);
+    filter: brightness(1);
   }
   50% {
-    box-shadow: 0 0 50px rgba(255, 215, 0, 0.7), 0 0 100px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3), 0 0 120px rgba(255, 215, 0, 0.2);
+    filter: brightness(1.1);
   }
 }
 
 .pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+  animation: pulse-glow 2.5s ease-in-out infinite;
 }
 
 @keyframes shimmer {
@@ -149,7 +197,91 @@
 }
 
 .shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+.bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+@keyframes rotate-glow {
+  0% {
+    transform: rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: hue-rotate(360deg);
+  }
+}
+
+.rotate-glow {
+  animation: rotate-glow 10s linear infinite;
+}
+
+@keyframes scale-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.scale-pulse {
+  animation: scale-pulse 2s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Interactive Hover Effects */
+.hover-glow-primary:hover {
+  box-shadow: 0 12px 40px rgba(255, 215, 0, 0.4), 0 6px 20px rgba(255, 215, 0, 0.25);
+  transform: translateY(-2px) scale(1.02);
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px) scale(1.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-glow-text:hover {
+  text-shadow: 0 4px 16px rgba(255, 215, 0, 0.6), 0 2px 8px rgba(255, 215, 0, 0.4);
+  transition: text-shadow 0.3s ease;
 }
