@@ -377,12 +377,39 @@ export default function MarketplacePage() {
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <motion.h1
+                className="text-4xl font-bold text-white mb-2 glow-text flex items-center gap-3"
+                animate={{
+                  textShadow: [
+                    "0 2px 8px rgba(255, 215, 0, 0.3)",
+                    "0 4px 16px rgba(255, 215, 0, 0.5)",
+                    "0 2px 8px rgba(255, 215, 0, 0.3)"
+                  ]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                >
+                  <ShoppingCart className="h-10 w-10 text-primary glow-primary-strong" />
+                </motion.div>
                 Marketplace
-              </h1>
-              <p className="text-gray-300">
+              </motion.h1>
+              <motion.p
+                className="text-gray-300"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
                 Descubre productos únicos de vendedores verificados
-              </p>
+              </motion.p>
             </div>
             
             <div className="flex items-center gap-3">
@@ -696,7 +723,7 @@ export default function MarketplacePage() {
                                       {formatPrice(product.price)}
                                     </p>
                                     {product.shipping_included ? (
-                                      <p className="text-xs text-green-400">Envío incluido</p>
+                                      <p className="text-xs text-green-400">Env��o incluido</p>
                                     ) : (
                                       <p className="text-xs text-gray-400">+ envío</p>
                                     )}
