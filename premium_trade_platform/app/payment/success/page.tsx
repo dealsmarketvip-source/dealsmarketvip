@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { CrownLogo } from "@/components/ui/crown-logo"
 import { CheckCircle, Crown, Building, Shield, ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 
-export default function PaymentSuccess() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [isLoading, setIsLoading] = useState(true)
