@@ -74,8 +74,8 @@ export default function MarketplacePage() {
   
   const [searchQuery, setSearchQuery] = useState('')
   const [priceRange, setPriceRange] = useState([0, 10000])
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedCondition, setSelectedCondition] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedCondition, setSelectedCondition] = useState('all')
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false)
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false)
 
