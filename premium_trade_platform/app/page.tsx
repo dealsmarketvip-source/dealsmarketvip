@@ -260,76 +260,38 @@ export default function HomePage() {
           </p>
           
           <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 border-primary/50 glow-card-hover">
-                <div className="text-center space-y-4">
-                  <motion.div
-                    animate={{
-                      rotateY: [0, 360],
-                      scale: [1, 1.2, 1]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
-                    <Crown className="h-12 w-12 text-primary mx-auto glow-primary-strong" />
-                  </motion.div>
-                  <div>
-                    <div className="font-bold text-lg glow-text">Premium Membership</div>
-                    <div className="text-sm text-muted-foreground">$20/month</div>
-                  </div>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      className="w-full gradient-primary glow-primary-strong pulse-glow shimmer"
-                      onClick={handleGetStarted}
-                    >
-                      Start Premium Access
-                    </Button>
-                  </motion.div>
+            <Card className="p-6 border-primary/50">
+              <div className="text-center space-y-4">
+                <Crown className="h-12 w-12 text-primary mx-auto" />
+                <div>
+                  <div className="font-bold text-lg">Premium Membership</div>
+                  <div className="text-sm text-muted-foreground">$20/month</div>
                 </div>
-              </Card>
-            </motion.div>
+                <Button
+                  className="w-full gradient-primary"
+                  onClick={handleGetStarted}
+                >
+                  Start Premium Access
+                </Button>
+              </div>
+            </Card>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Card className="p-6 border-green-500/50 glow-card-hover">
-                <div className="text-center space-y-4">
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto" style={{
-                      filter: "drop-shadow(0 4px 8px rgba(34, 197, 94, 0.4))"
-                    }} />
-                  </motion.div>
-                  <div>
-                    <div className="font-bold text-lg text-green-400">Access Code</div>
-                    <div className="text-sm text-muted-foreground">Instant verification</div>
-                  </div>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      variant="outline"
-                      className="w-full border-green-500 text-green-600 hover:bg-green-50 glow-accent"
-                      onClick={handleGetStarted}
-                    >
-                      Enter Access Code
-                    </Button>
-                  </motion.div>
+            <Card className="p-6 border-green-500/50">
+              <div className="text-center space-y-4">
+                <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
+                <div>
+                  <div className="font-bold text-lg">Access Code</div>
+                  <div className="text-sm text-muted-foreground">Instant verification</div>
                 </div>
-              </Card>
-            </motion.div>
+                <Button
+                  variant="outline"
+                  className="w-full border-green-500 text-green-600 hover:bg-green-50"
+                  onClick={handleGetStarted}
+                >
+                  Enter Access Code
+                </Button>
+              </div>
+            </Card>
           </div>
 
           <p className="text-sm text-muted-foreground">
