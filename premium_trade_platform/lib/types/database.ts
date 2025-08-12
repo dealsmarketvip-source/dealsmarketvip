@@ -1,5 +1,14 @@
 // Database Types for DealsMarket.vip Marketplace
 
+export interface Profile {
+  id: string;
+  email: string;
+  full_name?: string;
+  role: 'free' | 'premium' | 'enterprise';
+  created_at: string;
+  updated_at: string;
+}
+
 export interface InvitationCode {
   id: string;
   code: string;
