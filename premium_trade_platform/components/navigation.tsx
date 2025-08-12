@@ -166,6 +166,11 @@ export function Navigation() {
         onClose={() => setShowAuthModal(false)}
         defaultTab={authTab}
       />
+
+      <WelcomePanel
+        isOpen={showWelcomePanel}
+        onClose={() => setShowWelcomePanel(false)}
+      />
     </>
   )
 }
