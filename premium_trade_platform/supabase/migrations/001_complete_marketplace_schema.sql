@@ -264,12 +264,27 @@ CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders FOR EACH ROW EXE
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_user_limits_updated_at BEFORE UPDATE ON user_limits FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Insert default invitation codes
+-- Create profiles table for webhook compatibility
+CREATE TABLE profiles (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    full_name VARCHAR(255),
+    role VARCHAR(20) DEFAULT 'free' CHECK (role IN ('free', 'premium', 'enterprise')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for profiles
+CREATE INDEX idx_profiles_email ON profiles(email);
+CREATE INDEX idx_profiles_role ON profiles(role);
+
+-- Add trigger for profiles updated_at
+CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Insert only the allowed invitation codes
 INSERT INTO invitation_codes (code, type, max_uses, is_active) VALUES
-('DEALSMARKET2024', 'general', 1000, true),
-('BUSINESS_VIP', 'business', 100, true),
-('PREMIUM_ACCESS', 'premium', 50, true),
-('SKIP_VERIFICATION', 'verification_bypass', 10, true);
+('BETA50', 'enterprise', 100, true),
+('ASTERO1', 'enterprise', 100, true);
 
 -- Insert default plan limits
 CREATE OR REPLACE FUNCTION create_user_limits()
