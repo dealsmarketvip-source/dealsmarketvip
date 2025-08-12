@@ -74,7 +74,10 @@ export default function SuccessPage() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="text-muted-foreground mb-8"
         >
-          Bienvenido al plan Premium. Ahora tienes acceso completo a todas las funciones VIP de la plataforma.
+          {isDemo
+            ? 'Demo: Simulación de suscripción exitosa. Configura las claves de Stripe para pagos reales.'
+            : 'Bienvenido al plan Premium. Ahora tienes acceso completo a todas las funciones VIP de la plataforma.'
+          }
         </motion.p>
 
         <motion.div
