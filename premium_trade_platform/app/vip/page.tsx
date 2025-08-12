@@ -1,4 +1,3 @@
-
 "use client"
 
 import { motion } from "framer-motion"
@@ -18,6 +17,8 @@ import {
 import Link from "next/link"
 import { VipBenefits } from "@/components/vip/vip-benefits"
 import { PricingTiers } from "@/components/vip/pricing-tiers"
+import SubscribeButton from "@/components/SubscribeButton"
+import { useAuth } from "@/hooks/use-auth"
 
 export default function VipPage() {
   const vipStats = [
