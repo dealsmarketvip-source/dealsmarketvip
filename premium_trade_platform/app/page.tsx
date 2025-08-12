@@ -141,10 +141,17 @@ export default function HomePage() {
                 }}
               >
                 <motion.img
-                  src="https://images.pexels.com/photos/26954166/pexels-photo-26954166.jpeg"
-                  alt="Luxury Sports Car - Premium Performance"
-                  className="w-full h-auto rounded-lg shadow-2xl"
-                  animate={{ scale: [1, 1.02, 1] }}
+                  src="https://images.pexels.com/photos/28891887/pexels-photo-28891887.jpeg"
+                  alt="Modern Luxury Car Dealership - Premium Business Environment"
+                  className="w-full h-auto rounded-xl shadow-2xl glow-primary"
+                  animate={{
+                    scale: [1, 1.02, 1],
+                    filter: [
+                      "drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))",
+                      "drop-shadow(0 0 40px rgba(255, 215, 0, 0.5))",
+                      "drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))"
+                    ]
+                  }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent"></div>
@@ -264,35 +271,41 @@ export default function HomePage() {
           </p>
           
           <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <Card className="p-6 border-primary/50">
-              <div className="text-center space-y-4">
-                <Crown className="h-12 w-12 text-primary mx-auto" />
-                <div>
-                  <div className="font-bold text-lg">Premium Membership</div>
-                  <div className="text-sm text-muted-foreground">$20/month</div>
+            <Card className="p-8 border-primary/50 h-full">
+              <div className="text-center space-y-4 h-full flex flex-col justify-between">
+                <div className="space-y-4">
+                  <Crown className="h-12 w-12 text-primary mx-auto" />
+                  <div>
+                    <div className="font-bold text-lg">Suscripción Premium</div>
+                    <div className="text-sm text-muted-foreground">Paga €20/mes por acceso completo</div>
+                  </div>
+                  <div className="text-2xl font-bold text-primary">€20/mes</div>
                 </div>
                 <Button
                   className="w-full gradient-primary"
                   onClick={handleGetStarted}
                 >
-                  Join Now
+                  Acceso Inmediato
                 </Button>
               </div>
             </Card>
 
-            <Card className="p-6 border-green-500/50">
-              <div className="text-center space-y-4">
-                <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
-                <div>
-                  <div className="font-bold text-lg">Access Code</div>
-                  <div className="text-sm text-muted-foreground">Instant verification</div>
+            <Card className="p-8 border-green-500/50 h-full">
+              <div className="text-center space-y-4 h-full flex flex-col justify-between">
+                <div className="space-y-4">
+                  <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
+                  <div>
+                    <div className="font-bold text-lg">Código de Invitación</div>
+                    <div className="text-sm text-muted-foreground">Accede con tu código de invitación empresarial</div>
+                  </div>
+                  <div className="text-2xl font-bold text-green-500">GRATIS</div>
                 </div>
                 <Button
                   variant="outline"
-                  className="w-full border-green-500 text-green-600 hover:bg-green-50"
+                  className="w-full border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950 dark:text-green-400"
                   onClick={handleGetStarted}
                 >
-                  Enter Access Code
+                  Acceso Inmediato
                 </Button>
               </div>
             </Card>
