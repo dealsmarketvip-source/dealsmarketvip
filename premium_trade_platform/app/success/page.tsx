@@ -10,6 +10,7 @@ import Link from 'next/link'
 export default function SuccessPage() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
+  const isDemo = searchParams.get('demo') === 'true'
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
