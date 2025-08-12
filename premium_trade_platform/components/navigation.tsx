@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 export function Navigation() {
   const { user, userProfile, signOut } = useAuth()
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showWelcomePanel, setShowWelcomePanel] = useState(false)
   const [authTab, setAuthTab] = useState<"login" | "register">("login")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
@@ -21,7 +22,7 @@ export function Navigation() {
     if (user) {
       router.push('/marketplace')
     } else {
-      router.push('/create-account')
+      setShowWelcomePanel(true)
     }
   }
 
