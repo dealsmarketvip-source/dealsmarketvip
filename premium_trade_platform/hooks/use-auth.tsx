@@ -113,31 +113,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Códigos válidos predefinidos para demo/desarrollo
+      // Códigos válidos predefinidos - funcionan sin Supabase
       const validCodes = [
         { code: "PREMIUM2024", message: "✨ Código Premium válido - 50% descuento" },
         { code: "LUXURY100", message: "👑 Código VIP válido - Primer mes GRATIS" },
         { code: "BETA50", message: "🚀 Código Beta válido - 25% descuento" },
         { code: "ENTERPRISE", message: "💼 Código Enterprise válido - Acceso completo" },
         { code: "INVITED2024", message: "🎯 Código de invitación válido" },
-        { code: "SPECIAL", message: "⭐ Código especial válido" }
+        { code: "SPECIAL", message: "⭐ Código especial válido" },
+        { code: "ASTER01", message: "🌟 Código Aster válido - Acceso completo" },
+        { code: "DEMO123", message: "🔥 Código de demostración válido" }
       ]
 
       const foundCode = validCodes.find(c => c.code === code.toUpperCase())
 
       if (foundCode) {
         return { isValid: true, message: foundCode.message }
-      }
-
-      // Intentar validar con la base de datos si Supabase está configurado
-      try {
-        const { data, error } = await db.invitationCodes.validate(code)
-        if (data && !error) {
-          return { isValid: true, message: "✅ Código de invitación válido" }
-        }
-      } catch (dbError) {
-        // Si la base de datos no está configurada, usar solo códigos predefinidos
-        console.warn('Database validation failed, using predefined codes only')
       }
 
       return { isValid: false, message: "❌ Código inválido o expirado" }
