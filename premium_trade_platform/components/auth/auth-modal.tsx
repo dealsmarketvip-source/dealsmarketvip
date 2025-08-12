@@ -452,23 +452,6 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
             </motion.div>
           </form>
 
-          <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg p-4 space-y-2">
-            <p className="text-sm font-medium">Códigos de ejemplo válidos:</p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {["PREMIUM2024", "LUXURY100", "BETA50"].map((code) => (
-                <motion.button
-                  key={code}
-                  type="button"
-                  className="px-3 py-1 bg-primary/20 text-primary text-xs rounded-full border border-primary/30 hover:bg-primary/30 transition-colors"
-                  onClick={() => setCodeOnlyForm(prev => ({ ...prev, accessCode: code }))}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {code}
-                </motion.button>
-              ))}
-            </div>
-          </div>
         </motion.div>
       </TabsContent>
     </Tabs>
