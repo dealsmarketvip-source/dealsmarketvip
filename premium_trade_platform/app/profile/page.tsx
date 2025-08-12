@@ -137,8 +137,12 @@ export default function ProfilePage() {
       // Calculate stats
       calculateUserStats(productsResult.data || [], ordersResult.data || [], transactionsResult.data || [])
     } catch (error) {
-      console.error('Error fetching user data:', error)
-      toast.error("Error al cargar los datos del perfil")
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.error('Error fetching user data:', {
+        message: errorMessage,
+        error: error instanceof Error ? error.stack : error
+      })
+      toast.error(`Error al cargar los datos del perfil: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
