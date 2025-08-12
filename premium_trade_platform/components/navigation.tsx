@@ -26,7 +26,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { toast } from 'sonner'
 
 export function Navigation() {
-  const { user, userProfile, logout } = useAuth()
+  const { user, userProfile, signOut } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -38,9 +38,9 @@ export function Navigation() {
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
       })
-      
+
       if (response.ok) {
-        await logout()
+        await signOut()
         toast.success('Sesión cerrada correctamente')
         router.push('/')
       } else {
