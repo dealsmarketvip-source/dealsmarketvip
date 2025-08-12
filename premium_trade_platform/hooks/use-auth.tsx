@@ -128,28 +128,96 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const validateInvitationCode = async (code: string): Promise<{ isValid: boolean, message: string }> => {
+  const validateInvitationCode = async (code: string): Promise<{ isValid: boolean, message: string, accountData?: any }> => {
     if (!code.trim()) {
       return { isValid: false, message: "Código requerido" }
     }
 
     try {
-      // Códigos válidos predefinidos - funcionan sin Supabase
+      // Códigos válidos con datos de cuenta asociados
       const validCodes = [
-        { code: "PREMIUM2024", message: "✨ Código Premium válido - 50% descuento" },
-        { code: "LUXURY100", message: "👑 Código VIP válido - Primer mes GRATIS" },
-        { code: "BETA50", message: "🚀 Código Beta válido - 25% descuento" },
-        { code: "ENTERPRISE", message: "💼 Código Enterprise válido - Acceso completo" },
-        { code: "INVITED2024", message: "🎯 Código de invitación válido" },
-        { code: "SPECIAL", message: "⭐ Código especial válido" },
-        { code: "ASTER01", message: "🌟 Código Aster válido - Acceso completo" },
-        { code: "DEMO123", message: "🔥 Código de demostración válido" }
+        {
+          code: "PREMIUM2024",
+          message: "✨ Código Premium válido - 50% descuento",
+          accountData: {
+            company_name: "Premium Trading Corp",
+            company_type: "enterprise",
+            subscription_type: "premium",
+            discount: 50,
+            verification_status: "verified",
+            description: "Empresa de trading premium con acceso completo a la plataforma"
+          }
+        },
+        {
+          code: "LUXURY100",
+          message: "👑 Código VIP válido - Primer mes GRATIS",
+          accountData: {
+            company_name: "Luxury Deals International",
+            company_type: "vip",
+            subscription_type: "vip",
+            discount: 100,
+            verification_status: "verified",
+            description: "Acceso VIP con beneficios exclusivos y primer mes gratuito"
+          }
+        },
+        {
+          code: "BETA50",
+          message: "🚀 Código Beta válido - 25% descuento",
+          accountData: {
+            company_name: "Beta Tester Company",
+            company_type: "beta",
+            subscription_type: "premium",
+            discount: 25,
+            verification_status: "pending",
+            description: "Cuenta beta para pruebas de nuevas funcionalidades"
+          }
+        },
+        {
+          code: "ENTERPRISE",
+          message: "💼 Código Enterprise válido - Acceso completo",
+          accountData: {
+            company_name: "Enterprise Solutions Ltd",
+            company_type: "enterprise",
+            subscription_type: "enterprise",
+            discount: 0,
+            verification_status: "verified",
+            description: "Soluciones empresariales con acceso completo a todas las funciones"
+          }
+        },
+        {
+          code: "ASTER01",
+          message: "🌟 Código Aster válido - Acceso completo",
+          accountData: {
+            company_name: "Aster Trading Group",
+            company_type: "premium",
+            subscription_type: "premium",
+            discount: 30,
+            verification_status: "verified",
+            description: "Grupo de trading especializado en oportunidades de alto valor"
+          }
+        },
+        {
+          code: "DEMO123",
+          message: "🔥 Código de demostración válido",
+          accountData: {
+            company_name: "Demo Company",
+            company_type: "demo",
+            subscription_type: "free",
+            discount: 0,
+            verification_status: "pending",
+            description: "Cuenta de demostración para pruebas"
+          }
+        }
       ]
 
       const foundCode = validCodes.find(c => c.code === code.toUpperCase())
 
       if (foundCode) {
-        return { isValid: true, message: foundCode.message }
+        return {
+          isValid: true,
+          message: foundCode.message,
+          accountData: foundCode.accountData
+        }
       }
 
       return { isValid: false, message: "❌ Código inválido o expirado" }
