@@ -102,9 +102,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithCode = async (accessCode: string) => {
     setLoading(true)
-    const result = await auth.signInWithCode(accessCode)
-    setLoading(false)
-    return result
+
+    try {
+      // Validar el código primero
+      const validation = await validateInvitationCode(accessCode)
+
+      if (!validation.isValid) {
+        setLoading(false)
+        return { error: new Error(validation.message), data: null }
+      }
+
+      // Si el código es válido, simular acceso exitoso sin Supabase
+      setLoading(false)
+      return {
+        data: {
+          codeValid: true,
+          accessCode: accessCode,
+          message: validation.message
+        },
+        error: null
+      }
+    } catch (error) {
+      setLoading(false)
+      return { error: new Error("Error al validar código"), data: null }
+    }
   }
 
   const validateInvitationCode = async (code: string): Promise<{ isValid: boolean, message: string }> => {
