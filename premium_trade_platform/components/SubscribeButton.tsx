@@ -4,7 +4,9 @@ import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Button } from '@/components/ui/button'
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder_for_demo'
+)
 
 interface SubscribeButtonProps {
   userId?: string
