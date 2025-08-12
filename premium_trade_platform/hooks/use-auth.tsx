@@ -119,13 +119,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: {
           codeValid: true,
           accessCode: accessCode,
-          message: validation.message
+          message: validation.message,
+          accountData: validation.accountData
         },
         error: null
       }
     } catch (error) {
       setLoading(false)
       return { error: new Error("Error al validar código"), data: null }
+    }
+  }
+
+  const createAccountWithCode = async (code: string, userData?: any) => {
+    setLoading(true)
+
+    try {
+      // Validar el código y obtener datos de la cuenta
+      const validation = await validateInvitationCode(code)
+
+      if (!validation.isValid || !validation.accountData) {
+        setLoading(false)
+        return { error: new Error(validation.message), data: null }
+      }
+
+      // Crear cuenta con los datos del código + datos adicionales del usuario
+      const accountData = {
+        ...validation.accountData,
+        ...userData,
+        invitation_code: code,
+        created_with_code: true
+      }
+
+      // Simular creación exitosa de cuenta
+      // En una implementación real, aquí crearías el usuario en Supabase
+      console.log('Creating account with data:', accountData)
+
+      setLoading(false)
+      return {
+        data: {
+          success: true,
+          accountData: accountData,
+          message: `Cuenta creada para ${validation.accountData.company_name}`
+        },
+        error: null
+      }
+    } catch (error) {
+      setLoading(false)
+      return { error: new Error("Error al crear cuenta"), data: null }
     }
   }
 
