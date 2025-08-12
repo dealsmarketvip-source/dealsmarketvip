@@ -331,6 +331,12 @@ export default function HomePage() {
           </p>
         </div>
       </footer>
+
+      {/* Welcome Panel */}
+      <WelcomePanel
+        isOpen={showWelcomePanel}
+        onClose={() => setShowWelcomePanel(false)}
+      />
     </div>
   )
 }
