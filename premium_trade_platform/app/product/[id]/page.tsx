@@ -201,7 +201,11 @@ export default function ProductPage() {
         setUserLimits(data)
       }
     } catch (error) {
-      console.error('Error fetching user limits:', error)
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.error('Error fetching user limits:', {
+        message: errorMessage,
+        error: error instanceof Error ? error.stack : error
+      })
     }
   }
 
