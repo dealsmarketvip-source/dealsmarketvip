@@ -325,7 +325,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
                 codeValidation.isValid === false ? 'text-red-500' :
                 'text-muted-foreground'
               }`}>
-                {codeValidation.message || "Con un código válido serás verificado automáticamente"}
+                {codeValidation.message || "Los códigos promocionales aplican descuentos especiales"}
               </p>
             </motion.div>
           </div>
