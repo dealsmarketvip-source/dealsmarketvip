@@ -62,8 +62,91 @@ export default function ProductPage() {
   const fetchProduct = async () => {
     try {
       setLoading(true)
+
+      // Check if this is a demo product ID
+      if (productId.startsWith('demo-')) {
+        const demoProducts = [
+          {
+            id: 'demo-1',
+            title: 'iPhone 14 Pro Max 256GB',
+            description: 'Producto de demostración.\n\nEste es un iPhone 14 Pro Max en excelente estado, con 256GB de almacenamiento. Incluye todos los accesorios originales y caja.\n\nCaracterísticas:\n- Pantalla Super Retina XDR de 6.7"\n- Chip A16 Bionic\n- Sistema de cámaras Pro de 48MP\n- Batería que dura todo el día\n- Resistente al agua IP68',
+            price: 1200,
+            currency: 'EUR',
+            images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=800&fit=crop'],
+            seller_id: 'demo-seller',
+            status: 'active',
+            condition: 'new',
+            category: 'electronics',
+            views_count: 125,
+            favorites_count: 8,
+            shipping_included: true,
+            shipping_cost: 0,
+            location: 'Madrid, España',
+            featured: true,
+            verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            specifications: {
+              'Marca': 'Apple',
+              'Modelo': 'iPhone 14 Pro Max',
+              'Almacenamiento': '256GB',
+              'Color': 'Deep Purple',
+              'Estado': 'Nuevo'
+            },
+            seller: {
+              id: 'demo-seller',
+              full_name: 'Vendedor Demo',
+              verification_status: 'verified' as const,
+              profile_image_url: undefined,
+              created_at: '2023-01-01T00:00:00Z'
+            }
+          },
+          {
+            id: 'demo-2',
+            title: 'MacBook Pro 14" M3',
+            description: 'Producto de demostración.\n\nMacBook Pro 14" con chip M3, ideal para profesionales creativos y desarrolladores.\n\nCaracterísticas:\n- Chip M3 de Apple\n- 16GB de memoria unificada\n- SSD de 512GB\n- Pantalla Liquid Retina XDR de 14.2"\n- Batería de hasta 18 horas',
+            price: 2200,
+            currency: 'EUR',
+            images: ['https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&h=800&fit=crop'],
+            seller_id: 'demo-seller-2',
+            status: 'active',
+            condition: 'like_new',
+            category: 'electronics',
+            views_count: 89,
+            favorites_count: 12,
+            shipping_included: false,
+            shipping_cost: 15,
+            location: 'Barcelona, España',
+            featured: false,
+            verified: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            specifications: {
+              'Marca': 'Apple',
+              'Modelo': 'MacBook Pro 14"',
+              'Procesador': 'M3',
+              'RAM': '16GB',
+              'Almacenamiento': '512GB SSD'
+            },
+            seller: {
+              id: 'demo-seller-2',
+              full_name: 'TechStore Demo',
+              verification_status: 'verified' as const,
+              profile_image_url: undefined,
+              created_at: '2023-01-01T00:00:00Z'
+            }
+          }
+        ]
+
+        const demoProduct = demoProducts.find(p => p.id === productId)
+        if (demoProduct) {
+          setProduct(demoProduct as any)
+          return
+        }
+      }
+
       const { data, error } = await db.products.getById(productId)
-      
+
       if (error) throw error
       if (!data) {
         toast.error("Producto no encontrado")
@@ -73,10 +156,12 @@ export default function ProductPage() {
 
       setProduct(data as ExtendedProduct)
 
-      // Increment view count
-      await db.products.update(productId, {
-        views_count: (data.views_count || 0) + 1
-      })
+      // Increment view count (only if not a demo product)
+      if (!productId.startsWith('demo-')) {
+        await db.products.update(productId, {
+          views_count: (data.views_count || 0) + 1
+        })
+      }
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
@@ -84,7 +169,18 @@ export default function ProductPage() {
         message: errorMessage,
         error: error instanceof Error ? error.stack : error
       })
-      toast.error(`Error al cargar el producto: ${errorMessage}`)
+
+      // Check if it's a Supabase configuration issue
+      const isConfigIssue = errorMessage.includes('placeholder') ||
+                           errorMessage.includes('not properly configured') ||
+                           !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+                           process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
+
+      if (isConfigIssue) {
+        toast.error("Base de datos no configurada. Mostrando productos de demostración.")
+      } else {
+        toast.error(`Error al cargar el producto: ${errorMessage}`)
+      }
     } finally {
       setLoading(false)
     }
