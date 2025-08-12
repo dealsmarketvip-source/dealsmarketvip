@@ -24,7 +24,11 @@ export default function HomePage() {
   }, [user, router])
 
   const handleGetStarted = () => {
-    setShowROIPresentation(true)
+    if (user) {
+      router.push('/marketplace')
+    } else {
+      router.push('/create-account')
+    }
   }
 
   const handleROIComplete = () => {
