@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Crown, Store, ShoppingBag, Menu, X, User, LogOut } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { AuthModal } from "@/components/auth/auth-modal"
+import { WelcomePanel } from "@/components/WelcomePanel"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
