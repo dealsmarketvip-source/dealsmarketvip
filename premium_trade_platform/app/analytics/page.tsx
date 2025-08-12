@@ -239,8 +239,12 @@ export default function AnalyticsPage() {
       })
 
     } catch (error) {
-      console.error('Error fetching analytics:', error)
-      toast.error("Error al cargar las analíticas")
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.error('Error fetching analytics:', {
+        message: errorMessage,
+        error: error instanceof Error ? error.stack : error
+      })
+      toast.error(`Error al cargar las analíticas: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
