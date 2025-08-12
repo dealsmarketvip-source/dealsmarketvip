@@ -385,15 +385,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
           className="text-center space-y-6"
         >
           <div className="space-y-2">
-            <motion.div
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.2, 1]
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <Key className="h-16 w-16 text-primary mx-auto glow-primary-strong" />
-            </motion.div>
+            <Key className="h-16 w-16 text-primary mx-auto glow-primary" />
             <h3 className="text-xl font-semibold glow-text">Acceso con Código</h3>
             <p className="text-muted-foreground">
               Ingresa tu código de invitación para acceso directo
