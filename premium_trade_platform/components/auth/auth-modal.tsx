@@ -161,12 +161,14 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
     try {
       const { error, data } = await signInWithCode(codeOnlyForm.accessCode)
       if (error) {
+        // If code is invalid, show error
         toast.error("Error con el código: " + error.message)
-      } else {
-        toast.success("¡Código válido! Redirigiendo...")
+      } else if (data?.codeValid) {
+        // If code is valid, redirect to account creation
+        toast.success("¡Código válido! Creando tu cuenta...")
         setTimeout(() => {
           onClose()
-          window.location.href = '/marketplace'
+          window.location.href = `/create-account?code=${codeOnlyForm.accessCode}`
         }, 1000)
       }
     } catch (error) {
