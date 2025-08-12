@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { LoadingSpinner, LoadingOverlay, LoadingProductCard } from "@/components/ui/loading-spinner"
 import { 
   Search, 
   Filter, 
@@ -62,11 +63,13 @@ interface ExtendedProduct extends ProductWithImages {
 export default function MarketplacePage() {
   const { user, userProfile } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
   const [products, setProducts] = useState<ExtendedProduct[]>([])
   const [totalProducts, setTotalProducts] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFilters, setShowFilters] = useState(false)
+  const [favoriteLoading, setFavoriteLoading] = useState<string | null>(null)
   
   const [filters, setFilters] = useState<ProductFilters>({
     sort_by: 'created_at',
@@ -97,11 +100,11 @@ export default function MarketplacePage() {
         const demoProducts = [
           {
             id: 'demo-1',
-            title: 'iPhone 14 Pro Max 256GB',
+            title: 'iPhone 15 Pro Max 1TB',
             description: 'Producto de demostración. Configure Supabase para ver productos reales.',
             price: 1200,
             currency: 'EUR',
-            images: [],
+            images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop'],
             seller_id: 'demo-seller',
             status: 'active',
             condition: 'new',
@@ -128,7 +131,7 @@ export default function MarketplacePage() {
             description: 'Producto de demostración. Configure Supabase para ver productos reales.',
             price: 2200,
             currency: 'EUR',
-            images: [],
+            images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop'],
             seller_id: 'demo-seller-2',
             status: 'active',
             condition: 'like_new',
@@ -173,7 +176,6 @@ export default function MarketplacePage() {
       )
 
       if (error) {
-        // If error is an object with message property, throw the message
         const errorMessage = typeof error === 'object' && error.message ? error.message : String(error)
         throw new Error(errorMessage)
       }
@@ -195,27 +197,9 @@ export default function MarketplacePage() {
       }
 
     } catch (error) {
-      // Improve error logging to avoid [object Object]
-      const logError = error instanceof Error ? {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      } : {
-        type: typeof error,
-        value: String(error),
-        raw: error
-      }
-      console.error('Error fetching products:', logError)
-
-      // Check if it's a Supabase configuration issue
-      let errorMessage: string
-      if (error instanceof Error) {
-        errorMessage = error.message
-      } else if (typeof error === 'object' && error !== null && 'message' in error) {
-        errorMessage = String(error.message)
-      } else {
-        errorMessage = String(error)
-      }
+      console.error('Error fetching products:', error)
+      
+      const errorMessage = error instanceof Error ? error.message : String(error)
       const isConfigIssue = errorMessage.includes('placeholder') ||
                            errorMessage.includes('not properly configured') ||
                            errorMessage.includes('Database not configured') ||
@@ -224,15 +208,14 @@ export default function MarketplacePage() {
 
       if (isConfigIssue) {
         console.warn('Database not configured, using demo mode')
-        // Show demo products when database is not configured
         const demoProducts = [
           {
             id: 'demo-1',
-            title: 'iPhone 14 Pro Max 256GB',
+            title: 'iPhone 15 Pro Max 1TB',
             description: 'Producto de demostración. Configure Supabase para ver productos reales.',
             price: 1200,
             currency: 'EUR',
-            images: [],
+            images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop'],
             seller_id: 'demo-seller',
             status: 'active',
             condition: 'new',
@@ -252,43 +235,16 @@ export default function MarketplacePage() {
               verification_status: 'verified' as const,
               profile_image_url: undefined
             }
-          },
-          {
-            id: 'demo-2',
-            title: 'MacBook Pro 14" M3',
-            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
-            price: 2200,
-            currency: 'EUR',
-            images: [],
-            seller_id: 'demo-seller-2',
-            status: 'active',
-            condition: 'like_new',
-            category: 'electronics',
-            views_count: 89,
-            favorites_count: 12,
-            shipping_included: false,
-            shipping_cost: 15,
-            location: 'Barcelona, España',
-            featured: false,
-            verified: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            seller: {
-              id: 'demo-seller-2',
-              full_name: 'TechStore Demo',
-              verification_status: 'verified' as const,
-              profile_image_url: undefined
-            }
           }
         ]
         setProducts(demoProducts as any)
-        setTotalProducts(2)
+        setTotalProducts(1)
       } else {
-        const userFriendlyMessage = error instanceof Error ? error.message : 'Error desconocido'
-        toast.error(`Error al cargar los productos: ${userFriendlyMessage}`)
+        toast.error(`Error al cargar productos: ${errorMessage}`)
       }
     } finally {
       setLoading(false)
+      setInitialLoading(false)
     }
   }
 
@@ -298,6 +254,7 @@ export default function MarketplacePage() {
       return
     }
 
+    setFavoriteLoading(productId)
     try {
       const { error } = await db.favorites.add(userProfile.id, productId)
       if (error) throw error
@@ -307,6 +264,8 @@ export default function MarketplacePage() {
     } catch (error) {
       console.error('Error adding to favorites:', error)
       toast.error("Error al agregar a favoritos")
+    } finally {
+      setFavoriteLoading(null)
     }
   }
 
@@ -337,31 +296,6 @@ export default function MarketplacePage() {
     }
   }
 
-  const applyFilters = () => {
-    const [sortBy, sortOrder] = (filters.sort_by + '-' + filters.sort_order).split('-')
-    setFilters({
-      ...filters,
-      sort_by: sortBy as any,
-      sort_order: sortOrder as any
-    })
-    setCurrentPage(1)
-    fetchProducts()
-  }
-
-  const clearFilters = () => {
-    setSearchQuery('')
-    setPriceRange([0, 10000])
-    setSelectedCategory('all')
-    setSelectedCondition('all')
-    setShowVerifiedOnly(false)
-    setShowFeaturedOnly(false)
-    setFilters({
-      sort_by: 'created_at',
-      sort_order: 'desc'
-    })
-    setCurrentPage(1)
-  }
-
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
@@ -371,15 +305,39 @@ export default function MarketplacePage() {
 
   const totalPages = Math.ceil(totalProducts / itemsPerPage)
 
+  if (initialLoading) {
+    return <LoadingOverlay isLoading={true} text="Cargando marketplace..." variant="shopping" />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-                <ShoppingCart className="h-10 w-10 text-primary" />
+                <motion.div
+                  className="w-12 h-12 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center"
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(245, 158, 11, 0.3)",
+                      "0 0 40px rgba(245, 158, 11, 0.6)",
+                      "0 0 20px rgba(245, 158, 11, 0.3)"
+                    ]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <ShoppingCart className="h-6 w-6 text-primary-foreground" />
+                </motion.div>
                 Marketplace
               </h1>
               <p className="text-gray-300">
@@ -388,11 +346,24 @@ export default function MarketplacePage() {
             </div>
             
             <div className="flex items-center gap-3">
-              <Link href="/upload">
-                <Button className="bg-primary hover:bg-primary/90">
-                  <Package className="h-4 w-4 mr-2" />
-                  Vender Producto
-                </Button>
+              <Link href="/sell">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button className="bg-primary hover:bg-primary/90 relative overflow-hidden">
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                      animate={{
+                        x: ['-100%', '100%']
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                    />
+                    <Package className="h-4 w-4 mr-2" />
+                    Vender Producto
+                  </Button>
+                </motion.div>
               </Link>
               <Button
                 variant="outline"
@@ -431,8 +402,13 @@ export default function MarketplacePage() {
               <Button
                 onClick={fetchProducts}
                 className="bg-primary hover:bg-primary/90"
+                disabled={loading}
               >
-                Buscar
+                {loading ? (
+                  <LoadingSpinner size="sm" variant="default" />
+                ) : (
+                  'Buscar'
+                )}
               </Button>
             </div>
 
@@ -442,7 +418,7 @@ export default function MarketplacePage() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Filters Sidebar */}
@@ -454,7 +430,19 @@ export default function MarketplacePage() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={clearFilters}
+                    onClick={() => {
+                      setSearchQuery('')
+                      setPriceRange([0, 10000])
+                      setSelectedCategory('all')
+                      setSelectedCondition('all')
+                      setShowVerifiedOnly(false)
+                      setShowFeaturedOnly(false)
+                      setFilters({
+                        sort_by: 'created_at',
+                        sort_order: 'desc'
+                      })
+                      setCurrentPage(1)
+                    }}
                     className="text-gray-400 hover:text-white"
                   >
                     Limpiar
@@ -494,52 +482,6 @@ export default function MarketplacePage() {
                   />
                 </div>
 
-                {/* Condition Filter */}
-                <div>
-                  <Label className="text-gray-300 mb-3 block">Estado</Label>
-                  <Select value={selectedCondition} onValueChange={setSelectedCondition}>
-                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                      <SelectValue placeholder="Cualquier estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Cualquier estado</SelectItem>
-                      <SelectItem value="new">Nuevo</SelectItem>
-                      <SelectItem value="like_new">Como nuevo</SelectItem>
-                      <SelectItem value="good">Bueno</SelectItem>
-                      <SelectItem value="fair">Regular</SelectItem>
-                      <SelectItem value="poor">Malo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Quick Filters */}
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="verified-only"
-                      checked={showVerifiedOnly}
-                      onChange={(e) => setShowVerifiedOnly(e.target.checked)}
-                      className="rounded"
-                    />
-                    <Label htmlFor="verified-only" className="text-gray-300 text-sm">
-                      Solo vendedores verificados
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="featured-only"
-                      checked={showFeaturedOnly}
-                      onChange={(e) => setShowFeaturedOnly(e.target.checked)}
-                      className="rounded"
-                    />
-                    <Label htmlFor="featured-only" className="text-gray-300 text-sm">
-                      Solo productos destacados
-                    </Label>
-                  </div>
-                </div>
-
                 {/* Sort Options */}
                 <div>
                   <Label className="text-gray-300 mb-3 block">Ordenar por</Label>
@@ -566,13 +508,6 @@ export default function MarketplacePage() {
                     </SelectContent>
                   </Select>
                 </div>
-
-                <Button 
-                  onClick={applyFilters}
-                  className="w-full bg-primary hover:bg-primary/90"
-                >
-                  Aplicar Filtros
-                </Button>
               </CardContent>
             </Card>
           </div>
@@ -582,12 +517,7 @@ export default function MarketplacePage() {
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-4 animate-pulse">
-                    <div className="bg-gray-700 aspect-square rounded-lg mb-4"></div>
-                    <div className="bg-gray-700 h-4 rounded mb-2"></div>
-                    <div className="bg-gray-700 h-4 rounded w-2/3 mb-2"></div>
-                    <div className="bg-gray-700 h-6 rounded w-1/3"></div>
-                  </div>
+                  <LoadingProductCard key={i} />
                 ))}
               </div>
             ) : products.length === 0 ? (
@@ -603,13 +533,6 @@ export default function MarketplacePage() {
                       : 'Intenta ajustar tus filtros de búsqueda o explora otras categorías'
                     }
                   </p>
-                  <Button 
-                    onClick={clearFilters}
-                    variant="outline"
-                    className="border-gray-600"
-                  >
-                    Limpiar filtros
-                  </Button>
                 </CardContent>
               </Card>
             ) : (
@@ -626,187 +549,199 @@ export default function MarketplacePage() {
                       href={`/product/${product.id}`}
                       onClick={() => handleProductClick(product.id)}
                     >
-                      <Card className="bg-gray-800 border-gray-700 hover:border-primary/50 transition-all cursor-pointer group">
-                        <CardContent className="p-0">
-                          {viewMode === 'grid' ? (
-                            // Grid View
-                            <>
-                              <div className="relative aspect-square overflow-hidden rounded-t-lg">
-                                {product.images?.length > 0 ? (
-                                  <img 
-                                    src={product.images[0]} 
-                                    alt={product.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                                    <Package className="h-12 w-12 text-gray-400" />
-                                  </div>
-                                )}
-                                
-                                {/* Badges */}
-                                <div className="absolute top-3 left-3 flex gap-2">
-                                  {product.featured && (
-                                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                                      <Star className="h-3 w-3 mr-1" />
-                                      Destacado
-                                    </Badge>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Card className="bg-gray-800 border-gray-700 hover:border-primary/50 transition-all cursor-pointer group">
+                          <CardContent className="p-0">
+                            {viewMode === 'grid' ? (
+                              // Grid View
+                              <>
+                                <div className="relative aspect-square overflow-hidden rounded-t-lg">
+                                  {product.images?.length > 0 ? (
+                                    <img 
+                                      src={product.images[0]} 
+                                      alt={product.title}
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                                      <Package className="h-12 w-12 text-gray-400" />
+                                    </div>
                                   )}
-                                  {product.seller?.verification_status === 'verified' && (
-                                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                                      <Shield className="h-3 w-3 mr-1" />
-                                    </Badge>
-                                  )}
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="absolute top-3 right-3">
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="bg-black/50 hover:bg-black/70 text-white"
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleAddToFavorites(product.id)
-                                    }}
-                                  >
-                                    <Heart className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                              
-                              <div className="p-4">
-                                <h3 className="text-white font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                                  {product.title}
-                                </h3>
-                                
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Avatar className="h-6 w-6">
-                                    <AvatarImage src={product.seller?.profile_image_url} />
-                                    <AvatarFallback className="text-xs">
-                                      {product.seller?.full_name?.charAt(0) || 'V'}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span className="text-gray-400 text-sm">
-                                    {product.seller?.full_name || 'Vendedor'}
-                                  </span>
-                                </div>
-
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-2xl font-bold text-primary">
-                                      {formatPrice(product.price)}
-                                    </p>
-                                    {product.shipping_included ? (
-                                      <p className="text-xs text-green-400">Envío incluido</p>
-                                    ) : (
-                                      <p className="text-xs text-gray-400">+ envío</p>
-                                    )}
-                                  </div>
                                   
-                                  <div className="text-right">
-                                    <div className="flex items-center gap-1 text-gray-400 text-sm">
-                                      <Eye className="h-3 w-3" />
-                                      {product.views_count}
-                                    </div>
-                                    <div className="flex items-center gap-1 text-gray-400 text-sm">
-                                      <Heart className="h-3 w-3" />
-                                      {product.favorites_count}
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {product.location && (
-                                  <div className="flex items-center gap-1 text-gray-400 text-sm mt-2">
-                                    <MapPin className="h-3 w-3" />
-                                    {product.location}
-                                  </div>
-                                )}
-                              </div>
-                            </>
-                          ) : (
-                            // List View
-                            <div className="flex gap-4 p-4">
-                              <div className="w-32 h-32 flex-shrink-0">
-                                {product.images?.length > 0 ? (
-                                  <img 
-                                    src={product.images[0]} 
-                                    alt={product.title}
-                                    className="w-full h-full object-cover rounded-lg"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full bg-gray-700 flex items-center justify-center rounded-lg">
-                                    <Package className="h-8 w-8 text-gray-400" />
-                                  </div>
-                                )}
-                              </div>
-                              
-                              <div className="flex-1">
-                                <div className="flex justify-between items-start mb-2">
-                                  <h3 className="text-white font-semibold text-lg group-hover:text-primary transition-colors">
-                                    {product.title}
-                                  </h3>
-                                  <div className="flex gap-2">
+                                  {/* Badges */}
+                                  <div className="absolute top-3 left-3 flex gap-2">
                                     {product.featured && (
                                       <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                                        <Star className="h-3 w-3 mr-1" />
                                         Destacado
                                       </Badge>
                                     )}
                                     {product.seller?.verification_status === 'verified' && (
                                       <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                                        Verificado
+                                        <Shield className="h-3 w-3 mr-1" />
                                       </Badge>
                                     )}
                                   </div>
+
+                                  {/* Action Buttons */}
+                                  <div className="absolute top-3 right-3">
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="bg-black/50 hover:bg-black/70 text-white"
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        handleAddToFavorites(product.id)
+                                      }}
+                                      disabled={favoriteLoading === product.id}
+                                    >
+                                      {favoriteLoading === product.id ? (
+                                        <LoadingSpinner size="sm" variant="default" />
+                                      ) : (
+                                        <Heart className="h-4 w-4" />
+                                      )}
+                                    </Button>
+                                  </div>
                                 </div>
                                 
-                                <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-                                  {product.description}
-                                </p>
-                                
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-4">
-                                    <div className="flex items-center gap-2">
-                                      <Avatar className="h-6 w-6">
-                                        <AvatarImage src={product.seller?.profile_image_url} />
-                                        <AvatarFallback className="text-xs">
-                                          {product.seller?.full_name?.charAt(0) || 'V'}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                      <span className="text-gray-400 text-sm">
-                                        {product.seller?.full_name || 'Vendedor'}
-                                      </span>
+                                <div className="p-4">
+                                  <h3 className="text-white font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                    {product.title}
+                                  </h3>
+                                  
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Avatar className="h-6 w-6">
+                                      <AvatarImage src={product.seller?.profile_image_url} />
+                                      <AvatarFallback className="text-xs">
+                                        {product.seller?.full_name?.charAt(0) || 'V'}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <span className="text-gray-400 text-sm">
+                                      {product.seller?.full_name || 'Vendedor'}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <p className="text-2xl font-bold text-primary">
+                                        {formatPrice(product.price)}
+                                      </p>
+                                      {product.shipping_included ? (
+                                        <p className="text-xs text-green-400">Envío incluido</p>
+                                      ) : (
+                                        <p className="text-xs text-gray-400">+ envío</p>
+                                      )}
                                     </div>
                                     
-                                    {product.location && (
+                                    <div className="text-right">
                                       <div className="flex items-center gap-1 text-gray-400 text-sm">
-                                        <MapPin className="h-3 w-3" />
-                                        {product.location}
-                                      </div>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="text-right">
-                                    <p className="text-2xl font-bold text-primary">
-                                      {formatPrice(product.price)}
-                                    </p>
-                                    <div className="flex items-center gap-3 text-gray-400 text-sm">
-                                      <div className="flex items-center gap-1">
                                         <Eye className="h-3 w-3" />
                                         {product.views_count}
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1 text-gray-400 text-sm">
                                         <Heart className="h-3 w-3" />
                                         {product.favorites_count}
                                       </div>
                                     </div>
                                   </div>
+
+                                  {product.location && (
+                                    <div className="flex items-center gap-1 text-gray-400 text-sm mt-2">
+                                      <MapPin className="h-3 w-3" />
+                                      {product.location}
+                                    </div>
+                                  )}
+                                </div>
+                              </>
+                            ) : (
+                              // List View
+                              <div className="flex gap-4 p-4">
+                                <div className="w-32 h-32 flex-shrink-0">
+                                  {product.images?.length > 0 ? (
+                                    <img 
+                                      src={product.images[0]} 
+                                      alt={product.title}
+                                      className="w-full h-full object-cover rounded-lg"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gray-700 flex items-center justify-center rounded-lg">
+                                      <Package className="h-8 w-8 text-gray-400" />
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <div className="flex-1">
+                                  <div className="flex justify-between items-start mb-2">
+                                    <h3 className="text-white font-semibold text-lg group-hover:text-primary transition-colors">
+                                      {product.title}
+                                    </h3>
+                                    <div className="flex gap-2">
+                                      {product.featured && (
+                                        <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                                          Destacado
+                                        </Badge>
+                                      )}
+                                      {product.seller?.verification_status === 'verified' && (
+                                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                          Verificado
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                                    {product.description}
+                                  </p>
+                                  
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                      <div className="flex items-center gap-2">
+                                        <Avatar className="h-6 w-6">
+                                          <AvatarImage src={product.seller?.profile_image_url} />
+                                          <AvatarFallback className="text-xs">
+                                            {product.seller?.full_name?.charAt(0) || 'V'}
+                                          </AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-gray-400 text-sm">
+                                          {product.seller?.full_name || 'Vendedor'}
+                                        </span>
+                                      </div>
+                                      
+                                      {product.location && (
+                                        <div className="flex items-center gap-1 text-gray-400 text-sm">
+                                          <MapPin className="h-3 w-3" />
+                                          {product.location}
+                                        </div>
+                                      )}
+                                    </div>
+                                    
+                                    <div className="text-right">
+                                      <p className="text-2xl font-bold text-primary">
+                                        {formatPrice(product.price)}
+                                      </p>
+                                      <div className="flex items-center gap-3 text-gray-400 text-sm">
+                                        <div className="flex items-center gap-1">
+                                          <Eye className="h-3 w-3" />
+                                          {product.views_count}
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <Heart className="h-3 w-3" />
+                                          {product.favorites_count}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     </Link>
                   ))}
                 </div>
