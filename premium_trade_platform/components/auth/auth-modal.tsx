@@ -265,7 +265,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
           <div className="space-y-2">
             <Label htmlFor="invitationCode" className="flex items-center gap-2">
               <Key className="h-4 w-4 text-primary" />
-              Código de Invitación (Opcional)
+              Código Promocional (Opcional)
             </Label>
             <div className="relative">
               <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
