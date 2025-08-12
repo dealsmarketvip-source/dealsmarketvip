@@ -154,27 +154,46 @@ export default function CreateAccountPage() {
   const handlePaymentMethod = async () => {
     try {
       setLoading(true)
-      
-      const response = await fetch('/api/create-checkout-session', {
+
+      const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          priceId: 'premium_plan',
-          successUrl: `${window.location.origin}/create-account?step=credentials&payment=success`,
-          cancelUrl: window.location.href
+          email: credentials.email || 'temp@dealsmarket.com',
+          userId: 'temp_user_id'
         })
       })
 
       const data = await response.json()
 
-      if (data.url) {
-        window.location.href = data.url
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      if (data.sessionId) {
+        // Initialize Stripe and redirect
+        const stripe = await import('@stripe/stripe-js').then(module =>
+          module.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+        )
+
+        if (stripe) {
+          const { error } = await stripe.redirectToCheckout({
+            sessionId: data.sessionId
+          })
+
+          if (error) {
+            throw new Error(error.message)
+          }
+        } else {
+          throw new Error('No se pudo cargar Stripe')
+        }
       } else {
-        throw new Error('No se recibió la URL de pago')
+        throw new Error('No se recibió el session ID')
       }
 
     } catch (error) {
-      toast.error("Error al procesar el pago")
+      console.error('Payment error:', error)
+      toast.error(`Error al procesar el pago: ${error instanceof Error ? error.message : 'Error desconocido'}`)
     } finally {
       setLoading(false)
     }
