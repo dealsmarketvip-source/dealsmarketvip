@@ -20,8 +20,7 @@ export function Navigation() {
     if (user) {
       router.push('/marketplace')
     } else {
-      setAuthTab("register")
-      setShowAuthModal(true)
+      router.push('/create-account')
     }
   }
 
