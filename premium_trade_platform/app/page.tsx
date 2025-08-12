@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation"
 
 export default function HomePage() {
   const [showROIPresentation, setShowROIPresentation] = useState(false)
+  const [showWelcomePanel, setShowWelcomePanel] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
 
@@ -28,7 +29,7 @@ export default function HomePage() {
     if (user) {
       router.push('/marketplace')
     } else {
-      router.push('/create-account')
+      setShowWelcomePanel(true)
     }
   }
 
