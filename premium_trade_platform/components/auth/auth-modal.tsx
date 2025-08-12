@@ -428,7 +428,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
             >
               <Button
                 type="submit"
-                className="w-full gradient-primary glow-primary-strong pulse-glow shimmer"
+                className="w-full gradient-primary"
                 disabled={loading}
               >
                 {loading ? (
