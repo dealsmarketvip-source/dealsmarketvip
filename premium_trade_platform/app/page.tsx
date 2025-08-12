@@ -8,6 +8,7 @@ import { Crown, Users, DollarSign, Globe, ArrowRight, CheckCircle, Zap } from "l
 import { motion } from "framer-motion"
 import { Store, ShoppingBag } from "lucide-react"
 import { ROIPresentation } from "./components/roi-presentation"
+import { WelcomePanel } from "@/components/WelcomePanel"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 
