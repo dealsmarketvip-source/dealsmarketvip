@@ -431,23 +431,9 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
                 className="w-full gradient-primary"
                 disabled={loading}
               >
-                {loading ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Key className="h-4 w-4 mr-2" />
-                  </motion.div>
-                ) : (
-                  <Key className="mr-2 h-4 w-4" />
-                )}
+                <Key className="mr-2 h-4 w-4" />
                 {loading ? "Validando código..." : "Acceder con Código"}
-                <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </motion.div>
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </motion.div>
           </form>
