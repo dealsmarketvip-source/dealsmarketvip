@@ -357,7 +357,12 @@ export const db = {
           .single()
         return { data, error }
       } catch (error: any) {
-        return { data: null, error: { message: error.message || 'Get product failed' } }
+        const errorMessage = error instanceof Error ? error.message : (error?.message || 'Get product failed')
+        console.error('Error in products.getById:', {
+          message: errorMessage,
+          error: error instanceof Error ? error.stack : error
+        })
+        return { data: null, error: { message: errorMessage } }
       }
     },
 
