@@ -271,7 +271,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
               <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="invitationCode"
-                placeholder="PREMIUM2024, LUXURY100, BETA50"
+                placeholder="Código promocional (opcional)"
                 className={`pl-9 pr-12 transition-all duration-300 ${
                   codeValidation.isValid === true ? 'border-green-500 glow-accent' :
                   codeValidation.isValid === false ? 'border-red-500' : ''
