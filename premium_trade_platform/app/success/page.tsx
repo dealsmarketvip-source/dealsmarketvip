@@ -89,12 +89,19 @@ export default function SuccessPage() {
           <div className="bg-card/50 border border-primary/20 rounded-lg p-4 mb-6">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Crown className="w-5 h-5 text-primary" />
-              <span className="font-semibold text-foreground">Plan Premium Activado</span>
+              <span className="font-semibold text-foreground">
+                {isDemo ? 'Demo - Plan Premium' : 'Plan Premium Activado'}
+              </span>
             </div>
             <p className="text-sm text-muted-foreground">20 € / mes</p>
             {sessionId && (
               <p className="text-xs text-muted-foreground mt-2">
                 ID de sesión: {sessionId}
+              </p>
+            )}
+            {isDemo && (
+              <p className="text-xs text-orange-400 mt-2">
+                Modo demo - Configure las claves de Stripe para pagos reales
               </p>
             )}
           </div>
