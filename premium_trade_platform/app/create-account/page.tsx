@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 
 export default function CreateAccountPage() {
-  const { validateInvitationCode, signUp } = useAuth()
+  const { validateInvitationCode, signUp, createAccountWithCode } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   
