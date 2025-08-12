@@ -79,8 +79,12 @@ export default function ProductPage() {
       })
 
     } catch (error) {
-      console.error('Error fetching product:', error)
-      toast.error("Error al cargar el producto")
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      console.error('Error fetching product:', {
+        message: errorMessage,
+        error: error instanceof Error ? error.stack : error
+      })
+      toast.error(`Error al cargar el producto: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
