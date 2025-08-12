@@ -396,19 +396,22 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
             <div className="space-y-2">
               <Label htmlFor="accessCode">Código de Acceso</Label>
               <div className="relative">
+                <Key className="absolute left-3 top-3 h-4 w-4 text-primary z-20" />
                 <motion.div
+                  className="absolute inset-0 border border-primary/30 rounded-md"
                   animate={{
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 5, -5, 0]
+                    boxShadow: [
+                      "0 0 0 0 rgba(255, 215, 0, 0.1)",
+                      "0 0 0 3px rgba(255, 215, 0, 0.3)",
+                      "0 0 0 0 rgba(255, 215, 0, 0.1)"
+                    ]
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <Key className="absolute left-3 top-3 h-4 w-4 text-primary glow-primary" />
-                </motion.div>
+                />
                 <Input
                   id="accessCode"
-                  placeholder="PREMIUM2024, LUXURY100..."
-                  className="pl-9 text-center text-lg tracking-wider uppercase glow-accent"
+                  placeholder="Ingresa tu código..."
+                  className="pl-9 text-center text-lg tracking-wider uppercase relative z-10"
                   value={codeOnlyForm.accessCode}
                   onChange={(e) => setCodeOnlyForm(prev => ({
                     ...prev,
