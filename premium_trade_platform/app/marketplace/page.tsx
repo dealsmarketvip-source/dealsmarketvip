@@ -177,7 +177,49 @@ export default function MarketplacePage() {
 
       if (error) {
         const errorMessage = typeof error === 'object' && error.message ? error.message : String(error)
-        throw new Error(errorMessage)
+        console.error('Database error:', errorMessage)
+
+        // Show demo products for database errors instead of throwing
+        if (errorMessage.includes('Database not configured') || errorMessage.includes('not configured')) {
+          console.warn('Database not configured, showing demo products')
+          const demoProducts = [
+            {
+              id: 'demo-1',
+              title: 'iPhone 15 Pro Max 1TB',
+              description: 'Producto de demostración. Configure Supabase para ver productos reales.',
+              price: 1200,
+              currency: 'EUR',
+              images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop'],
+              seller_id: 'demo-seller',
+              status: 'active',
+              condition: 'new',
+              category: 'electronics',
+              views_count: 125,
+              favorites_count: 8,
+              shipping_included: true,
+              shipping_cost: 0,
+              location: 'Madrid, España',
+              featured: true,
+              verified: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              seller: {
+                id: 'demo-seller',
+                full_name: 'Vendedor Demo',
+                verification_status: 'verified' as const,
+                profile_image_url: undefined
+              }
+            }
+          ]
+          setProducts(demoProducts as any)
+          setTotalProducts(1)
+          return
+        }
+
+        // For other errors, just log and show empty state
+        setProducts([])
+        setTotalProducts(0)
+        return
       }
 
       setProducts(data || [])
