@@ -1,8 +1,16 @@
 import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { Suspense } from "react"
+import { Toaster } from "sonner"
+import { AuthProvider } from "@/hooks/use-auth"
+import { Navigation } from "@/components/navigation"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Deals Market - Test",
-  description: "Test page",
+  title: "Deals Market - Where Verified Companies Trade Excellence",
+  description: "Exclusive B2B marketplace connecting verified companies in Europe and the Middle East for premium deals",
 }
 
 export default function RootLayout({
@@ -12,8 +20,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {children}
+      <body className={inter.className}>
+        <AuthProvider>
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Cargando...</div></div>}>
+            <Navigation />
+            {children}
+          </Suspense>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: 'hsl(var(--card))',
+                color: 'hsl(var(--card-foreground))',
+                border: '1px solid hsl(var(--border))',
+              },
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   )
