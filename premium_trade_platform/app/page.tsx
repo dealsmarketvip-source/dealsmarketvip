@@ -20,6 +20,11 @@ export default function HomePage() {
   const { user } = useAuth()
   const router = useRouter()
 
+  // Track page view
+  useEffect(() => {
+    analytics.trackView('homepage');
+  }, []);
+
   // Redirect to marketplace if already authenticated
   useEffect(() => {
     if (user) {
