@@ -86,6 +86,15 @@ export default function MarketplacePage() {
 
   const itemsPerPage = 20
 
+  // Track page view
+  useEffect(() => {
+    analytics.trackView('marketplace', {
+      total_products: totalProducts,
+      view_mode: viewMode,
+      filters_applied: Object.keys(filters).length > 0
+    });
+  }, []);
+
   useEffect(() => {
     fetchProducts()
   }, [filters, currentPage, searchQuery])
