@@ -429,12 +429,12 @@ export const db = {
                              supabaseUrl.includes('demo')
 
         if (isConfigIssue) {
-          // Throw a proper Error object instead of returning error object
-          throw new Error('Database not configured - using fallback mode')
+          // Return error object instead of throwing to match expected interface
+          return { data: null, error: { message: 'Database not configured - using fallback mode' }, count: 0 }
         }
 
-        // Throw a proper Error object
-        throw new Error(errorMessage)
+        // Return error object instead of throwing to match expected interface
+        return { data: null, error: { message: errorMessage }, count: 0 }
       }
     },
 
