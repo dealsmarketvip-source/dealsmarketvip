@@ -33,6 +33,11 @@ export default function HomePage() {
   }, [user, router])
 
   const handleGetStarted = () => {
+    analytics.trackClick('get_started_button', {
+      authenticated: !!user,
+      location: 'hero_section'
+    });
+
     if (user) {
       router.push('/marketplace')
     } else {
