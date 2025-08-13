@@ -98,19 +98,17 @@ export default function HomePage() {
                   ease: "easeInOut"
                 }}
               >
-                <motion.img
+                <Image
                   src="https://images.pexels.com/photos/28891887/pexels-photo-28891887.jpeg"
                   alt="Modern Luxury Car Dealership - Premium Business Environment"
+                  width={800}
+                  height={600}
                   className="w-full h-auto rounded-xl shadow-2xl glow-primary"
-                  animate={{
-                    scale: [1, 1.02, 1],
-                    filter: [
-                      "drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))",
-                      "drop-shadow(0 0 40px rgba(255, 215, 0, 0.5))",
-                      "drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))"
-                    ]
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{
+                    filter: "drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))"
                   }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent"></div>
               </motion.div>
