@@ -177,6 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
+      // Optimización: Validación inmediata para códigos conocidos
       // Códigos válidos con datos de cuenta asociados - Solo BETA50 y ASTERO1
       const validCodes = [
         {
