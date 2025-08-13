@@ -1,51 +1,54 @@
-// This file configures the initialization of Sentry on the server
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
   
-  // Adjust this value in production
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  // Server-side sampling
+  tracesSampleRate: 0.1,
   
-  // Configure error filtering for server
-  beforeSend(event, hint) {
-    // Add server-specific context
-    if (event.tags) {
-      event.tags.runtime = 'server';
-    } else {
-      event.tags = { runtime: 'server' };
+  // Enable server-side session replay
+  // Note: This will only capture server-side events
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Sentry.Integrations.OnUncaughtException(),
+    new Sentry.Integrations.OnUnhandledRejection(),
+  ],
+  
+  // Performance monitoring
+  profilesSampleRate: 0.1,
+  
+  // Environment configuration
+  environment: process.env.NODE_ENV,
+  
+  // Filter out sensitive information
+  beforeSend(event) {
+    // Don't log API keys, passwords, etc.
+    if (event.request?.headers) {
+      delete event.request.headers.authorization;
+      delete event.request.headers.cookie;
     }
     
-    // Filter out database connection errors in development
-    if (process.env.NODE_ENV === 'development' && 
-        event.exception?.values?.some(v => 
-          v.value?.includes('ECONNREFUSED') ||
-          v.value?.includes('Database not configured')
-        )) {
+    // Filter out noise
+    if (event.exception?.values?.[0]?.value?.includes('Non-Error promise rejection captured')) {
       return null;
     }
     
     return event;
   },
   
-  // Set server-specific context
+  // Don't report errors from these URLs
+  ignoreErrors: [
+    'ResizeObserver loop limit exceeded',
+    'Non-Error promise rejection captured',
+    'ChunkLoadError',
+    'Loading chunk',
+    'Network request failed',
+  ],
+  
+  // Tag important context
   initialScope: {
     tags: {
-      component: 'dealsmarket-server',
-      runtime: 'nodejs',
-      environment: process.env.NODE_ENV,
+      component: 'server',
     },
   },
-  
-  // Performance monitoring
-  profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  
-  // Configure release tracking
-  release: process.env.VERCEL_GIT_COMMIT_SHA || 'development',
-  environment: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
-  
-  // Server-specific integrations
-  integrations: [
-    // Add server-specific integrations here
-  ],
 });
