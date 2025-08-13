@@ -83,7 +83,7 @@ export function LoginForm({ onSuccess, redirectTo = '/marketplace' }: LoginFormP
 
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!code || code.length !== 6) {
       toast.error('Por favor, introduce el código de 6 dígitos')
       return
@@ -92,29 +92,21 @@ export function LoginForm({ onSuccess, redirectTo = '/marketplace' }: LoginFormP
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/verify-login-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, code }),
-      })
+      const { data, error } = await verifyLoginCode(email, code)
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al verificar el código')
+      if (error) {
+        throw error
       }
 
       toast.success('¡Inicio de sesión exitoso!')
-      
+
       if (onSuccess) {
         onSuccess(data.user)
       }
-      
+
       // Redirect to marketplace or specified route
       router.push(redirectTo)
-      
+
     } catch (error: any) {
       toast.error(error.message || 'Error al verificar el código')
     } finally {
