@@ -5,6 +5,8 @@ import { Suspense } from "react"
 import { Toaster } from "sonner"
 import { AuthProvider } from "@/hooks/use-auth"
 import { Navigation } from "@/components/navigation"
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const inter = Inter({ subsets: ["latin"] })
 
