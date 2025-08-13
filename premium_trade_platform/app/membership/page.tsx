@@ -291,11 +291,10 @@ export default function MembershipPage() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90" 
+              <Button
+                className="w-full bg-primary hover:bg-primary/90"
                 onClick={handleUpgrade}
                 disabled={upgrading || currentPlan === 'premium'}
-                loading={upgrading}
               >
                 {currentPlan === 'premium' ? (
                   <>
