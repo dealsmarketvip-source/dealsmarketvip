@@ -39,7 +39,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { toast } from 'sonner'
 
 export default function AccountPage() {
-  const { user, userProfile, logout } = useAuth()
+  const { user, userProfile, signOut } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [saveLoading, setSaveLoading] = useState(false)
