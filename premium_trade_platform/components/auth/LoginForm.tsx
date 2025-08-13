@@ -25,6 +25,7 @@ export function LoginForm({ onSuccess, redirectTo = '/marketplace' }: LoginFormP
   const [codeSent, setCodeSent] = useState(false)
   const [timeLeft, setTimeLeft] = useState(0)
   const router = useRouter()
+  const { sendLoginCode, verifyLoginCode } = useAuth()
 
   const startCountdown = () => {
     let seconds = 600 // 10 minutes
