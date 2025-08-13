@@ -93,6 +93,12 @@ export default function MarketplacePage() {
     try {
       setLoading(true)
 
+      // Comprehensive error prevention - check all possible failure points
+      if (typeof window === 'undefined') {
+        console.warn('Running on server side, skipping fetch')
+        return
+      }
+
       // Early check for Supabase configuration to prevent all database errors
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
       if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('demo')) {
