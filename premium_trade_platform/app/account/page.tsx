@@ -88,9 +88,17 @@ export default function AccountPage() {
   const handleLogout = async () => {
     setLoading(true)
     try {
-      await logout()
-      toast.success('Sesión cerrada correctamente')
-      router.push('/')
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      })
+
+      if (response.ok) {
+        await signOut()
+        toast.success('Sesión cerrada correctamente')
+        router.push('/')
+      } else {
+        throw new Error('Error al cerrar sesión')
+      }
     } catch (error) {
       toast.error('Error al cerrar sesión')
     } finally {
