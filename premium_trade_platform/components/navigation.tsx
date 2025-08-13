@@ -183,12 +183,14 @@ export function Navigation() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
-            {navItems.map((item) => (
-              <NavButton key={item.href} item={item} />
-            ))}
-          </div>
+          {/* Desktop Navigation - Only show when authenticated */}
+          {user && (
+            <div className="hidden md:flex items-center space-x-2">
+              {navItems.map((item) => (
+                <NavButton key={item.href} item={item} />
+              ))}
+            </div>
+          )}
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
