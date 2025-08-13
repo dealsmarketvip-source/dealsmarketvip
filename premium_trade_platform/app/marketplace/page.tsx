@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LoadingSpinner, LoadingOverlay } from "@/components/loading-spinner"
+import { analytics } from "@/lib/analytics"
 import { 
   Search, 
   Filter, 
