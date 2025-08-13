@@ -10,6 +10,7 @@ import { Store, ShoppingBag } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { analytics } from "@/lib/analytics"
 
 // Lazy load heavy components for better performance
 const WelcomePanel = lazy(() => import("@/components/WelcomePanel").then(module => ({ default: module.WelcomePanel })))
