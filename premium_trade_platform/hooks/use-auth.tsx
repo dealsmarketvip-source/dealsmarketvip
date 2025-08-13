@@ -222,6 +222,84 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const sendLoginCode = async (email: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/auth/send-login-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al enviar código')
+      }
+
+      setLoading(false)
+      return { data, error: null }
+    } catch (error: any) {
+      setLoading(false)
+      return { data: null, error }
+    }
+  }
+
+  const verifyLoginCode = async (email: string, code: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/auth/verify-login-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al verificar código')
+      }
+
+      // If verification successful, set user state
+      if (data.success && data.user) {
+        // Create a mock Supabase user object
+        const mockUser: SupabaseUser = {
+          id: data.user.id,
+          email: data.user.email,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          aud: 'authenticated',
+          app_metadata: {},
+          user_metadata: {
+            full_name: data.user.full_name
+          },
+          role: 'authenticated',
+          email_confirmed_at: new Date().toISOString(),
+          phone_confirmed_at: null,
+          confirmation_sent_at: null,
+          confirmed_at: new Date().toISOString(),
+          recovery_sent_at: null,
+          last_sign_in_at: new Date().toISOString(),
+          phone: null,
+          factors: []
+        }
+
+        setUser(mockUser)
+        setUserProfile(data.user)
+      }
+
+      setLoading(false)
+      return { data, error: null }
+    } catch (error: any) {
+      setLoading(false)
+      return { data: null, error }
+    }
+  }
+
   const signOut = async () => {
     setLoading(true)
     const result = await auth.signOut()
