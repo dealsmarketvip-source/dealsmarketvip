@@ -54,23 +54,23 @@ export function Navigation() {
   }
 
   const navItems = [
-    { 
-      href: '/marketplace', 
-      label: 'Marketplace', 
+    {
+      href: '/marketplace',
+      label: 'Marketplace',
       icon: ShoppingCart,
       description: 'Explora productos premium',
-      requiresAuth: false
+      requiresAuth: true
     },
-    { 
-      href: '/account', 
-      label: 'Cuenta', 
+    {
+      href: '/account',
+      label: 'Cuenta',
       icon: User,
       description: 'Gestiona tu perfil',
       requiresAuth: true
     },
-    { 
-      href: '/settings', 
-      label: 'Ajustes', 
+    {
+      href: '/settings',
+      label: 'Ajustes',
       icon: Settings,
       description: 'Configuración de la cuenta',
       requiresAuth: true
