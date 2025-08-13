@@ -54,7 +54,7 @@ export function LoginForm({ onSuccess, redirectTo = '/marketplace' }: LoginFormP
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!email || !email.includes('@')) {
       toast.error('Por favor, introduce un email válido')
       return
@@ -63,18 +63,10 @@ export function LoginForm({ onSuccess, redirectTo = '/marketplace' }: LoginFormP
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/send-login-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      })
+      const { data, error } = await sendLoginCode(email)
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al enviar el código')
+      if (error) {
+        throw error
       }
 
       setCodeSent(true)
