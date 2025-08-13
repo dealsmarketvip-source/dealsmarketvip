@@ -7,12 +7,12 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
-  Crown, 
-  X, 
-  ArrowLeft, 
-  ArrowRight, 
-  CheckCircle, 
+import {
+  Crown,
+  X,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
   CreditCard,
   Key,
   Shield,
@@ -24,6 +24,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { toast } from 'sonner'
 import SubscribeButton from './SubscribeButton'
+import { LoadingSpinner } from './loading-spinner'
 
 interface WelcomePanelProps {
   isOpen: boolean
