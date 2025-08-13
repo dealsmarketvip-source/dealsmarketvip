@@ -306,12 +306,19 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
           </motion.div>
         )}
 
-        <Button 
+        <Button
           onClick={handleCodeSubmit}
           disabled={!invitationCode.trim() || isValidatingCode}
           className="w-full gradient-primary"
         >
-          {isValidatingCode ? 'Validando...' : 'Validar Código'}
+          {isValidatingCode ? (
+            <div className="flex items-center justify-center">
+              <LoadingSpinner size="sm" />
+              <span className="ml-2">Validando...</span>
+            </div>
+          ) : (
+            'Validar Código'
+          )}
         </Button>
       </div>
     </motion.div>
