@@ -39,6 +39,8 @@ export default function RootLayout({
             }}
           />
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
