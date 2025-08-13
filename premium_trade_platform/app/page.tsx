@@ -1,15 +1,18 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, lazy } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Crown, Users, DollarSign, Globe, ArrowRight, CheckCircle, Zap } from "lucide-react"
 import { motion } from "framer-motion"
 import { Store, ShoppingBag } from "lucide-react"
-import { WelcomePanel } from "@/components/WelcomePanel"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
+
+// Lazy load heavy components for better performance
+const WelcomePanel = lazy(() => import("@/components/WelcomePanel").then(module => ({ default: module.WelcomePanel })))
 
 export default function HomePage() {
   const [showWelcomePanel, setShowWelcomePanel] = useState(false)
