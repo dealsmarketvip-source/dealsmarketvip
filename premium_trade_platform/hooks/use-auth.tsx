@@ -29,18 +29,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
 
   useEffect(() => {
-    // Get initial session
+    // Get initial session with timeout for better performance
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        // Fetch user profile
-        const { data: profile } = await db.users.getByAuthId(session.user.id)
-        setUserProfile(profile)
+      try {
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Auth timeout')), 5000)
+        )
+
+        const sessionPromise = supabase.auth.getSession()
+
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any
+        setUser(session?.user ?? null)
+
+        if (session?.user) {
+          // Fetch user profile asynchronously without blocking
+          db.users.getByAuthId(session.user.id).then(({ data: profile }) => {
+            setUserProfile(profile)
+          }).catch(error => {
+            console.warn('Failed to load user profile:', error)
+            setUserProfile(null)
+          })
+        }
+      } catch (error) {
+        console.warn('Auth initialization failed:', error)
+        setUser(null)
+        setUserProfile(null)
+      } finally {
+        setLoading(false)
       }
-      
-      setLoading(false)
     }
 
     getInitialSession()
