@@ -240,11 +240,12 @@ export default function MarketplacePage() {
 
     } catch (error) {
       console.error('Error fetching products:', error)
-      
+
       const errorMessage = error instanceof Error ? error.message : String(error)
       const isConfigIssue = errorMessage.includes('placeholder') ||
                            errorMessage.includes('not properly configured') ||
                            errorMessage.includes('Database not configured') ||
+                           errorMessage.includes('Failed to fetch') ||
                            !process.env.NEXT_PUBLIC_SUPABASE_URL ||
                            process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
 
