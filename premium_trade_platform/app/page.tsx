@@ -32,9 +32,10 @@ export default function HomePage() {
   // Users can manually navigate using buttons instead
 
   const handleGetStarted = () => {
-    analytics.trackClick('get_started_button', {
-      authenticated: !!user,
-      location: 'hero_section'
+    analytics.trackClick({
+      element: 'get_started_button',
+      location: 'hero_section',
+      userId: user?.id
     });
 
     if (user) {
