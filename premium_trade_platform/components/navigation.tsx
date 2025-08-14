@@ -298,22 +298,23 @@ export function Navigation() {
                 </div>
               </div>
             ) : (
+              // Only show login/join buttons when NOT authenticated
               <div className="flex items-center space-x-2">
                 <Link href="/login">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       className="border-primary/30 text-primary hover:bg-primary/10"
                     >
                       <User className="mr-2 h-4 w-4" />
-                      Iniciar Sesión
+                      Sign In
                     </Button>
                   </motion.div>
                 </Link>
                 <Link href="/membership">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
+                    <Button
                       size="sm"
                       className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg relative overflow-hidden"
                     >
@@ -329,7 +330,7 @@ export function Navigation() {
                         }}
                       />
                       <Sparkles className="mr-2 h-4 w-4" />
-                      Unirse
+                      Join
                     </Button>
                   </motion.div>
                 </Link>
