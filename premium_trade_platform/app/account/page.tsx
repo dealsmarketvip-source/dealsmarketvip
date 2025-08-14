@@ -28,7 +28,7 @@ import {
   CheckCircle,
   Shield
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { db } from "@/lib/supabase"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/page-header"
