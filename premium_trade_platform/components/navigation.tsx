@@ -59,21 +59,21 @@ export function Navigation() {
       href: '/marketplace',
       label: 'Marketplace',
       icon: ShoppingCart,
-      description: 'Explora productos premium',
+      description: 'Explore premium products',
       requiresAuth: true
     },
     {
       href: '/account',
-      label: 'Cuenta',
+      label: 'Account',
       icon: User,
-      description: 'Gestiona tu perfil',
+      description: 'Manage your profile',
       requiresAuth: true
     },
     {
       href: '/settings',
-      label: 'Ajustes',
+      label: 'Settings',
       icon: Settings,
-      description: 'Configuración de la cuenta',
+      description: 'Account configuration',
       requiresAuth: true
     }
   ]
