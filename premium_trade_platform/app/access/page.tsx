@@ -10,12 +10,8 @@ export default function AccessPage() {
   const { user } = useAuth()
   const router = useRouter()
 
-  useEffect(() => {
-    // If user is already authenticated, redirect to marketplace
-    if (user) {
-      router.push('/marketplace')
-    }
-  }, [user, router])
+  // Removed auto-redirect to prevent fetch errors
+  // Users will navigate manually through presentation
 
   const handlePresentationComplete = () => {
     setShowPresentation(false)
