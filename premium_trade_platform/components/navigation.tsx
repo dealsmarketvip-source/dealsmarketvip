@@ -297,7 +297,7 @@ export function Navigation() {
                         ) : (
                           <LogOut className="h-4 w-4" />
                         )}
-                        Cerrar Sesión
+                        Sign Out
                       </button>
                     </div>
                   </div>
