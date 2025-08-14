@@ -124,28 +124,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true)
 
     try {
-      // Validar el código primero
-      const validation = await validateInvitationCode(accessCode)
+      // Import the enhanced auth module dynamically
+      const { validateAndLoginWithCode } = await import('@/lib/auth-enhanced')
 
-      if (!validation.isValid) {
+      const result = await validateAndLoginWithCode(accessCode.toUpperCase())
+
+      if (!result.success) {
         setLoading(false)
-        return { error: new Error(validation.message), data: null }
+        return { error: new Error(result.error), data: null }
       }
 
-      // Si el código es válido, simular acceso exitoso sin Supabase
+      // If successful, set the user state
+      if (result.data) {
+        setUser(result.data.user)
+        setUserProfile(result.data.profile)
+
+        // Store session in localStorage for persistence
+        if (typeof window !== 'undefined' && result.data.session) {
+          localStorage.setItem('supabase.auth.token', JSON.stringify(result.data.session))
+        }
+      }
+
       setLoading(false)
       return {
         data: {
-          codeValid: true,
-          accessCode: accessCode,
-          message: validation.message,
-          accountData: validation.accountData
+          success: true,
+          user: result.data?.user,
+          profile: result.data?.profile,
+          message: "Successfully logged in with code"
         },
         error: null
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false)
-      return { error: new Error("Error al validar código"), data: null }
+      return { error: new Error(error.message || "Error logging in with code"), data: null }
     }
   }
 
