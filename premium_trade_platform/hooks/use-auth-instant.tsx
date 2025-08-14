@@ -47,6 +47,8 @@ interface AuthContextType {
   signInWithCode: (accessCode: string) => Promise<{ error?: any; data?: any }>
   createAccountWithCode: (code: string, userData?: any) => Promise<{ error?: any; data?: any }>
   validateInvitationCode: (code: string) => Promise<{ isValid: boolean; message: string; accountData?: any }>
+  sendLoginCode: (email: string) => Promise<{ error?: any; data?: any }>
+  verifyLoginCode: (email: string, code: string) => Promise<{ error?: any; data?: any }>
   signOut: () => Promise<{ error?: any }>
   updateProfile: (updates: any) => Promise<{ error?: any }>
 }
