@@ -28,9 +28,6 @@ const nextConfig = {
       }
     ],
   },
-  output: 'export',
-  trailingSlash: false,
-  generateStaticParams: false,
   experimental: {
     turbo: {
       rules: {
