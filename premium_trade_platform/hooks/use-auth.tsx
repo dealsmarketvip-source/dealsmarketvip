@@ -190,53 +190,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const validateInvitationCode = async (code: string): Promise<{ isValid: boolean, message: string, accountData?: any }> => {
     if (!code.trim()) {
-      return { isValid: false, message: "Código requerido" }
+      return { isValid: false, message: "Code required" }
     }
 
     try {
-      // Optimización: Validación inmediata para códigos conocidos
-      // Códigos válidos con datos de cuenta asociados - Solo BETA50 y ASTERO1
-      const validCodes = [
-        {
-          code: "BETA50",
-          message: "🚀 Código Beta válido - Acceso COMPLETO",
-          accountData: {
-            company_name: "Beta Tester Company",
-            company_type: "enterprise",
-            subscription_type: "enterprise",
-            discount: 0,
-            verification_status: "verified",
-            description: "Acceso completo para testing beta - Todas las funcionalidades disponibles"
-          }
-        },
-        {
-          code: "ASTERO1",
-          message: "🌟 Código Astero válido - Acceso COMPLETO",
-          accountData: {
-            company_name: "Astero Trading Group",
-            company_type: "enterprise",
-            subscription_type: "enterprise",
-            discount: 0,
-            verification_status: "verified",
-            description: "Acceso empresarial completo con todas las funcionalidades premium"
-          }
-        }
-      ]
+      // Use real database validation
+      const { data, error } = await supabase
+        .rpc('validate_invitation_code', { code_input: code.toUpperCase() })
 
-      const foundCode = validCodes.find(c => c.code === code.toUpperCase())
-
-      if (foundCode) {
-        return {
-          isValid: true,
-          message: foundCode.message,
-          accountData: foundCode.accountData
-        }
+      if (error || !data) {
+        return { isValid: false, message: "❌ Invalid or expired code" }
       }
 
-      return { isValid: false, message: "❌ Código inválido o expirado" }
+      // Get code details from database
+      const { data: codeDetails, error: codeError } = await supabase
+        .from('invitation_codes')
+        .select('*')
+        .eq('code', code.toUpperCase())
+        .single()
+
+      if (codeError || !codeDetails) {
+        return { isValid: false, message: "❌ Code not found" }
+      }
+
+      const accountData = {
+        company_name: code.toUpperCase() === 'ASTERO1' ? 'Astero Trading Group' : 'Beta Tester Company',
+        company_type: 'enterprise',
+        subscription_type: 'enterprise',
+        verification_status: 'verified',
+        permissions: codeDetails.benefits?.permissions || ['marketplace', 'selling'],
+        description: code.toUpperCase() === 'ASTERO1'
+          ? 'Complete enterprise access with all premium features'
+          : 'Full beta access with all functionalities available'
+      }
+
+      return {
+        isValid: true,
+        message: code.toUpperCase() === 'ASTERO1'
+          ? "🌟 Astero code valid - COMPLETE ACCESS"
+          : "🚀 Beta code valid - COMPLETE ACCESS",
+        accountData
+      }
     } catch (error) {
       console.error('Error validating invitation code:', error)
-      return { isValid: false, message: "❌ Error al validar código" }
+      return { isValid: false, message: "❌ Error validating code" }
     }
   }
 
