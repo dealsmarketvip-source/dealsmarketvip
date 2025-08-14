@@ -184,6 +184,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return validateCodeInstant(code)
   }
 
+  const sendLoginCode = async (email: string) => {
+    // For instant auth, simulate sending code
+    return { data: { success: true, message: 'Code sent' }, error: null }
+  }
+
+  const verifyLoginCode = async (email: string, code: string) => {
+    // For instant auth, simulate verification
+    const mockUser = {
+      id: `user_${Date.now()}`,
+      email,
+      full_name: 'Test User',
+      subscription_type: 'free' as const,
+      verification_status: 'verified' as const
+    }
+
+    setUser(mockUser)
+    setUserProfile(mockUser)
+    setInstantAuth(mockUser)
+
+    return { data: { success: true, user: mockUser }, error: null }
+  }
+
   const signOut = async () => {
     // Instant sign out
     try {
