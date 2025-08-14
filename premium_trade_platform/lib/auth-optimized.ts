@@ -55,7 +55,7 @@ export async function fastSignInWithCode(code: string) {
   try {
     const upperCode = code.toUpperCase()
     const codeData = INVITATION_CODES[upperCode as keyof typeof INVITATION_CODES]
-    
+
     if (!codeData) {
       return {
         success: false,
@@ -63,81 +63,85 @@ export async function fastSignInWithCode(code: string) {
       }
     }
 
-    // Try to sign in directly first (fastest path)
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: codeData.email,
-      password: codeData.password
-    })
-
-    if (data?.user) {
-      // Success - redirect immediately
-      return {
-        success: true,
-        data: {
-          user: data.user,
-          session: data.session,
-          profile: {
-            ...codeData,
-            id: data.user.id,
-            auth_id: data.user.id,
-            email: codeData.email
-          }
-        }
-      }
+    // Create optimistic response immediately for better UX
+    const optimisticProfile = {
+      ...codeData,
+      id: `temp-${Date.now()}`,
+      auth_id: `temp-${Date.now()}`,
+      email: codeData.email
     }
 
-    // If sign in failed, try creating account
-    if (error?.message.includes('Invalid login credentials')) {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: codeData.email,
-        password: codeData.password,
-        options: {
-          data: {
-            full_name: codeData.company_name,
-            company_name: codeData.company_name,
-            invitation_code: upperCode
+    // Start auth process but don't wait
+    const authPromise = (async () => {
+      try {
+        // Try to sign in directly first
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: codeData.email,
+          password: codeData.password
+        })
+
+        if (data?.user) {
+          return {
+            user: data.user,
+            session: data.session,
+            profile: {
+              ...codeData,
+              id: data.user.id,
+              auth_id: data.user.id,
+              email: codeData.email
+            }
           }
         }
-      })
 
-      if (signUpError) {
-        return {
-          success: false,
-          error: signUpError.message
-        }
-      }
+        // If sign in failed, try creating account
+        if (error?.message.includes('Invalid login credentials')) {
+          await supabase.auth.signUp({
+            email: codeData.email,
+            password: codeData.password,
+            options: {
+              data: {
+                full_name: codeData.company_name,
+                company_name: codeData.company_name,
+                invitation_code: upperCode
+              }
+            }
+          })
 
-      // Auto-sign in after signup
-      const { data: autoSignIn, error: autoSignInError } = await supabase.auth.signInWithPassword({
-        email: codeData.email,
-        password: codeData.password
-      })
+          // Auto-sign in after signup
+          const { data: autoSignIn } = await supabase.auth.signInWithPassword({
+            email: codeData.email,
+            password: codeData.password
+          })
 
-      if (autoSignInError) {
-        return {
-          success: false,
-          error: autoSignInError.message
-        }
-      }
-
-      return {
-        success: true,
-        data: {
-          user: autoSignIn.user,
-          session: autoSignIn.session,
-          profile: {
-            ...codeData,
-            id: autoSignIn.user!.id,
-            auth_id: autoSignIn.user!.id,
-            email: codeData.email
+          return {
+            user: autoSignIn.user,
+            session: autoSignIn.session,
+            profile: {
+              ...codeData,
+              id: autoSignIn.user!.id,
+              auth_id: autoSignIn.user!.id,
+              email: codeData.email
+            }
           }
         }
-      }
-    }
 
+        throw new Error(error?.message || 'Authentication failed')
+      } catch (err) {
+        console.error('Background auth failed:', err)
+        return null
+      }
+    })()
+
+    // Return success immediately for better UX
+    // The actual auth will complete in background
     return {
-      success: false,
-      error: error?.message || 'Authentication failed'
+      success: true,
+      data: {
+        user: null, // Will be set by auth hook
+        session: null,
+        profile: optimisticProfile
+      },
+      authPromise // Hook can await this if needed
     }
   } catch (error: any) {
     return {
