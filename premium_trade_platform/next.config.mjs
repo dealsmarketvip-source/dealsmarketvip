@@ -28,6 +28,8 @@ const nextConfig = {
       }
     ],
   },
+  output: 'standalone',
+  trailingSlash: false,
   experimental: {
     turbo: {
       rules: {
