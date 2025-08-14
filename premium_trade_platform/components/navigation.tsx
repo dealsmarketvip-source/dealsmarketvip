@@ -83,11 +83,11 @@ export function Navigation() {
 
     const handleClick = () => {
       if (item.requiresAuth && !user) {
-        toast.error('Debes iniciar sesión para acceder')
-        router.push('/login')
+        toast.error('Please sign in to access this feature')
+        window.location.href = '/login'
         return
       }
-      router.push(item.href)
+      window.location.href = item.href
       setIsMenuOpen(false)
     }
 
