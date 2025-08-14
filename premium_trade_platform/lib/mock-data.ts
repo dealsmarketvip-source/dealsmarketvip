@@ -32,7 +32,7 @@ export const MOCK_PRODUCTS = [
     seller: {
       id: 'seller-1',
       full_name: 'Tech Innovations SL',
-      verification_status: 'verified',
+      verification_status: 'verified' as const,
       profile_image_url: undefined
     }
   },
@@ -69,7 +69,7 @@ export const MOCK_PRODUCTS = [
     seller: {
       id: 'seller-2',
       full_name: 'Digital Solutions Corp',
-      verification_status: 'verified',
+      verification_status: 'verified' as const,
       profile_image_url: undefined
     }
   },
@@ -100,7 +100,7 @@ export const MOCK_PRODUCTS = [
     seller: {
       id: 'seller-3',
       full_name: 'Premium Motors SA',
-      verification_status: 'verified',
+      verification_status: 'verified' as const,
       profile_image_url: undefined
     }
   },
@@ -131,7 +131,7 @@ export const MOCK_PRODUCTS = [
     seller: {
       id: 'seller-4',
       full_name: 'Luxury Timepieces Ltd',
-      verification_status: 'verified',
+      verification_status: 'verified' as const,
       profile_image_url: undefined
     }
   },
@@ -162,7 +162,7 @@ export const MOCK_PRODUCTS = [
     seller: {
       id: 'seller-5',
       full_name: 'Photo Pro Studios',
-      verification_status: 'verified',
+      verification_status: 'verified' as const,
       profile_image_url: undefined
     }
   },
@@ -193,7 +193,7 @@ export const MOCK_PRODUCTS = [
     seller: {
       id: 'seller-6',
       full_name: 'Modern Art Gallery',
-      verification_status: 'verified',
+      verification_status: 'verified' as const,
       profile_image_url: undefined
     }
   }
