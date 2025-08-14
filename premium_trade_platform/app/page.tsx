@@ -25,12 +25,8 @@ export default function HomePage() {
     analytics.trackView('homepage');
   }, []);
 
-  // Redirect to marketplace if already authenticated
-  useEffect(() => {
-    if (user) {
-      router.push('/marketplace')
-    }
-  }, [user, router])
+  // Removed auto-redirect to prevent fetch errors
+  // Users can manually navigate using buttons instead
 
   const handleGetStarted = () => {
     analytics.trackClick('get_started_button', {
