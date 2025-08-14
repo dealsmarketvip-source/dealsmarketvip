@@ -415,9 +415,9 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
         </Card>
       )}
 
-      <Button 
+      <Button
         onClick={() => {
-          onClose()
+          // Instant redirect without closing modal first
           window.location.href = '/marketplace'
         }}
         className="w-full gradient-primary"
