@@ -88,14 +88,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithCode = async (accessCode: string) => {
     // Instant code authentication
     try {
-      const result = loginWithCodeInstant(accessCode)
+      const result = await loginWithCodeInstant(accessCode)
 
       if (result.success) {
         setUser(result.user)
         setUserProfile(result.user)
 
         // Redirect immediately
-        window.location.href = '/marketplace'
+        setTimeout(() => {
+          window.location.href = '/marketplace'
+        }, 500) // Small delay to ensure state is updated
 
         return {
           data: {
