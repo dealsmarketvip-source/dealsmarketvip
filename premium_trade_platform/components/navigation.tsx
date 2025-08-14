@@ -218,7 +218,7 @@ export function Navigation() {
               </motion.div>
             )}
 
-            {/* User Menu */}
+            {/* User Menu - Only show when authenticated */}
             {user ? (
               <div className="flex items-center space-x-3">
                 {/* Notifications */}
