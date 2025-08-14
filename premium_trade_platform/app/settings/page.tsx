@@ -1,520 +1,483 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { useAuth } from "@/hooks/use-auth"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { 
   Settings as SettingsIcon, 
   Bell, 
   Shield, 
-  Palette, 
+  CreditCard, 
   Globe, 
-  Download,
+  Moon, 
+  Sun,
+  Volume2,
+  VolumeX,
+  Mail,
+  Smartphone,
+  Lock,
+  Eye,
+  EyeOff,
   Trash2,
   AlertTriangle,
-  Moon,
-  Sun,
-  Monitor,
-  Mail,
-  MessageSquare,
-  Lock,
-  Key,
-  CreditCard,
-  Database,
-  LogOut,
-  UserX
+  Save,
+  CheckCircle,
+  X
 } from "lucide-react"
-import { LoadingSpinner, LoadingOverlay } from "@/components/loading-spinner"
+import { useAuth } from "@/hooks/use-auth"
 import { toast } from "sonner"
-import { useTheme } from "next-themes"
+import { PageHeader } from "@/components/page-header"
+import { PageLoading, EnhancedLoading } from "@/components/ui/enhanced-loading"
 
 export default function SettingsPage() {
-  const { user, userProfile, loading, signOut } = useAuth()
-  const { theme, setTheme } = useTheme()
+  const { user, userProfile, updateProfile } = useAuth()
+  const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  
-  // Settings states
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: true,
-    sms: false,
-    marketing: false,
-    newDeals: true,
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
+  const [settings, setSettings] = useState({
+    // Notification preferences
+    emailNotifications: true,
+    pushNotifications: true,
+    marketingEmails: false,
+    orderUpdates: true,
     priceAlerts: true,
-    systemUpdates: false
-  })
-  
-  const [privacy, setPrivacy] = useState({
-    profileVisible: true,
+    
+    // Privacy settings
+    profileVisibility: 'public',
     showEmail: false,
     showPhone: false,
-    allowDirectContact: true,
-    dataAnalytics: true
-  })
-
-  const [preferences, setPreferences] = useState({
-    language: 'es',
+    
+    // Display preferences
+    theme: 'dark',
+    language: 'en',
     currency: 'EUR',
     timezone: 'Europe/Madrid',
-    emailFrequency: 'daily'
+    
+    // Security settings
+    twoFactorEnabled: false,
+    sessionTimeout: '24'
   })
 
-  const handleSaveSettings = async () => {
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push('/login')
+      return
+    }
+  }, [user, router])
+
+  // Load user preferences
+  useEffect(() => {
+    if (userProfile?.preferences) {
+      setSettings({
+        ...settings,
+        ...userProfile.preferences
+      })
+    }
+  }, [userProfile])
+
+  const handleSettingChange = (key: string, value: any) => {
+    setSettings(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handleSave = async () => {
     setIsSaving(true)
+    
     try {
-      // Simular guardado
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      toast.success("Configuración guardada correctamente")
-    } catch (error) {
-      toast.error("Error al guardar configuración")
+      const updates = {
+        preferences: settings
+      }
+
+      const { error } = await updateProfile(updates)
+      
+      if (error) {
+        throw error
+      }
+
+      toast.success("Settings saved successfully!")
+    } catch (error: any) {
+      toast.error(error.message || "Failed to save settings")
     } finally {
       setIsSaving(false)
     }
   }
 
-  const handleLogout = async () => {
-    try {
-      await signOut()
-      toast.success("Sesión cerrada correctamente")
-      window.location.href = '/'
-    } catch (error) {
-      toast.error("Error al cerrar sesión")
-    }
-  }
-
   const handleDeleteAccount = async () => {
-    if (!confirm("¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.")) {
-      return
-    }
-    
-    setIsDeleting(true)
-    try {
-      // Simular eliminación
-      await new Promise(resolve => setTimeout(resolve, 3000))
-      toast.success("Cuenta eliminada correctamente")
-      window.location.href = '/'
-    } catch (error) {
-      toast.error("Error al eliminar cuenta")
-    } finally {
-      setIsDeleting(false)
-    }
+    // In a real app, this would delete the user account
+    toast.error("Account deletion is not implemented in demo mode")
+    setShowDeleteConfirm(false)
   }
 
-  if (loading) {
-    return <LoadingOverlay text="Cargando configuración..." />
-  }
-
-  if (!user || !userProfile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md w-full mx-4">
-          <CardHeader className="text-center">
-            <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <CardTitle>Acceso Restringido</CardTitle>
-            <CardDescription>Debes iniciar sesión para acceder a la configuración</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = '/login'}>
-              Iniciar Sesión
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
+  if (!user) {
+    return <PageLoading message="Please log in to access settings" />
   }
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-4xl mx-auto px-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center">
-            <SettingsIcon className="mr-3 h-8 w-8" />
-            Configuración
-          </h1>
-          <p className="text-muted-foreground">Personaliza tu experiencia en DealsMarket</p>
-        </motion.div>
-
-        <div className="space-y-6">
-          {/* Appearance Settings */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Palette className="mr-2 h-5 w-5" />
-                  Apariencia
-                </CardTitle>
-                <CardDescription>
-                  Personaliza el tema y la apariencia de la aplicación
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="theme">Tema</Label>
-                  <Select value={theme} onValueChange={setTheme}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Selecciona tema" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">
-                        <div className="flex items-center">
-                          <Sun className="mr-2 h-4 w-4" />
-                          Claro
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="dark">
-                        <div className="flex items-center">
-                          <Moon className="mr-2 h-4 w-4" />
-                          Oscuro
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="system">
-                        <div className="flex items-center">
-                          <Monitor className="mr-2 h-4 w-4" />
-                          Sistema
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Notification Settings */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Bell className="mr-2 h-5 w-5" />
-                  Notificaciones
-                </CardTitle>
-                <CardDescription>
-                  Configura cómo y cuándo quieres recibir notificaciones
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Email</Label>
-                      <p className="text-sm text-muted-foreground">Recibir notificaciones por email</p>
-                    </div>
-                    <Switch
-                      checked={notifications.email}
-                      onCheckedChange={(checked) => setNotifications({...notifications, email: checked})}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Push</Label>
-                      <p className="text-sm text-muted-foreground">Notificaciones push del navegador</p>
-                    </div>
-                    <Switch
-                      checked={notifications.push}
-                      onCheckedChange={(checked) => setNotifications({...notifications, push: checked})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">SMS</Label>
-                      <p className="text-sm text-muted-foreground">Mensajes de texto para alertas importantes</p>
-                    </div>
-                    <Switch
-                      checked={notifications.sms}
-                      onCheckedChange={(checked) => setNotifications({...notifications, sms: checked})}
-                    />
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Nuevas Ofertas</Label>
-                      <p className="text-sm text-muted-foreground">Notificar sobre nuevos productos</p>
-                    </div>
-                    <Switch
-                      checked={notifications.newDeals}
-                      onCheckedChange={(checked) => setNotifications({...notifications, newDeals: checked})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Alertas de Precio</Label>
-                      <p className="text-sm text-muted-foreground">Cambios de precio en favoritos</p>
-                    </div>
-                    <Switch
-                      checked={notifications.priceAlerts}
-                      onCheckedChange={(checked) => setNotifications({...notifications, priceAlerts: checked})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Marketing</Label>
-                      <p className="text-sm text-muted-foreground">Promociones y ofertas especiales</p>
-                    </div>
-                    <Switch
-                      checked={notifications.marketing}
-                      onCheckedChange={(checked) => setNotifications({...notifications, marketing: checked})}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Privacy Settings */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Shield className="mr-2 h-5 w-5" />
-                  Privacidad
-                </CardTitle>
-                <CardDescription>
-                  Controla qué información es visible para otros usuarios
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Perfil Público</Label>
-                      <p className="text-sm text-muted-foreground">Tu perfil es visible para otros usuarios</p>
-                    </div>
-                    <Switch
-                      checked={privacy.profileVisible}
-                      onCheckedChange={(checked) => setPrivacy({...privacy, profileVisible: checked})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Mostrar Email</Label>
-                      <p className="text-sm text-muted-foreground">Email visible en tu perfil público</p>
-                    </div>
-                    <Switch
-                      checked={privacy.showEmail}
-                      onCheckedChange={(checked) => setPrivacy({...privacy, showEmail: checked})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Permitir Contacto Directo</Label>
-                      <p className="text-sm text-muted-foreground">Otros usuarios pueden contactarte directamente</p>
-                    </div>
-                    <Switch
-                      checked={privacy.allowDirectContact}
-                      onCheckedChange={(checked) => setPrivacy({...privacy, allowDirectContact: checked})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-base">Análisis de Datos</Label>
-                      <p className="text-sm text-muted-foreground">Ayudar a mejorar la plataforma</p>
-                    </div>
-                    <Switch
-                      checked={privacy.dataAnalytics}
-                      onCheckedChange={(checked) => setPrivacy({...privacy, dataAnalytics: checked})}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Preferences */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Globe className="mr-2 h-5 w-5" />
-                  Preferencias
-                </CardTitle>
-                <CardDescription>
-                  Idioma, moneda y otras preferencias regionales
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="language">Idioma</Label>
-                    <Select value={preferences.language} onValueChange={(value) => setPreferences({...preferences, language: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona idioma" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="es">Español</SelectItem>
-                        <SelectItem value="en">English</SelectItem>
-                        <SelectItem value="fr">Français</SelectItem>
-                        <SelectItem value="de">Deutsch</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="currency">Moneda</Label>
-                    <Select value={preferences.currency} onValueChange={(value) => setPreferences({...preferences, currency: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona moneda" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="EUR">EUR (€)</SelectItem>
-                        <SelectItem value="USD">USD ($)</SelectItem>
-                        <SelectItem value="GBP">GBP (£)</SelectItem>
-                        <SelectItem value="CHF">CHF</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="timezone">Zona Horaria</Label>
-                    <Select value={preferences.timezone} onValueChange={(value) => setPreferences({...preferences, timezone: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona zona horaria" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Europe/Madrid">Madrid (CET)</SelectItem>
-                        <SelectItem value="Europe/London">London (GMT)</SelectItem>
-                        <SelectItem value="Europe/Paris">París (CET)</SelectItem>
-                        <SelectItem value="Europe/Berlin">Berlín (CET)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email-frequency">Frecuencia de Email</Label>
-                    <Select value={preferences.emailFrequency} onValueChange={(value) => setPreferences({...preferences, emailFrequency: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Frecuencia" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="immediate">Inmediato</SelectItem>
-                        <SelectItem value="daily">Diario</SelectItem>
-                        <SelectItem value="weekly">Semanal</SelectItem>
-                        <SelectItem value="never">Nunca</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Account Actions */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <PageHeader 
+        title="Settings" 
+        description="Manage your account preferences and security"
+      />
+      
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-8">
+          {/* Notifications */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
           >
-            <Card>
+            <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Lock className="mr-2 h-5 w-5" />
-                  Cuenta y Seguridad
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  Notifications
                 </CardTitle>
-                <CardDescription>
-                  Gestiona tu cuenta y opciones de seguridad
+                <CardDescription className="text-gray-400">
+                  Configure how you want to receive notifications
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Button variant="outline" className="justify-start">
-                    <Key className="mr-2 h-4 w-4" />
-                    Cambiar Contraseña
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Métodos de Pago
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Download className="mr-2 h-4 w-4" />
-                    Exportar Datos
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Database className="mr-2 h-4 w-4" />
-                    Historial de Actividad
-                  </Button>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Email Notifications</Label>
+                    <p className="text-sm text-gray-400">Receive notifications via email</p>
+                  </div>
+                  <Switch
+                    checked={settings.emailNotifications}
+                    onCheckedChange={(checked) => handleSettingChange('emailNotifications', checked)}
+                  />
                 </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Push Notifications</Label>
+                    <p className="text-sm text-gray-400">Receive push notifications in browser</p>
+                  </div>
+                  <Switch
+                    checked={settings.pushNotifications}
+                    onCheckedChange={(checked) => handleSettingChange('pushNotifications', checked)}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Marketing Emails</Label>
+                    <p className="text-sm text-gray-400">Receive promotional content and updates</p>
+                  </div>
+                  <Switch
+                    checked={settings.marketingEmails}
+                    onCheckedChange={(checked) => handleSettingChange('marketingEmails', checked)}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Order Updates</Label>
+                    <p className="text-sm text-gray-400">Get notified about order status changes</p>
+                  </div>
+                  <Switch
+                    checked={settings.orderUpdates}
+                    onCheckedChange={(checked) => handleSettingChange('orderUpdates', checked)}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Price Alerts</Label>
+                    <p className="text-sm text-gray-400">Get notified when prices drop on favorites</p>
+                  </div>
+                  <Switch
+                    checked={settings.priceAlerts}
+                    onCheckedChange={(checked) => handleSettingChange('priceAlerts', checked)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-                <Separator />
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button 
-                    variant="outline"
-                    onClick={handleLogout}
-                    className="flex-1"
+          {/* Privacy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Privacy
+                </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Control your privacy and profile visibility
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label className="text-white">Profile Visibility</Label>
+                  <Select
+                    value={settings.profileVisibility}
+                    onValueChange={(value) => handleSettingChange('profileVisibility', value)}
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Cerrar Sesión
-                  </Button>
+                    <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-900 border-gray-700">
+                      <SelectItem value="public" className="text-white">Public</SelectItem>
+                      <SelectItem value="verified" className="text-white">Verified Users Only</SelectItem>
+                      <SelectItem value="private" className="text-white">Private</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Show Email Address</Label>
+                    <p className="text-sm text-gray-400">Display email on your public profile</p>
+                  </div>
+                  <Switch
+                    checked={settings.showEmail}
+                    onCheckedChange={(checked) => handleSettingChange('showEmail', checked)}
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Show Phone Number</Label>
+                    <p className="text-sm text-gray-400">Display phone on your public profile</p>
+                  </div>
+                  <Switch
+                    checked={settings.showPhone}
+                    onCheckedChange={(checked) => handleSettingChange('showPhone', checked)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Display Preferences */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Display Preferences
+                </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Customize your interface and regional settings
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white">Theme</Label>
+                    <Select
+                      value={settings.theme}
+                      onValueChange={(value) => handleSettingChange('theme', value)}
+                    >
+                      <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-900 border-gray-700">
+                        <SelectItem value="dark" className="text-white">Dark</SelectItem>
+                        <SelectItem value="light" className="text-white">Light</SelectItem>
+                        <SelectItem value="auto" className="text-white">Auto</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   
-                  <Button 
-                    variant="destructive"
-                    onClick={handleDeleteAccount}
-                    disabled={isDeleting}
-                    className="flex-1"
-                  >
-                    {isDeleting ? (
-                      <div className="flex items-center">
-                        <LoadingSpinner size="sm" />
-                        <span className="ml-2">Eliminando...</span>
-                      </div>
-                    ) : (
-                      <>
-                        <UserX className="mr-2 h-4 w-4" />
-                        Eliminar Cuenta
-                      </>
-                    )}
-                  </Button>
-                </div>
-
-                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-                  <div className="flex items-start space-x-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-destructive">Zona de Peligro</p>
-                      <p className="text-sm text-muted-foreground">
-                        La eliminación de tu cuenta es permanente y no se puede deshacer. 
-                        Todos tus datos, productos y transacciones se eliminarán definitivamente.
-                      </p>
-                    </div>
+                  <div className="space-y-2">
+                    <Label className="text-white">Language</Label>
+                    <Select
+                      value={settings.language}
+                      onValueChange={(value) => handleSettingChange('language', value)}
+                    >
+                      <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-900 border-gray-700">
+                        <SelectItem value="en" className="text-white">English</SelectItem>
+                        <SelectItem value="es" className="text-white">Español</SelectItem>
+                        <SelectItem value="fr" className="text-white">Français</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white">Currency</Label>
+                    <Select
+                      value={settings.currency}
+                      onValueChange={(value) => handleSettingChange('currency', value)}
+                    >
+                      <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-900 border-gray-700">
+                        <SelectItem value="EUR" className="text-white">EUR - Euro</SelectItem>
+                        <SelectItem value="USD" className="text-white">USD - Dollar</SelectItem>
+                        <SelectItem value="GBP" className="text-white">GBP - Pound</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-white">Timezone</Label>
+                    <Select
+                      value={settings.timezone}
+                      onValueChange={(value) => handleSettingChange('timezone', value)}
+                    >
+                      <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-900 border-gray-700">
+                        <SelectItem value="Europe/Madrid" className="text-white">Madrid</SelectItem>
+                        <SelectItem value="Europe/London" className="text-white">London</SelectItem>
+                        <SelectItem value="America/New_York" className="text-white">New York</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Security */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Lock className="h-5 w-5" />
+                  Security
+                </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Manage your account security settings
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Two-Factor Authentication</Label>
+                    <p className="text-sm text-gray-400">Add an extra layer of security</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={settings.twoFactorEnabled}
+                      onCheckedChange={(checked) => handleSettingChange('twoFactorEnabled', checked)}
+                    />
+                    {settings.twoFactorEnabled && (
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                        Enabled
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-white">Session Timeout</Label>
+                  <Select
+                    value={settings.sessionTimeout}
+                    onValueChange={(value) => handleSettingChange('sessionTimeout', value)}
+                  >
+                    <SelectTrigger className="bg-gray-900/50 border-gray-600 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-900 border-gray-700">
+                      <SelectItem value="1" className="text-white">1 Hour</SelectItem>
+                      <SelectItem value="8" className="text-white">8 Hours</SelectItem>
+                      <SelectItem value="24" className="text-white">24 Hours</SelectItem>
+                      <SelectItem value="never" className="text-white">Never</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="border-primary/30 text-primary hover:bg-primary/10 justify-start"
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Change Password
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800 justify-start"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Login Activity
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Danger Zone */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="bg-red-900/20 border-red-500/30 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-red-400 flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5" />
+                  Danger Zone
+                </CardTitle>
+                <CardDescription className="text-red-300/70">
+                  These actions cannot be undone
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!showDeleteConfirm ? (
+                  <Button
+                    variant="destructive"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete Account
+                  </Button>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-red-300">
+                      Are you sure you want to delete your account? This action cannot be undone.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteAccount}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Yes, Delete Account
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowDeleteConfirm(false)}
+                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -523,24 +486,20 @@ export default function SettingsPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.5 }}
             className="flex justify-end"
           >
-            <Button 
-              onClick={handleSaveSettings}
+            <Button
+              onClick={handleSave}
               disabled={isSaving}
-              size="lg"
-              className="bg-gradient-to-r from-primary to-primary/80"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-32"
             >
               {isSaving ? (
-                <div className="flex items-center">
-                  <LoadingSpinner size="sm" />
-                  <span className="ml-2">Guardando...</span>
-                </div>
+                <EnhancedLoading type="spinner" size="sm" />
               ) : (
                 <>
-                  <SettingsIcon className="mr-2 h-4 w-4" />
-                  Guardar Configuración
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Settings
                 </>
               )}
             </Button>
