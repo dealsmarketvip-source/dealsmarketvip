@@ -39,12 +39,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       return
     }
 
+    // Show loading briefly for visual feedback
     setLoading(true)
+    toast.success("Logging in...")
 
     try {
-      // Show immediate success message for better UX
-      toast.success("Logging in...")
-
       const result = await signInWithCode(invitationCode)
 
       if (result.error) {
@@ -53,11 +52,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         return
       }
 
-      // Don't wait for anything, redirect immediately
-      toast.success("Successfully logged in!")
+      // Instant success - no waiting
+      toast.success("Login successful! Redirecting...")
       onClose()
       resetForm()
       setLoading(false)
+
+      // Note: signInWithCode already handles redirect
     } catch (error: any) {
       toast.error(error.message || "Failed to log in with code")
       setLoading(false)
