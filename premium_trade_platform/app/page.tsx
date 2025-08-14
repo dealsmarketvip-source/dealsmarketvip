@@ -35,7 +35,7 @@ export default function HomePage() {
     });
 
     if (user) {
-      router.push('/marketplace')
+      window.location.href = '/marketplace'
     } else {
       setShowWelcomePanel(true)
     }
