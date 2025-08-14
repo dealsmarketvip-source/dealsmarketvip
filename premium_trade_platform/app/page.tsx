@@ -170,6 +170,159 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* What We Do Section */}
+      <section className="py-20 px-6 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-6">What We Do</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              DealsMarket is Europe's premier B2B marketplace where verified companies create million-dollar opportunities through secure, high-value transactions.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h3 className="text-3xl font-bold text-foreground">Connecting Enterprise Excellence</h3>
+              <p className="text-lg text-muted-foreground">
+                We facilitate exclusive business relationships between verified companies across Europe and the Middle East, ensuring every transaction meets the highest standards of security and profitability.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <span>Rigorous company verification process</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <span>Secure payment protection on all deals</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <span>Real-time market intelligence and analytics</span>
+                </li>
+              </ul>
+            </div>
+            <div className="relative">
+              <Image
+                src="https://images.pexels.com/photos/7415132/pexels-photo-7415132.jpeg"
+                alt="Business meeting - Professional collaboration"
+                width={600}
+                height={400}
+                className="rounded-xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How We Help Progress Section */}
+      <section className="py-20 px-6 bg-muted/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-6">How We Help Your Business Progress</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our platform provides the tools, connections, and security your enterprise needs to scale internationally and achieve unprecedented growth.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-primary/20">
+              <CardHeader>
+                <Globe className="h-16 w-16 text-primary mb-4 mx-auto" />
+                <CardTitle className="text-xl text-center">Global Market Access</CardTitle>
+                <CardDescription className="text-center">
+                  Expand your reach across 50+ countries with our verified partner network, opening doors to markets previously inaccessible.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-green-500/20">
+              <CardHeader>
+                <DollarSign className="h-16 w-16 text-green-500 mb-4 mx-auto" />
+                <CardTitle className="text-xl text-center">Revenue Acceleration</CardTitle>
+                <CardDescription className="text-center">
+                  Our members report 300% average revenue growth within 12 months of joining, with deals averaging $125,000.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-blue-500/20">
+              <CardHeader>
+                <Zap className="h-16 w-16 text-blue-500 mb-4 mx-auto" />
+                <CardTitle className="text-xl text-center">Operational Excellence</CardTitle>
+                <CardDescription className="text-center">
+                  Streamline your B2B operations with our advanced analytics, automated matching, and 24/7 premium support.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-20 px-6 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-6">Why Stay With DealsMarket</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Once you experience the power of our platform, you'll understand why 98% of our members renew their subscriptions year after year.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="flex items-start gap-4">
+                <Shield className="h-8 w-8 text-primary mt-1" />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Unmatched Security</h3>
+                  <p className="text-muted-foreground">
+                    Every transaction is protected by our enterprise-grade security protocols, with full escrow services and legal compliance across all jurisdictions.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <Users className="h-8 w-8 text-blue-500 mt-1" />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Exclusive Network</h3>
+                  <p className="text-muted-foreground">
+                    Join an elite community of verified companies that have already proven their success. Network with industry leaders and build relationships that last.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <DollarSign className="h-8 w-8 text-green-500 mt-1" />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-2">ROI Guarantee</h3>
+                  <p className="text-muted-foreground">
+                    We're so confident in our platform that we guarantee you'll see positive ROI within 90 days, or we'll refund your membership completely.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <Card className="p-6 text-center border-primary/20">
+                <div className="text-3xl font-bold text-primary mb-2">€2.5M</div>
+                <div className="text-sm text-muted-foreground">Average Annual Deal Volume per Member</div>
+              </Card>
+              <Card className="p-6 text-center border-green-500/20">
+                <div className="text-3xl font-bold text-green-500 mb-2">24/7</div>
+                <div className="text-sm text-muted-foreground">Premium Support Available</div>
+              </Card>
+              <Card className="p-6 text-center border-blue-500/20">
+                <div className="text-3xl font-bold text-blue-500 mb-2">15min</div>
+                <div className="text-sm text-muted-foreground">Average Response Time</div>
+              </Card>
+              <Card className="p-6 text-center border-purple-500/20">
+                <div className="text-3xl font-bold text-purple-500 mb-2">150+</div>
+                <div className="text-sm text-muted-foreground">Industries Represented</div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
