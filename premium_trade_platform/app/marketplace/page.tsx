@@ -135,52 +135,10 @@ export default function MarketplacePage() {
       setTotalProducts(count || 0)
 
     } catch (error) {
-      console.error('Error fetching products:', error)
-
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      const isConfigIssue = errorMessage.includes('placeholder') ||
-                           errorMessage.includes('not properly configured') ||
-                           errorMessage.includes('Database not configured') ||
-                           errorMessage.includes('Failed to fetch') ||
-                           !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-                           process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
-
-      if (isConfigIssue) {
-        console.warn('Database not configured, using demo mode')
-        const demoProducts = [
-          {
-            id: 'demo-1',
-            title: 'iPhone 15 Pro Max 1TB',
-            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
-            price: 1200,
-            currency: 'EUR',
-            images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop'],
-            seller_id: 'demo-seller',
-            status: 'active',
-            condition: 'new',
-            category: 'electronics',
-            views_count: 125,
-            favorites_count: 8,
-            shipping_included: true,
-            shipping_cost: 0,
-            location: 'Madrid, España',
-            featured: true,
-            verified: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            seller: {
-              id: 'demo-seller',
-              full_name: 'Vendedor Demo',
-              verification_status: 'verified' as const,
-              profile_image_url: undefined
-            }
-          }
-        ]
-        setProducts(demoProducts as any)
-        setTotalProducts(1)
-      } else {
-        toast.error(`Error al cargar productos: ${errorMessage}`)
-      }
+      console.error('Error loading products:', error)
+      // Set empty state for any unexpected errors
+      setProducts([])
+      setTotalProducts(0)
     } finally {
       setLoading(false)
       setInitialLoading(false)
