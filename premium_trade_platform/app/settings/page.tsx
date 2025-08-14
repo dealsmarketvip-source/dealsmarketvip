@@ -116,9 +116,10 @@ export default function SettingsPage() {
     setShowDeleteConfirm(false)
   }
 
-  if (!user) {
-    return <PageLoading message="Please log in to access settings" />
-  }
+  // Allow access to settings for demo purposes
+  // if (!user) {
+  //   return <PageLoading message="Please log in to access settings" />
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
