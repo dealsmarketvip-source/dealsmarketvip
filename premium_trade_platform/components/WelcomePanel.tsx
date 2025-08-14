@@ -104,24 +104,24 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
 
   const stats = [
     {
-      value: "Más de 50",
-      unit: "millones de",
-      suffix: "dólares",
-      subtitle: "Volumen mensual",
+      value: "Over $50",
+      unit: "million",
+      suffix: "",
+      subtitle: "Monthly Volume",
       icon: <DollarSign className="h-8 w-8 text-primary" />
     },
     {
-      value: "más de 500",
+      value: "Over 500",
       unit: "",
       suffix: "",
-      subtitle: "Empresas verificadas",
+      subtitle: "Verified Companies",
       icon: <Users className="h-8 w-8 text-blue-400" />
     },
     {
       value: "98%",
       unit: "",
       suffix: "",
-      subtitle: "Tasa de éxito",
+      subtitle: "Success Rate",
       icon: <Star className="h-8 w-8 text-green-400" />
     }
   ]
@@ -136,15 +136,15 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
       <div className="space-y-4">
         <div className="flex items-center justify-center gap-3 mb-6">
           <Crown className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold text-primary">MERCADO DE OFERTAS</h1>
+          <h1 className="text-2xl font-bold text-primary">DEALS MARKET</h1>
         </div>
         
         <h2 className="text-3xl font-bold text-foreground">
-          Bienvenido a DealsMarket
+          Welcome to DealsMarket
         </h2>
         
         <p className="text-muted-foreground text-lg max-w-md mx-auto">
-          Donde las empresas verificadas crean oportunidades millonarias
+          Where verified companies create million-dollar opportunities
         </p>
       </div>
 
@@ -165,7 +165,7 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
 
       <div className="space-y-6">
         <p className="text-foreground font-medium">
-          Únase a una red exclusiva de empresas verificadas que hacen negocios por millones.
+          Join an exclusive network of verified companies that do million-dollar business.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -212,10 +212,10 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
     >
       <div className="text-center space-y-4">
         <h2 className="text-2xl font-bold text-foreground">
-          Elige tu método de acceso
+          Choose Your Access Method
         </h2>
         <p className="text-muted-foreground">
-          Selecciona cómo deseas unirte a DealsMarket
+          Select how you want to join DealsMarket
         </p>
       </div>
 
@@ -227,13 +227,13 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
           <div className="flex items-center space-x-4">
             <Key className="h-10 w-10 text-primary" />
             <div className="flex-1">
-              <h3 className="font-semibold text-lg">Código de Invitación</h3>
+              <h3 className="font-semibold text-lg">Invitation Code</h3>
               <p className="text-muted-foreground text-sm">
-                Accede con tu código de invitación empresarial
+                Access with your enterprise invitation code
               </p>
             </div>
             <Badge className="bg-green-500/20 text-green-400">
-              GRATIS
+              FREE
             </Badge>
           </div>
         </Card>
@@ -245,9 +245,9 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
           <div className="flex items-center space-x-4">
             <CreditCard className="h-10 w-10 text-blue-500" />
             <div className="flex-1">
-              <h3 className="font-semibold text-lg">Suscripción Premium</h3>
+              <h3 className="font-semibold text-lg">Premium Subscription</h3>
               <p className="text-muted-foreground text-sm">
-                Acceso completo por €20/mes
+                Complete access for €20/month
               </p>
             </div>
             <Badge className="bg-blue-500/20 text-blue-400">
@@ -269,21 +269,21 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
       <div className="text-center space-y-4">
         <Key className="h-16 w-16 text-primary mx-auto" />
         <h2 className="text-2xl font-bold text-foreground">
-          Código de Invitación
+          Invitation Code
         </h2>
         <p className="text-muted-foreground">
-          Ingresa tu código para acceso inmediato
+          Enter your code for instant access
         </p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="code">Código de Invitación</Label>
+          <Label htmlFor="code">Invitation Code</Label>
           <div className="relative">
             <Key className="absolute left-3 top-3 h-4 w-4 text-primary z-20" />
             <Input
               id="code"
-              placeholder="Ingresa tu código..."
+              placeholder="Enter your code..."
               className="pl-10 text-center text-lg tracking-wider uppercase"
               value={invitationCode}
               onChange={(e) => setInvitationCode(e.target.value.toUpperCase())}
@@ -314,10 +314,10 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
           {isValidatingCode ? (
             <div className="flex items-center justify-center">
               <LoadingSpinner size="sm" />
-              <span className="ml-2">Validando...</span>
+              <span className="ml-2">Validating...</span>
             </div>
           ) : (
-            'Validar Código'
+            'Validate Code'
           )}
         </Button>
       </div>
@@ -334,10 +334,10 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
       <div className="text-center space-y-4">
         <CreditCard className="h-16 w-16 text-blue-500 mx-auto" />
         <h2 className="text-2xl font-bold text-foreground">
-          Suscripción Premium
+          Premium Subscription
         </h2>
         <p className="text-muted-foreground">
-          Acceso completo a la plataforma
+          Complete platform access
         </p>
       </div>
 
@@ -345,25 +345,25 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
         <div className="p-6 space-y-4">
           <div className="text-center">
             <div className="text-3xl font-bold text-blue-500">€20/mes</div>
-            <p className="text-muted-foreground">Facturación mensual</p>
+            <p className="text-muted-foreground">Monthly billing</p>
           </div>
           
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm">
               <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Acceso completo al marketplace</span>
+              <span>Complete marketplace access</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Verificación empresarial</span>
+              <span>Business verification</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Soporte prioritario 24/7</span>
+              <span>Priority 24/7 support</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <CheckCircle className="h-4 w-4 text-green-400" />
-              <span>Analytics avanzados</span>
+              <span>Advanced analytics</span>
             </div>
           </div>
         </div>
@@ -393,19 +393,19 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
 
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-foreground">
-          ¡Bienvenido a DealsMarket!
+          Welcome to DealsMarket!
         </h2>
         <p className="text-muted-foreground">
-          Tu cuenta ha sido creada exitosamente
+          Your account has been created successfully
         </p>
       </div>
 
       {codeValidation.accountData && (
         <Card className="border-primary/30">
           <div className="p-4 space-y-2">
-            <h3 className="font-semibold text-primary">Información de tu cuenta:</h3>
+            <h3 className="font-semibold text-primary">Your account information:</h3>
             <div className="text-sm space-y-1">
-              <div><span className="font-medium">Empresa:</span> {codeValidation.accountData.company_name}</div>
+              <div><span className="font-medium">Company:</span> {codeValidation.accountData.company_name}</div>
               <div><span className="font-medium">Plan:</span> {codeValidation.accountData.subscription_type}</div>
             </div>
           </div>
@@ -419,7 +419,7 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
         }}
         className="w-full gradient-primary"
       >
-        Ir al Marketplace
+        Go to Marketplace
         <ArrowRight className="ml-2 h-4 w-4" />
       </Button>
     </motion.div>
@@ -475,7 +475,7 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
                     className={canGoBack ? '' : 'invisible'}
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Anterior
+                    Previous
                   </Button>
 
                   <Button
@@ -483,7 +483,7 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
                     disabled={!canGoNext}
                     className={canGoNext ? 'gradient-primary' : 'invisible'}
                   >
-                    Próximo
+                    Next
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
