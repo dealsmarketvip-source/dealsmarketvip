@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Mail, Lock, Code } from "lucide-react"
 import { toast } from "sonner"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { EnhancedLoading, LoginLoading, CodeLoading } from "@/components/ui/enhanced-loading"
 
 interface AuthModalProps {
