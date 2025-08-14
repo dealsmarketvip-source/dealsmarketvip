@@ -105,77 +105,7 @@ export default function MarketplacePage() {
     try {
       setLoading(true)
 
-      // Comprehensive error prevention - check all possible failure points
-      if (typeof window === 'undefined') {
-        console.warn('Running on server side, skipping fetch')
-        return
-      }
-
-      // Early check for Supabase configuration to prevent all database errors
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('demo')) {
-        console.warn('Supabase not configured, showing demo products directly')
-        const demoProducts = [
-          {
-            id: 'demo-1',
-            title: 'iPhone 15 Pro Max 1TB',
-            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
-            price: 1200,
-            currency: 'EUR',
-            images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop'],
-            seller_id: 'demo-seller',
-            status: 'active',
-            condition: 'new',
-            category: 'electronics',
-            views_count: 125,
-            favorites_count: 8,
-            shipping_included: true,
-            shipping_cost: 0,
-            location: 'Madrid, España',
-            featured: true,
-            verified: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            seller: {
-              id: 'demo-seller',
-              full_name: 'Vendedor Demo',
-              verification_status: 'verified' as const,
-              profile_image_url: undefined
-            }
-          },
-          {
-            id: 'demo-2',
-            title: 'MacBook Pro 14" M3',
-            description: 'Producto de demostración. Configure Supabase para ver productos reales.',
-            price: 2200,
-            currency: 'EUR',
-            images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=600&fit=crop'],
-            seller_id: 'demo-seller-2',
-            status: 'active',
-            condition: 'like_new',
-            category: 'electronics',
-            views_count: 89,
-            favorites_count: 12,
-            shipping_included: false,
-            shipping_cost: 15,
-            location: 'Barcelona, España',
-            featured: false,
-            verified: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            seller: {
-              id: 'demo-seller-2',
-              full_name: 'TechStore Demo',
-              verification_status: 'verified' as const,
-              profile_image_url: undefined
-            }
-          }
-        ]
-        setProducts(demoProducts as any)
-        setTotalProducts(2)
-        return
-      }
-      
+      // Use instant mock data - no database calls
       const searchFilters = {
         ...filters,
         ...(selectedCategory && { category: selectedCategory }),
