@@ -31,7 +31,7 @@ import {
   CheckCircle,
   X
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/page-header"
 import { PageLoading, EnhancedLoading } from "@/components/ui/enhanced-loading"
