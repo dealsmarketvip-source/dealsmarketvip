@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { analytics } from "@/lib/analytics"
 
-// Lazy load heavy components for better performance
-const { WelcomePanel } = await import("@/components/WelcomePanel")
+// Import the WelcomePanel component directly since lazy loading is causing issues
+import { WelcomePanel } from "@/components/WelcomePanel"
 
 export default function HomePage() {
   const [showWelcomePanel, setShowWelcomePanel] = useState(false)
