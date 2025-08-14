@@ -110,24 +110,25 @@ export default function ProductPage() {
 
   const handleFavorite = async () => {
     if (!userProfile) {
-      toast.error('Debes iniciar sesión para agregar favoritos')
+      toast.error('You must sign in to add favorites')
       router.push('/login')
       return
     }
 
     setFavoriteLoading(true)
     try {
+      // Simulate favorite toggle
+      await new Promise(resolve => setTimeout(resolve, 500))
+
       if (isFavorite) {
-        await db.favorites.remove(userProfile.id, product!.id)
         setIsFavorite(false)
-        toast.success('Eliminado de favoritos')
+        toast.success('Removed from favorites')
       } else {
-        await db.favorites.add(userProfile.id, product!.id)
         setIsFavorite(true)
-        toast.success('Agregado a favoritos')
+        toast.success('Added to favorites')
       }
     } catch (error) {
-      toast.error('Error al actualizar favoritos')
+      toast.error('Error updating favorites')
     } finally {
       setFavoriteLoading(false)
     }
