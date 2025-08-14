@@ -32,7 +32,7 @@ import {
   Clock
 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth-instant"
-import { createClient, db } from "@/lib/supabase"
+import { getMockProducts } from "@/lib/mock-data"
 import { toast } from "sonner"
 import { ProductWithImages, ProductFilters, User } from "@/lib/types/database"
 import Link from "next/link"
