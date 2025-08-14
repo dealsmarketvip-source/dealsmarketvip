@@ -147,23 +147,25 @@ export default function MarketplacePage() {
 
   const handleAddToFavorites = async (productId: string) => {
     if (!userProfile) {
-      toast.error("Debes iniciar sesión para agregar favoritos")
+      toast.error("Please sign in to add favorites")
       return
     }
 
     setFavoriteLoading(productId)
-    try {
-      const { error } = await db.favorites.add(userProfile.id, productId)
-      if (error) throw error
-      
-      toast.success("Producto agregado a favoritos")
-      fetchProducts() // Refresh to update favorites count
-    } catch (error) {
-      console.error('Error adding to favorites:', error)
-      toast.error("Error al agregar a favoritos")
-    } finally {
+
+    // Simulate adding to favorites
+    setTimeout(() => {
+      toast.success("Added to favorites!")
+
+      // Update the favorites count in the current products
+      setProducts(prev => prev.map(product =>
+        product.id === productId
+          ? { ...product, favorites_count: product.favorites_count + 1 }
+          : product
+      ))
+
       setFavoriteLoading(null)
-    }
+    }, 500)
   }
 
   const handleProductClick = async (productId: string) => {
