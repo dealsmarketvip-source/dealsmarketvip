@@ -237,7 +237,7 @@ export default function ProductPage() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Volver
+            Back
           </Button>
           
           <div className="flex-1">
