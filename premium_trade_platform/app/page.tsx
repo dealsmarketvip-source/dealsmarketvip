@@ -13,7 +13,7 @@ import Image from "next/image"
 import { analytics } from "@/lib/analytics"
 
 // Lazy load heavy components for better performance
-const WelcomePanel = lazy(() => import("@/components/WelcomePanel").then(module => ({ default: module.WelcomePanel })))
+const { WelcomePanel } = await import("@/components/WelcomePanel")
 
 export default function HomePage() {
   const [showWelcomePanel, setShowWelcomePanel] = useState(false)
