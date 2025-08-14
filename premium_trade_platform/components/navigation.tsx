@@ -48,7 +48,7 @@ export function Navigation() {
         throw new Error('Error signing out')
       }
     } catch (error) {
-      toast.error('Error al cerrar sesión')
+      toast.error('Error signing out')
     } finally {
       setIsLoggingOut(false)
     }
