@@ -139,7 +139,7 @@ export function PageHeader({ title, description, showBackButton = false, actions
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => router.push('/favorites')}
+                    onClick={() => window.location.href = '/favorites'}
                     className="border-red-500/30 text-red-600 hover:bg-red-500/10"
                   >
                     <Heart className="h-4 w-4 mr-2" />
