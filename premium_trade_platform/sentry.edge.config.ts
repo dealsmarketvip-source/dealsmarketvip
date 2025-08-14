@@ -1,30 +1,16 @@
 import * as Sentry from "@sentry/nextjs";
 
+const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN || process.env.SENTRY_DSN;
+
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  
-  // Edge runtime sampling
-  tracesSampleRate: 0.05,
-  
-  // Minimal integrations for edge runtime
-  integrations: [],
-  
-  // Environment configuration
-  environment: process.env.NODE_ENV,
-  
-  // Filter sensitive information
-  beforeSend(event) {
-    if (event.request?.headers) {
-      delete event.request.headers.authorization;
-      delete event.request.headers.cookie;
+  dsn: SENTRY_DSN,
+  debug: false,
+  tracesSampleRate: 1.0,
+  beforeSend(event, hint) {
+    // Skip in development
+    if (process.env.NODE_ENV === 'development') {
+      return null;
     }
     return event;
-  },
-  
-  // Tag for edge runtime
-  initialScope: {
-    tags: {
-      component: 'edge',
-    },
   },
 });
