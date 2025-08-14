@@ -211,10 +211,6 @@ export default function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <PageHeader
-        title="Marketplace"
-        description="Discover premium products from verified companies"
-      />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
@@ -245,7 +241,7 @@ export default function MarketplacePage() {
                 Marketplace
               </h1>
               <p className="text-gray-300">
-                Descubre productos únicos de vendedores verificados
+                Discover unique products from verified sellers
               </p>
             </div>
             
