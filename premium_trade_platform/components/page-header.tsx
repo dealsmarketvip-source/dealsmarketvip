@@ -49,8 +49,8 @@ export function PageHeader({ title, description, showBackButton = false, actions
     }
   ]
 
-  // Only show page header buttons when authenticated and on specific pages
-  const showPageNavigation = user && ['/marketplace', '/account', '/settings'].includes(pathname)
+  // Only show page header buttons when authenticated and NOT on main/login pages
+  const showPageNavigation = user && !['//', '/login', '/access', '/'].includes(pathname) && ['/marketplace', '/account', '/settings'].includes(pathname)
 
   return (
     <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
