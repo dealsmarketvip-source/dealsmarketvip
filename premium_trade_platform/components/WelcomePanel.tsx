@@ -84,12 +84,19 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
 
       if (result.isValid) {
         toast.success(result.message)
-        // Instantly move to success without delay
-        setCurrentStep('success')
-        // Auto-redirect after short delay
-        setTimeout(() => {
-          window.location.href = '/marketplace'
-        }, 500)
+
+        // Auto-login with the code immediately
+        const loginResult = await signInWithCode(code)
+
+        if (loginResult.error) {
+          toast.error("Login failed")
+          setIsValidatingCode(false)
+          return
+        }
+
+        // Instant redirect without showing success screen
+        toast.success("Access granted! Redirecting...")
+        window.location.href = '/marketplace'
       }
     } catch (error) {
       setCodeValidation({
