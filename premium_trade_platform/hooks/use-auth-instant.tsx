@@ -86,34 +86,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithCode = async (accessCode: string) => {
-    setLoading(true)
-    
+    // Instant code authentication
     try {
       const result = loginWithCodeInstant(accessCode)
-      
+
       if (result.success) {
         setUser(result.user)
         setUserProfile(result.user)
-        setLoading(false)
-        
+
         // Redirect immediately
         window.location.href = '/marketplace'
-        
-        return { 
-          data: { 
-            success: true, 
-            user: result.user, 
+
+        return {
+          data: {
+            success: true,
+            user: result.user,
             profile: result.user,
-            message: result.message 
-          }, 
-          error: null 
+            message: result.message
+          },
+          error: null
         }
       }
-      
-      setLoading(false)
+
       return { error: new Error(result.error), data: null }
     } catch (error: any) {
-      setLoading(false)
       return { error: new Error(error.message || 'Code login failed'), data: null }
     }
   }
