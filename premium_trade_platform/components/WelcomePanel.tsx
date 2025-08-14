@@ -81,17 +81,20 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
         message: result.message,
         accountData: result.accountData
       })
-      
+
       if (result.isValid) {
         toast.success(result.message)
+        // Instantly move to success without delay
+        setCurrentStep('success')
+        // Auto-redirect after short delay
         setTimeout(() => {
-          setCurrentStep('success')
-        }, 1500)
+          window.location.href = '/marketplace'
+        }, 500)
       }
     } catch (error) {
       setCodeValidation({
         isValid: false,
-        message: '❌ Error al validar código'
+        message: '❌ Error validating code'
       })
     } finally {
       setIsValidatingCode(false)
