@@ -131,6 +131,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const createAccountWithCode = async (code: string, userData?: any) => {
+    try {
+      const validation = await validateCodeInstant(code)
+
+      if (!validation.isValid || !validation.accountData) {
+        return { error: new Error(validation.message), data: null }
+      }
+
+      // Create account with code data + user data
+      const accountData = {
+        ...validation.accountData,
+        ...userData,
+        invitation_code: code,
+        created_with_code: true
+      }
+
+      // For instant auth, we simulate account creation
+      const newUser = {
+        id: `user_${Date.now()}`,
+        email: accountData.email || userData?.email || '',
+        full_name: accountData.company_name || userData?.full_name || '',
+        company_name: accountData.company_name,
+        subscription_type: 'premium',
+        verification_status: 'verified',
+        invitation_code: code,
+        ...accountData
+      }
+
+      setUser(newUser)
+      setUserProfile(newUser)
+      setInstantAuth(newUser)
+
+      return {
+        data: {
+          success: true,
+          accountData: newUser,
+          message: `Cuenta creada para ${accountData.company_name}`
+        },
+        error: null
+      }
+    } catch (error: any) {
+      return { error: new Error('Error al crear cuenta'), data: null }
+    }
+  }
+
   const validateInvitationCode = async (code: string) => {
     return validateCodeInstant(code)
   }
