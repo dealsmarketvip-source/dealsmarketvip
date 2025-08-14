@@ -34,6 +34,8 @@ interface AuthUser {
   created_at?: string
   updated_at?: string
   profile_data?: Record<string, any>
+  preferences?: Record<string, any>
+  role?: string
 }
 
 interface AuthContextType {
