@@ -201,43 +201,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Use real database validation
-      const { data, error } = await supabase
-        .rpc('validate_invitation_code', { code_input: code.toUpperCase() })
-
-      if (error || !data) {
-        return { isValid: false, message: "❌ Invalid or expired code" }
-      }
-
-      // Get code details from database
-      const { data: codeDetails, error: codeError } = await supabase
-        .from('invitation_codes')
-        .select('*')
-        .eq('code', code.toUpperCase())
-        .single()
-
-      if (codeError || !codeDetails) {
-        return { isValid: false, message: "❌ Code not found" }
-      }
-
-      const accountData = {
-        company_name: code.toUpperCase() === 'ASTERO1' ? 'Astero Trading Group' : 'Beta Tester Company',
-        company_type: 'enterprise',
-        subscription_type: 'enterprise',
-        verification_status: 'verified',
-        permissions: codeDetails.benefits?.permissions || ['marketplace', 'selling'],
-        description: code.toUpperCase() === 'ASTERO1'
-          ? 'Complete enterprise access with all premium features'
-          : 'Full beta access with all functionalities available'
-      }
-
-      return {
-        isValid: true,
-        message: code.toUpperCase() === 'ASTERO1'
-          ? "🌟 Astero code valid - COMPLETE ACCESS"
-          : "🚀 Beta code valid - COMPLETE ACCESS",
-        accountData
-      }
+      // Use the working validation
+      const { validateInvitationCodeOnly } = await import('@/lib/auth-simple')
+      return await validateInvitationCodeOnly(code.toUpperCase())
     } catch (error) {
       console.error('Error validating invitation code:', error)
       return { isValid: false, message: "❌ Error validating code" }
