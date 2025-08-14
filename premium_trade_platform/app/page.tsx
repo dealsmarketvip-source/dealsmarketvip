@@ -343,12 +343,10 @@ export default function HomePage() {
       </section>
 
       {/* Welcome Panel */}
-      <Suspense fallback={null}>
-        <WelcomePanel
-          isOpen={showWelcomePanel}
-          onClose={() => setShowWelcomePanel(false)}
-        />
-      </Suspense>
+      <WelcomePanel
+        isOpen={showWelcomePanel}
+        onClose={() => setShowWelcomePanel(false)}
+      />
     </div>
   )
 }
