@@ -124,10 +124,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true)
 
     try {
-      // Import the enhanced auth module dynamically
-      const { validateAndLoginWithCode } = await import('@/lib/auth-enhanced')
+      // Import the working auth module
+      const { validateAndSignInWithCode } = await import('@/lib/auth-simple')
 
-      const result = await validateAndLoginWithCode(accessCode.toUpperCase())
+      const result = await validateAndSignInWithCode(accessCode.toUpperCase())
 
       if (!result.success) {
         setLoading(false)
@@ -138,11 +138,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (result.data) {
         setUser(result.data.user)
         setUserProfile(result.data.profile)
-
-        // Store session in localStorage for persistence
-        if (typeof window !== 'undefined' && result.data.session) {
-          localStorage.setItem('supabase.auth.token', JSON.stringify(result.data.session))
-        }
       }
 
       setLoading(false)
