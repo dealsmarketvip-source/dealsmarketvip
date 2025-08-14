@@ -13,7 +13,7 @@ import {
   Plus,
   LogOut
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 
 export function AuthenticatedNav() {
   const { user, signOut } = useAuth()
