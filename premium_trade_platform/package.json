@@ -7,7 +7,9 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "lighthouse": "lhci autorun"
+    "lighthouse": "lhci autorun",
+    "analyze": "ANALYZE=true npm run build",
+    "perf:audit": "npm run analyze && npm run lighthouse"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
