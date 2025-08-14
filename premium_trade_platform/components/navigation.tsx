@@ -283,7 +283,7 @@ export function Navigation() {
                       <Link href="/favorites">
                         <div className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-md transition-colors">
                           <Heart className="h-4 w-4" />
-                          Favoritos
+                          Favorites
                         </div>
                       </Link>
                       <div className="border-t border-border my-1" />
