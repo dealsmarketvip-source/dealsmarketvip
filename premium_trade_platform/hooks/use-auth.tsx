@@ -124,20 +124,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true)
 
     try {
-      // Import the working auth module
-      const { validateAndSignInWithCode } = await import('@/lib/auth-simple')
+      // Use optimized auth module for faster performance
+      const { fastSignInWithCode } = await import('@/lib/auth-optimized')
 
-      const result = await validateAndSignInWithCode(accessCode.toUpperCase())
+      const result = await fastSignInWithCode(accessCode.toUpperCase())
 
       if (!result.success) {
         setLoading(false)
         return { error: new Error(result.error), data: null }
       }
 
-      // If successful, set the user state
+      // If successful, set the user state immediately
       if (result.data) {
         setUser(result.data.user)
         setUserProfile(result.data.profile)
+
+        // Navigate to marketplace immediately
+        window.location.href = '/marketplace'
       }
 
       setLoading(false)
