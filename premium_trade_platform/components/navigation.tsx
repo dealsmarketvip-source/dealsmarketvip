@@ -196,7 +196,7 @@ export function Navigation() {
           </ClientOnly>
 
           {/* Right Side */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4" suppressHydrationWarning>
             {/* Sell Button */}
             {user && (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
