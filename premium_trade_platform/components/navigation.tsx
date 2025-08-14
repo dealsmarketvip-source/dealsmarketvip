@@ -185,13 +185,15 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation - Only show when authenticated and not on main/login pages */}
-          {user && !['//', '/login', '/access', '/'].includes(pathname) && (
-            <div className="hidden md:flex items-center space-x-2">
-              {navItems.map((item) => (
-                <NavButton key={item.href} item={item} />
-              ))}
-            </div>
-          )}
+          <ClientOnly fallback={<div className="hidden md:flex items-center space-x-2" />}>
+            {user && !['//', '/login', '/access', '/'].includes(pathname) && (
+              <div className="hidden md:flex items-center space-x-2">
+                {navItems.map((item) => (
+                  <NavButton key={item.href} item={item} />
+                ))}
+              </div>
+            )}
+          </ClientOnly>
 
           {/* Right Side */}
           <div className="flex items-center space-x-4">
