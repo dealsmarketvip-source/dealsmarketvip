@@ -43,7 +43,7 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
     accountData?: any
   }>({ isValid: null, message: '' })
   
-  const { user, validateInvitationCode } = useAuth()
+  const { user, validateInvitationCode, signInWithCode } = useAuth()
 
   const handleNext = () => {
     if (currentStep === 'welcome') {
