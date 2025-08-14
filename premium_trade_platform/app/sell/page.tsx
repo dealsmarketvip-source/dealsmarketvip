@@ -24,7 +24,6 @@ import {
   Loader2
 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth-instant"
-// Removed database dependency for instant functionality
 import { toast } from "sonner"
 import { EnhancedLoading, UploadLoading } from "@/components/ui/enhanced-loading"
 
