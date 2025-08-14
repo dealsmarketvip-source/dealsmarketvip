@@ -18,7 +18,7 @@ import Link from "next/link"
 import { VipBenefits } from "@/components/vip/vip-benefits"
 import { PricingTiers } from "@/components/vip/pricing-tiers"
 import SubscribeButton from "@/components/SubscribeButton"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 
 export default function VipPage() {
   const { user, userProfile } = useAuth()

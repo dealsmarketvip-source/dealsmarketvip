@@ -20,7 +20,7 @@ import {
   Eye,
   EyeOff
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 

@@ -30,7 +30,7 @@ import {
   BarChart3,
   Heart
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { createClient, db } from "@/lib/supabase"
 import { toast } from "sonner"
 import { UserProfile, Product, Order, Transaction, UserLimits } from "@/lib/types/database"
