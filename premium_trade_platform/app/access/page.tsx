@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ROIPresentation } from "@/app/components/roi-presentation"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 
 export default function AccessPage() {
   const [showPresentation, setShowPresentation] = useState(true)
