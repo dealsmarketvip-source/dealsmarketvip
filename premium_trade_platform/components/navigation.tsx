@@ -349,9 +349,9 @@ export function Navigation() {
           </div>
         </div>
 
-        {/* Mobile Navigation - Only show when authenticated */}
+        {/* Mobile Navigation - Only show when authenticated and not on main/login pages */}
         <AnimatePresence>
-          {isMenuOpen && user && (
+          {isMenuOpen && user && !['//', '/login', '/access', '/'].includes(pathname) && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
