@@ -204,9 +204,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Use the working validation
-      const { validateInvitationCodeOnly } = await import('@/lib/auth-simple')
-      return await validateInvitationCodeOnly(code.toUpperCase())
+      // Use optimized validation for instant response
+      const { fastValidateInvitationCode } = await import('@/lib/auth-optimized')
+      return await fastValidateInvitationCode(code.toUpperCase())
     } catch (error) {
       console.error('Error validating invitation code:', error)
       return { isValid: false, message: "❌ Error validating code" }
