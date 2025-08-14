@@ -209,12 +209,12 @@ export default function ProductPage() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="p-8 text-center">
           <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Producto no encontrado</h2>
+          <h2 className="text-xl font-semibold mb-2">Product not found</h2>
           <p className="text-muted-foreground mb-4">
-            El producto que buscas no existe o ha sido eliminado.
+            The product you're looking for doesn't exist or has been removed.
           </p>
           <Button onClick={() => router.push('/marketplace')}>
-            Volver al Marketplace
+            Back to Marketplace
           </Button>
         </Card>
       </div>
