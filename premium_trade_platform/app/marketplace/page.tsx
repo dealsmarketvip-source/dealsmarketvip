@@ -169,27 +169,22 @@ export default function MarketplacePage() {
   }
 
   const handleProductClick = async (productId: string) => {
-    // Track product view
+    // Mock tracking for product view - no database calls
     try {
-      const supabase = createClient()
-      
-      // Increment view count
-      await supabase
-        .from('products')
-        .update({ views_count: products.find(p => p.id === productId)?.views_count ?? 0 + 1 })
-        .eq('id', productId)
+      // Update view count in local state
+      setProducts(prev => prev.map(product =>
+        product.id === productId
+          ? { ...product, views_count: product.views_count + 1 }
+          : product
+      ))
 
-      // Track user search click if applicable
-      if (userProfile && searchQuery) {
-        await supabase
-          .from('user_searches')
-          .insert({
-            user_id: userProfile.id,
-            search_query: searchQuery,
-            clicked_product_id: productId,
-            results_count: totalProducts
-          })
-      }
+      // Log analytics (mock)
+      console.log('Product view tracked:', {
+        productId,
+        searchQuery,
+        totalResults: totalProducts,
+        user: userProfile?.email
+      })
     } catch (error) {
       console.error('Error tracking product view:', error)
     }
