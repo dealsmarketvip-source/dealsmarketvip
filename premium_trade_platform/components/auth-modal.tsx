@@ -33,7 +33,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   const handleCodeLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!invitationCode.trim()) {
       toast.error("Please enter an invitation code")
       return
@@ -42,19 +42,24 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setLoading(true)
 
     try {
+      // Show immediate success message for better UX
+      toast.success("Logging in...")
+
       const result = await signInWithCode(invitationCode)
-      
+
       if (result.error) {
         toast.error(result.error.message)
+        setLoading(false)
         return
       }
 
-      toast.success("Successfully logged in with invitation code!")
+      // Don't wait for anything, redirect immediately
+      toast.success("Successfully logged in!")
       onClose()
       resetForm()
+      setLoading(false)
     } catch (error: any) {
       toast.error(error.message || "Failed to log in with code")
-    } finally {
       setLoading(false)
     }
   }
