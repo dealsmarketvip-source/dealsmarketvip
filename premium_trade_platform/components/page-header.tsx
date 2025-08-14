@@ -14,7 +14,7 @@ import {
   ArrowLeft,
   Plus
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 
 interface PageHeaderProps {
   title: string
