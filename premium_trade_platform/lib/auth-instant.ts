@@ -71,9 +71,9 @@ export function validateCodeInstant(code: string) {
   }
 }
 
-export function loginWithCodeInstant(code: string) {
+export async function loginWithCodeInstant(code: string) {
   const validation = validateCodeInstant(code)
-  
+
   if (!validation.isValid) {
     return {
       success: false,
@@ -93,7 +93,7 @@ export function loginWithCodeInstant(code: string) {
   return {
     success: true,
     user,
-    message: 'Login successful'
+    message: validation.message || 'Login successful'
   }
 }
 
