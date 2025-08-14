@@ -241,9 +241,9 @@ export default function ProductPage() {
           </Button>
           
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">Detalles del Producto</h1>
+            <h1 className="text-2xl font-bold text-foreground">Product Details</h1>
             <p className="text-muted-foreground">
-              {product.category} • Publicado el {formatDate(product.created_at)}
+              {product.category} • Published on {formatDate(product.created_at)}
             </p>
           </div>
 
