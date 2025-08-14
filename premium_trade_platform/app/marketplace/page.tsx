@@ -370,8 +370,17 @@ export default function MarketplacePage() {
     return <LoadingOverlay isLoading={true} text="Cargando marketplace..." variant="shopping" />
   }
 
+  // Show loading screen if not authenticated
+  if (!user) {
+    return <PageLoading message="Please log in to access the marketplace" />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <PageHeader
+        title="Marketplace"
+        description="Discover premium products from verified companies"
+      />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <motion.div
