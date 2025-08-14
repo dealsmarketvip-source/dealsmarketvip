@@ -15,7 +15,7 @@ export default function AccessPage() {
 
   const handlePresentationComplete = () => {
     setShowPresentation(false)
-    router.push('/marketplace')
+    window.location.href = '/marketplace'
   }
 
   if (!showPresentation) {
