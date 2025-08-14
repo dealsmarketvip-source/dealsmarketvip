@@ -238,6 +238,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signInWithCode,
     createAccountWithCode,
     validateInvitationCode,
+    sendLoginCode,
+    verifyLoginCode,
     signOut,
     updateProfile
   }
