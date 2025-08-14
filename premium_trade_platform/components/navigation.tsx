@@ -261,7 +261,7 @@ export function Navigation() {
                     </Avatar>
                     <div className="hidden lg:block">
                       <p className="text-sm font-medium text-foreground">
-                        {userProfile?.full_name || 'Usuario'}
+                        {userProfile?.full_name || 'User'}
                       </p>
                       <div className="flex items-center gap-1">
                         <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs px-1 py-0">
