@@ -10,7 +10,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Mail, Shield, ArrowRight, CheckCircle2, Clock, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth-instant'
 
 interface LoginFormProps {
   onSuccess?: (user: any) => void
