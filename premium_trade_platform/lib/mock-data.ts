@@ -60,6 +60,12 @@ export const MOCK_PRODUCTS = [
     verified: true,
     created_at: '2024-01-14T15:20:00Z',
     updated_at: '2024-01-14T15:20:00Z',
+    specifications: {
+      processor: 'M3 Pro',
+      ram: '18GB',
+      storage: '1TB SSD',
+      screen: '14-inch Liquid Retina XDR'
+    },
     seller: {
       id: 'seller-2',
       full_name: 'Digital Solutions Corp',
