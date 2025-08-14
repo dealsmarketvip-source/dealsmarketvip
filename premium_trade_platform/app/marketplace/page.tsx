@@ -90,10 +90,9 @@ export default function MarketplacePage() {
 
   // Track page view
   useEffect(() => {
-    analytics.trackView('marketplace', {
-      total_products: totalProducts,
-      view_mode: viewMode,
-      filters_applied: Object.keys(filters).length > 0
+    analytics.trackView({
+      page: 'marketplace',
+      userId: user?.id
     });
   }, []);
 
