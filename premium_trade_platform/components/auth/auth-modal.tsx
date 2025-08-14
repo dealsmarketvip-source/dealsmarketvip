@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CrownLogo } from "@/components/ui/crown-logo"
 import { Mail, Lock, User, Building, Phone, MapPin, Eye, EyeOff, Shield, Key, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { toast } from "sonner"
 
 interface AuthModalProps {
