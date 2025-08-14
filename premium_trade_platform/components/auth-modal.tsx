@@ -129,20 +129,75 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setEmail("")
     setPassword("")
     setConfirmPassword("")
+    setInvitationCode("")
     setShowPassword(false)
     setShowConfirmPassword(false)
+  }
+
+  const getTitle = () => {
+    switch (authMode) {
+      case "code": return "Enter Invitation Code"
+      case "login": return "Sign In"
+      case "register": return "Create Account"
+    }
+  }
+
+  const getSubmitHandler = () => {
+    switch (authMode) {
+      case "code": return handleCodeLogin
+      case "login": return handleLogin
+      case "register": return handleRegister
+    }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center text-foreground">Crear Cuenta</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-center text-foreground">{getTitle()}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Mode Selector */}
+          <div className="flex rounded-lg bg-muted p-1">
+            <button
+              type="button"
+              onClick={() => setAuthMode("code")}
+              className={`flex-1 rounded-md py-2 px-3 text-sm font-medium transition-all ${
+                authMode === "code"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Code className="h-4 w-4 mx-auto mb-1" />
+              Code
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthMode("login")}
+              className={`flex-1 rounded-md py-2 px-3 text-sm font-medium transition-all ${
+                authMode === "login"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthMode("register")}
+              className={`flex-1 rounded-md py-2 px-3 text-sm font-medium transition-all ${
+                authMode === "register"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Register
+            </button>
+          </div>
+
           {/* Form */}
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={getSubmitHandler()} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">
                 Email
