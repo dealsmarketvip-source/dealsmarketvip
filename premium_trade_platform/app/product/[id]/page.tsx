@@ -201,7 +201,7 @@ export default function ProductPage() {
   }
 
   if (loading) {
-    return <LoadingOverlay isLoading={true} text="Cargando producto..." variant="package" />
+    return <LoadingOverlay isLoading={true} text="Loading product..." variant="package" />
   }
 
   if (!product) {
