@@ -31,7 +31,7 @@ import {
   TrendingUp,
   Clock
 } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/hooks/use-auth-instant"
 import { createClient, db } from "@/lib/supabase"
 import { toast } from "sonner"
 import { ProductWithImages, ProductFilters, User } from "@/lib/types/database"
