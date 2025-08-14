@@ -15,11 +15,25 @@ import {
 interface AuthUser {
   id: string
   email: string
-  full_name: string
+  full_name?: string
   company_name?: string
-  subscription_type?: string
-  verification_status?: string
+  phone?: string
+  dni?: string
+  country?: string
+  city?: string
+  address?: string
+  profile_image_url?: string
+  user_type?: 'individual' | 'business' | 'freelancer'
+  subscription_type?: 'free' | 'premium'
+  subscription_status?: 'active' | 'inactive' | 'pending' | 'cancelled'
+  verification_status?: 'pending' | 'in_review' | 'verified' | 'rejected'
+  verification_bypass?: boolean
+  account_balance?: number
+  stripe_customer_id?: string
   invitation_code?: string
+  created_at?: string
+  updated_at?: string
+  profile_data?: Record<string, any>
 }
 
 interface AuthContextType {
