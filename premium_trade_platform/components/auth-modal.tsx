@@ -33,48 +33,93 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { signIn, signUp, signInWithCode, validateInvitationCode } = useAuth()
   const supabase = createClientComponentClient()
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleCodeLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (password !== confirmPassword) {
-      toast.error("Las contraseñas no coinciden")
-      return
-    }
-
-    if (password.length < 6) {
-      toast.error("La contraseña debe tener al menos 6 caracteres")
-      return
-    }
-
-    // Check if Supabase is properly configured
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('demo')) {
-      toast.error("Configuración de autenticación no disponible. Por favor, configura Supabase correctamente.")
+    if (!invitationCode.trim()) {
+      toast.error("Please enter an invitation code")
       return
     }
 
     setLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
+      const result = await signInWithCode(invitationCode)
 
-      if (error) {
-        toast.error(error.message)
+      if (result.error) {
+        toast.error(result.error.message)
         return
       }
 
-      toast.success("¡Cuenta creada! Revisa tu email para confirmar tu cuenta y poder iniciar sesión.")
+      toast.success("Successfully logged in with invitation code!")
       onClose()
       resetForm()
-    } catch (error) {
-      console.error('Auth error:', error)
-      toast.error("Error al crear la cuenta. Verifica la configuración de Supabase.")
+    } catch (error: any) {
+      toast.error(error.message || "Failed to log in with code")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!email || !password) {
+      toast.error("Please fill in all fields")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const result = await signIn(email, password)
+
+      if (result.error) {
+        toast.error(result.error.message || "Failed to sign in")
+        return
+      }
+
+      toast.success("Successfully logged in!")
+      onClose()
+      resetForm()
+    } catch (error: any) {
+      toast.error(error.message || "Failed to sign in")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match")
+      return
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const result = await signUp(email, password, {
+        full_name: email.split('@')[0],
+        invitation_code: invitationCode
+      })
+
+      if (result.error) {
+        toast.error(result.error.message)
+        return
+      }
+
+      toast.success("Account created successfully!")
+      onClose()
+      resetForm()
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create account")
     } finally {
       setLoading(false)
     }
