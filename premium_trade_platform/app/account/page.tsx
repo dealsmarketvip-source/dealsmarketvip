@@ -142,10 +142,9 @@ export default function AccountPage() {
     setIsEditing(false)
   }
 
-  // Allow access to account for demo purposes
-  // if (!user) {
-  //   return <PageLoading message="Please log in to access your account" />
-  // }
+  if (!user) {
+    return <PageLoading message="Please log in to access your account" />
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
