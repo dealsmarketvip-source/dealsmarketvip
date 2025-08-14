@@ -69,22 +69,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
-    setLoading(true)
-    
+    // No loading state for instant auth
     try {
       const result = signUpInstant(email, password, metadata)
-      
+
       if (result.success) {
         setUser(result.user)
         setUserProfile(result.user)
-        setLoading(false)
         return { data: result.user, error: null }
       }
-      
-      setLoading(false)
+
       return { error: { message: 'Sign up failed' }, data: null }
     } catch (error: any) {
-      setLoading(false)
       return { error: { message: error.message || 'Sign up failed' }, data: null }
     }
   }
