@@ -32,8 +32,8 @@ import {
   Users,
   Crown
 } from 'lucide-react'
-import { useAuth } from '@/hooks/use-auth'
-import { db } from '@/lib/supabase'
+import { useAuth } from '@/hooks/use-auth-instant'
+import { getMockProductById } from '@/lib/mock-data'
 import { toast } from 'sonner'
 
 interface Product {
