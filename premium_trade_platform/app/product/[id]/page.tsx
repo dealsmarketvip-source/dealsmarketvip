@@ -136,7 +136,7 @@ export default function ProductPage() {
 
   const handleContact = async () => {
     if (!userProfile) {
-      toast.error('Debes iniciar sesión para contactar al vendedor')
+      toast.error('You must sign in to contact the seller')
       router.push('/login')
       return
     }
@@ -145,7 +145,7 @@ export default function ProductPage() {
     // Simulate contact action
     setTimeout(() => {
       setContactLoading(false)
-      toast.success('Mensaje enviado al vendedor')
+      toast.success('Message sent to seller')
     }, 1500)
   }
 
