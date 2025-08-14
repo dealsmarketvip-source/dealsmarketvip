@@ -38,6 +38,16 @@ const nextConfig = {
       },
     },
   },
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = config.externals || []
+      config.externals.push('next/document')
+    }
+    return config
+  },
 }
 
 export default nextConfig;
