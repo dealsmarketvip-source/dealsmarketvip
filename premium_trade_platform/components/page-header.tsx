@@ -86,7 +86,7 @@ export function PageHeader({ title, description, showBackButton = false, actions
                   return (
                     <motion.button
                       key={item.href}
-                      onClick={() => router.push(item.href)}
+                      onClick={() => window.location.href = item.href}
                       className={`relative group px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                         item.active 
                           ? 'bg-primary text-primary-foreground shadow-md' 
