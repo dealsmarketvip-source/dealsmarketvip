@@ -41,10 +41,10 @@ export function Navigation() {
 
       if (response.ok) {
         await signOut()
-        toast.success('Sesión cerrada correctamente')
-        router.push('/')
+        toast.success('Session closed successfully')
+        window.location.href = '/'
       } else {
-        throw new Error('Error al cerrar sesión')
+        throw new Error('Error signing out')
       }
     } catch (error) {
       toast.error('Error al cerrar sesión')
