@@ -159,7 +159,7 @@ export default function ProductPage() {
     } catch (error) {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href)
-      toast.success('Enlace copiado al portapapeles')
+      toast.success('Link copied to clipboard')
     }
   }
 
