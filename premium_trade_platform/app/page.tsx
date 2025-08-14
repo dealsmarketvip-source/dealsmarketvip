@@ -72,11 +72,11 @@ export default function HomePage() {
                   className="bg-gradient-to-r from-primary to-primary/80"
                   onClick={handleGetStarted}
                 >
-                  Acceso Inmediato
+                  Instant Access
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="lg" onClick={handleGetStarted}>
-                  Ver Análisis ROI
+                  View ROI Analysis
                 </Button>
               </div>
 
@@ -84,15 +84,15 @@ export default function HomePage() {
               <div className="grid grid-cols-3 gap-6 pt-8">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">€50M+</div>
-                  <div className="text-sm text-muted-foreground">Volumen Mensual</div>
+                  <div className="text-sm text-muted-foreground">Monthly Volume</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">500+</div>
-                  <div className="text-sm text-muted-foreground">Empresas Verificadas</div>
+                  <div className="text-sm text-muted-foreground">Verified Companies</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">98%</div>
-                  <div className="text-sm text-muted-foreground">Tasa de Éxito</div>
+                  <div className="text-sm text-muted-foreground">Success Rate</div>
                 </div>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function HomePage() {
               onClick={handleGetStarted}
             >
               <Crown className="mr-2 h-5 w-5" />
-              Acceso Inmediato
+              Instant Access
             </Button>
           </div>
         </div>
