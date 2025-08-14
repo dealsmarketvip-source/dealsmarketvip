@@ -24,6 +24,11 @@ export const MOCK_PRODUCTS = [
     verified: true,
     created_at: '2024-01-15T10:30:00Z',
     updated_at: '2024-01-15T10:30:00Z',
+    specifications: {
+      storage: '1TB',
+      color: 'Natural Titanium',
+      warranty: '1 year'
+    },
     seller: {
       id: 'seller-1',
       full_name: 'Tech Innovations SL',
