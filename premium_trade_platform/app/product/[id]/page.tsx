@@ -87,95 +87,21 @@ export default function ProductPage() {
   const fetchProduct = async () => {
     try {
       setLoading(true)
-      
-      // Check if we're in demo mode
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      if (!supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('demo')) {
-        // Show demo product
-        const demoProduct: Product = {
-          id: params.id as string,
-          title: 'iPhone 15 Pro Max 1TB - Titanio Natural',
-          description: `**🚀 PRODUCTO DEMO - Configure Supabase para productos reales**
 
-Este es un ejemplo de cómo se vería un producto real en DealsMarket. Incluye todas las características que tendrá la plataforma final:
+      // Use mock data for instant functionality
+      const product = getMockProductById(params.id as string)
 
-**Especificaciones Técnicas:**
-• Pantalla: 6.7" Super Retina XDR OLED
-• Procesador: A17 Pro Bionic con GPU de 6 núcleos  
-• Almacenamiento: 1TB
-• Cámara: Sistema Pro de 48MP con teleobjetivo 5x
-• Batería: Hasta 29 horas de reproducción de video
-• Conectividad: 5G, Wi-Fi 6E, Bluetooth 5.3
-• Resistencia: IP68 (6 metros hasta 30 minutos)
-
-**Estado del producto:**
-• Nuevo, sin abrir, con todos los accesorios originales
-• Garantía Apple de 1 año incluida
-• Factura original incluida
-• Disponible para entrega inmediata
-
-**¿Por qué este precio?**
-Compra corporativa con descuento por volumen. Vendemos el excedente a precio preferencial para empresas verificadas de DealsMarket.
-
-**Empresa verificada ✓**
-Esta empresa ha completado el proceso de verificación KYC de DealsMarket y cuenta con certificación de empresa legítima.`,
-          price: 1250,
-          currency: 'EUR',
-          images: [
-            'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&h=600&fit=crop'
-          ],
-          seller_id: 'demo-seller',
-          status: 'active',
-          condition: 'new',
-          category: 'electronics',
-          subcategory: 'smartphones',
-          views_count: 342,
-          favorites_count: 28,
-          shipping_included: true,
-          shipping_cost: 0,
-          location: 'Madrid, España',
-          featured: true,
-          verified: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          seller: {
-            id: 'demo-seller',
-            full_name: 'TechCorp Solutions',
-            verification_status: 'verified',
-            profile_image_url: undefined,
-            company_name: 'TechCorp Solutions S.L.',
-            member_since: '2023-06-15'
-          }
-        }
-        setProduct(demoProduct)
-        return
-      }
-
-      const { data, error } = await db.products.getById(params.id as string)
-      
-      if (error) {
-        throw error
-      }
-      
-      if (!data) {
-        toast.error('Producto no encontrado')
+      if (!product) {
+        toast.error('Product not found')
         router.push('/marketplace')
         return
       }
 
-      setProduct(data)
-
-      // Check if it's in user's favorites
-      if (userProfile) {
-        // Check favorites status
-        // This would require a new database function
-      }
+      setProduct(product)
 
     } catch (error) {
       console.error('Error fetching product:', error)
-      toast.error('Error al cargar el producto')
+      toast.error('Error loading product')
       router.push('/marketplace')
     } finally {
       setLoading(false)
