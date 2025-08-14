@@ -277,7 +277,7 @@ export function Navigation() {
                       <Link href="/account">
                         <div className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-md transition-colors">
                           <User className="h-4 w-4" />
-                          Mi Cuenta
+                          My Account
                         </div>
                       </Link>
                       <Link href="/favorites">
