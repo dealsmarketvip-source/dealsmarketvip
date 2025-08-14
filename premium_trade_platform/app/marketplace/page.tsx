@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { LoadingSpinner, LoadingOverlay } from "@/components/loading-spinner"
+import { LoadingSpinner, LoadingOverlay } from "@/components/ui/loading-spinner"
 import { analytics } from "@/lib/analytics"
 import { PageHeader } from "@/components/page-header"
 import { EnhancedLoading, PageLoading } from "@/components/ui/enhanced-loading"
