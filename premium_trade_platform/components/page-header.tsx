@@ -127,7 +127,7 @@ export function PageHeader({ title, description, showBackButton = false, actions
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => router.push('/sell')}
+                    onClick={() => window.location.href = '/sell'}
                     className="border-green-500/30 text-green-600 hover:bg-green-500/10"
                   >
                     <Plus className="h-4 w-4 mr-2" />
