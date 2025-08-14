@@ -98,26 +98,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     setLoading(true)
-    const result = await auth.signIn(email, password)
-    setLoading(false)
-    return result
+
+    try {
+      const { fastSignIn } = await import('@/lib/auth-optimized')
+      const result = await fastSignIn(email, password)
+      setLoading(false)
+      return result
+    } catch (error: any) {
+      setLoading(false)
+      return { error: { message: error.message || 'Sign in failed' } }
+    }
   }
 
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
     setLoading(true)
 
-    // Si hay un código de invitación, validarlo primero
-    if (metadata?.invitation_code) {
-      const validation = await validateInvitationCode(metadata.invitation_code)
-      if (!validation.isValid) {
-        setLoading(false)
-        return { error: new Error(validation.message) }
+    try {
+      // Quick validation for invitation codes
+      if (metadata?.invitation_code) {
+        const validation = await validateInvitationCode(metadata.invitation_code)
+        if (!validation.isValid) {
+          setLoading(false)
+          return { error: new Error(validation.message) }
+        }
       }
-    }
 
-    const result = await auth.signUp(email, password, metadata?.invitation_code, metadata)
-    setLoading(false)
-    return result
+      const { fastSignUp } = await import('@/lib/auth-optimized')
+      const result = await fastSignUp(email, password, metadata)
+      setLoading(false)
+      return result
+    } catch (error: any) {
+      setLoading(false)
+      return { error: { message: error.message || 'Sign up failed' } }
+    }
   }
 
   const signInWithCode = async (accessCode: string) => {
