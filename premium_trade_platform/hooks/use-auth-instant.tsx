@@ -119,16 +119,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    setLoading(true)
-    
+    // Instant sign out
     try {
       signOutInstant()
       setUser(null)
       setUserProfile(null)
-      setLoading(false)
       return { error: null }
     } catch (error: any) {
-      setLoading(false)
       return { error: { message: error.message || 'Sign out failed' } }
     }
   }
