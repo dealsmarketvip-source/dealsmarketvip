@@ -117,7 +117,7 @@ export default function MarketplacePage() {
         ...(searchQuery && { q: searchQuery })
       }
 
-      const { data, error, count } = await db.products.search(
+      const { data, error, count } = getMockProducts(
         searchFilters,
         currentPage,
         itemsPerPage
