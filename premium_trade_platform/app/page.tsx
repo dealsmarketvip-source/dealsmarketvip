@@ -22,7 +22,10 @@ export default function HomePage() {
 
   // Track page view
   useEffect(() => {
-    analytics.trackView('homepage');
+    analytics.trackView({
+      page: 'homepage',
+      userId: user?.id
+    });
   }, []);
 
   // Removed auto-redirect to prevent fetch errors
