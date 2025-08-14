@@ -89,14 +89,25 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
         const loginResult = await signInWithCode(code)
 
         if (loginResult.error) {
-          toast.error("Login failed")
+          toast.error("Login failed: " + loginResult.error.message)
           setIsValidatingCode(false)
           return
         }
 
         // Instant redirect without showing success screen
         toast.success("Access granted! Redirecting...")
-        window.location.href = '/marketplace'
+
+        // Multiple fallback redirections
+        setTimeout(() => {
+          window.location.href = '/marketplace'
+        }, 100)
+
+        // Additional fallback in case first redirect fails
+        setTimeout(() => {
+          if (window.location.pathname !== '/marketplace') {
+            window.location.replace('/marketplace')
+          }
+        }, 1000)
       }
     } catch (error) {
       setCodeValidation({
