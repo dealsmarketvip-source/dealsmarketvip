@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
       // Increment attempts for security logging
       await supabaseAdmin
         .from('login_codes')
-        .update({ 
-          attempts: supabaseAdmin.sql`attempts + 1`
+        .update({
+          attempts: 1
         })
         .eq('email', email.toLowerCase())
         .eq('code', code)
