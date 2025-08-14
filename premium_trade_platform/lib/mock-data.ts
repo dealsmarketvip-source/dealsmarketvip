@@ -300,8 +300,13 @@ export function getMockProducts(filters: any = {}, page: number = 1, itemsPerPag
 
 export function getMockProductById(id: string) {
   const product = MOCK_PRODUCTS.find(p => p.id === id)
+  const productWithSpecs = product ? {
+    ...product,
+    specifications: product.specifications || {}
+  } : null
+
   return {
-    data: product || null,
-    error: product ? null : { message: 'Product not found' }
+    data: productWithSpecs,
+    error: productWithSpecs ? null : { message: 'Product not found' }
   }
 }
