@@ -255,7 +255,7 @@ export default function ProductPage() {
               className="flex items-center gap-2"
             >
               <Share2 className="h-4 w-4" />
-              Compartir
+              Share
             </Button>
           </div>
         </motion.div>
