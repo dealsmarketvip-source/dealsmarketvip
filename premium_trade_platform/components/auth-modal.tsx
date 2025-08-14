@@ -24,10 +24,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [invitationCode, setInvitationCode] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [authMode, setAuthMode] = useState<"login" | "register" | "code">("code")
 
+  const { signIn, signUp, signInWithCode, validateInvitationCode } = useAuth()
   const supabase = createClientComponentClient()
 
   const handleRegister = async (e: React.FormEvent) => {
