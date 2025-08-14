@@ -12,6 +12,8 @@ import { Slider } from "@/components/ui/slider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LoadingSpinner, LoadingOverlay } from "@/components/loading-spinner"
 import { analytics } from "@/lib/analytics"
+import { PageHeader } from "@/components/page-header"
+import { EnhancedLoading, PageLoading } from "@/components/ui/enhanced-loading"
 import { 
   Search, 
   Filter, 
