@@ -3,7 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Suspense } from "react"
 import { Toaster } from "sonner"
-import { AuthProvider } from "@/hooks/use-auth"
+import { AuthProvider } from "@/hooks/use-auth-instant"
 import { Navigation } from "@/components/navigation"
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
