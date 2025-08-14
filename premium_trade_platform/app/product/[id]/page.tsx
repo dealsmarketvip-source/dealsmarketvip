@@ -180,11 +180,11 @@ export default function ProductPage() {
 
   const getConditionLabel = (condition: string) => {
     const conditions: Record<string, string> = {
-      new: 'Nuevo',
-      like_new: 'Como nuevo',
-      good: 'Bueno',
-      fair: 'Regular',
-      poor: 'Malo'
+      new: 'New',
+      like_new: 'Like New',
+      good: 'Good',
+      fair: 'Fair',
+      poor: 'Poor'
     }
     return conditions[condition] || condition
   }
