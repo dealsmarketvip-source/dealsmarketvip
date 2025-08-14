@@ -200,7 +200,11 @@ export const MOCK_PRODUCTS = [
 ]
 
 export function getMockProducts(filters: any = {}, page: number = 1, itemsPerPage: number = 20) {
-  let filteredProducts = [...MOCK_PRODUCTS]
+  // Ensure all products have specifications property
+  let filteredProducts = MOCK_PRODUCTS.map(product => ({
+    ...product,
+    specifications: product.specifications || {}
+  }))
 
   // Apply search filter
   if (filters.q) {
