@@ -53,14 +53,20 @@ export default function SellPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [isMounted, setIsMounted] = useState(false)
 
-  // Redirect if not authenticated
+  // Prevent hydration mismatch
   useEffect(() => {
-    if (!user) {
+    setIsMounted(true)
+  }, [])
+
+  // Redirect if not authenticated (only after mount)
+  useEffect(() => {
+    if (isMounted && !user) {
       toast.error("You must be logged in to sell products")
       router.push('/login')
     }
-  }, [user, router])
+  }, [user, router, isMounted])
 
   const [formData, setFormData] = useState({
     title: '',
