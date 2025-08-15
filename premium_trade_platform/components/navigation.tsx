@@ -26,6 +26,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { toast } from 'sonner'
 import ClientOnly from '@/components/client-only'
 import { usePageTransitionContext } from '@/components/page-transition-provider'
+import { AdminPanel } from '@/components/admin-panel'
 
 export function Navigation() {
   const { user, userProfile, signOut } = useAuth()
