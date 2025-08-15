@@ -21,6 +21,14 @@ export default function ClientErrorHandler() {
         return
       }
 
+      if (event.reason?.message?.includes('Clipboard API has been blocked') ||
+          event.reason?.name === 'NotAllowedError') {
+        // Suppress clipboard errors from dev overlay
+        console.warn('Clipboard error suppressed (dev overlay):', event.reason.message)
+        event.preventDefault()
+        return
+      }
+
       // Log other errors for debugging
       console.error('Unhandled promise rejection:', event.reason)
     }
