@@ -38,13 +38,13 @@ const nextConfig = {
       },
     },
   },
-  generateBuildId: async () => {
-    return 'build-' + Date.now()
-  },
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals = config.externals || []
-      config.externals.push('next/document')
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      // Fix HMR for hosted environments
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+      }
     }
     return config
   },
