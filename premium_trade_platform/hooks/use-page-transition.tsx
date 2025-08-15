@@ -76,7 +76,13 @@ export function usePageTransition(options: UsePageTransitionOptions = {}) {
     // Don't show loading for same page
     if (path === pathname) return
 
-    // Set loading state
+    // Prevent double-clicks and navigation while already loading
+    if (isLoading) {
+      console.debug('Navigation blocked: already loading', { currentTarget: targetPath, newTarget: path })
+      return
+    }
+
+    // Set loading state immediately to prevent double-clicks
     setIsLoading(true)
     setTargetPath(path)
     setLoadingMessage(getLoadingMessage(path))
@@ -87,47 +93,45 @@ export function usePageTransition(options: UsePageTransitionOptions = {}) {
       clearTimeout(navigationTimeoutRef.current)
     }
 
-    // Navigate after a small delay to show the loading screen
-    navigationTimeoutRef.current = setTimeout(async () => {
-      try {
-        if (options?.replace) {
-          router.replace(path)
-        } else {
-          router.push(path)
-        }
+    // Navigate immediately but ensure loading shows for minimum time
+    try {
+      if (options?.replace) {
+        router.replace(path)
+      } else {
+        router.push(path)
+      }
 
-        // Ensure minimum loading time for better UX
-        const elapsedTime = Date.now() - (loadingStartTime.current || 0)
-        const remainingTime = Math.max(0, minLoadingTime - elapsedTime)
+      // Ensure minimum loading time for better UX
+      const elapsedTime = Date.now() - (loadingStartTime.current || 0)
+      const remainingTime = Math.max(0, minLoadingTime - elapsedTime)
 
-        if (remainingTime > 0) {
-          setTimeout(() => {
-            setIsLoading(false)
-            setTargetPath(undefined)
-            setLoadingMessage(undefined)
-          }, remainingTime)
-        } else {
+      if (remainingTime > 0) {
+        navigationTimeoutRef.current = setTimeout(() => {
           setIsLoading(false)
           setTargetPath(undefined)
           setLoadingMessage(undefined)
-        }
-      } catch (error: any) {
-        // Handle different types of navigation errors
-        const errorMessage = error?.message || ''
-
-        if (errorMessage.includes('Failed to fetch') || errorMessage.includes('RSC payload')) {
-          // For HMR/RSC errors, fall back to window.location
-          console.debug('Router error detected, falling back to window.location:', errorMessage)
-          window.location.href = path
-        } else {
-          console.error('Navigation error:', error)
-        }
-
+        }, remainingTime)
+      } else {
         setIsLoading(false)
         setTargetPath(undefined)
         setLoadingMessage(undefined)
       }
-    }, 100)
+    } catch (error: any) {
+      // Handle different types of navigation errors
+      const errorMessage = error?.message || ''
+
+      if (errorMessage.includes('Failed to fetch') || errorMessage.includes('RSC payload')) {
+        // For HMR/RSC errors, fall back to window.location
+        console.debug('Router error detected, falling back to window.location:', errorMessage)
+        window.location.href = path
+      } else {
+        console.error('Navigation error:', error)
+      }
+
+      setIsLoading(false)
+      setTargetPath(undefined)
+      setLoadingMessage(undefined)
+    }
   }
 
   // Hide loading when pathname changes (for browser back/forward buttons)
