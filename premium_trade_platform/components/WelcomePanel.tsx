@@ -514,6 +514,13 @@ export function WelcomePanel({ isOpen, onClose }: WelcomePanelProps) {
           </motion.div>
         </motion.div>
       )}
+
+      {/* Loading overlay para validación de código */}
+      <PageLoadingOverlay
+        isLoading={isValidatingCode}
+        message="Validando código de invitación"
+        type="auth"
+      />
     </AnimatePresence>
   )
 }
