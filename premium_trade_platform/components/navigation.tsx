@@ -27,6 +27,7 @@ import { toast } from 'sonner'
 import ClientOnly from '@/components/client-only'
 import { usePageTransitionContext } from '@/components/page-transition-provider'
 import { AdminPanel } from '@/components/admin-panel'
+import { NotificationSystem } from '@/components/notification-system'
 
 export function Navigation() {
   const { user, userProfile, signOut } = useAuth()
@@ -272,24 +273,7 @@ export function Navigation() {
               {user ? (
                 <div className="flex items-center space-x-3">
                   {/* Notifications */}
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <Bell className="h-5 w-5" />
-                    <motion.div
-                      className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
-                      animate={{
-                        scale: [1, 1.2, 1],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    />
-                  </motion.button>
+                  <NotificationSystem />
 
                   {/* User Avatar */}
                   <div className="relative group">
