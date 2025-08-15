@@ -12,7 +12,14 @@ export default function ClientErrorHandler() {
         event.preventDefault()
         return
       }
-      
+
+      if (event.reason?.message?.includes('Hydration failed')) {
+        // Suppress hydration errors in development
+        console.warn('Hydration error suppressed:', event.reason.message)
+        event.preventDefault()
+        return
+      }
+
       // Log other errors for debugging
       console.error('Unhandled promise rejection:', event.reason)
     }
