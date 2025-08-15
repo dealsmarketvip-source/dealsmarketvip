@@ -199,6 +199,14 @@ export const MOCK_PRODUCTS = [
   }
 ]
 
+// Simple function to get all products as array (for marketplace use)
+export function getMockProductsArray() {
+  return MOCK_PRODUCTS.map(product => ({
+    ...product,
+    specifications: product.specifications || {}
+  }))
+}
+
 export function getMockProducts(filters: any = {}, page: number = 1, itemsPerPage: number = 20) {
   // Ensure all products have specifications property
   let filteredProducts = MOCK_PRODUCTS.map(product => ({
