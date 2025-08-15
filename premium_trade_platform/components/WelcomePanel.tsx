@@ -25,6 +25,7 @@ import { useAuth } from '@/hooks/use-auth-instant'
 import { toast } from 'sonner'
 import SubscribeButton from './SubscribeButton'
 import { LoadingSpinner } from './ui/loading-spinner'
+import { PageLoadingOverlay } from './page-loading-overlay'
 
 interface WelcomePanelProps {
   isOpen: boolean
