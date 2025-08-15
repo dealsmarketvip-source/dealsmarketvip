@@ -77,9 +77,6 @@ export default function HomePage() {
                   Instant Access
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="lg" onClick={handleGetStarted}>
-                  View ROI Analysis
-                </Button>
               </div>
 
               {/* Stats Section */}
