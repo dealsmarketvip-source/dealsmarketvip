@@ -88,18 +88,26 @@ export default function ProductPage() {
     
     try {
       // Show loading for realistic UX
-      await new Promise(resolve => setTimeout(resolve, 1200))
-      
-      // Use mock data for instant functionality
-      const productResult = getMockProductById(params.id as string)
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-      if (!productResult.data || productResult.error) {
-        toast.error(productResult.error?.message || 'Product not found')
-        router.push('/marketplace')
-        return
+      // First try to get real product
+      let product = realProductManager.getProductById(params.id as string)
+
+      // If not found in real products, try mock data
+      if (!product) {
+        const productResult = getMockProductById(params.id as string)
+        if (!productResult.data || productResult.error) {
+          toast.error(productResult.error?.message || 'Product not found')
+          router.push('/marketplace')
+          return
+        }
+        product = productResult.data
+      } else {
+        // Increment views for real products
+        realProductManager.incrementViews(params.id as string)
       }
 
-      setProduct(productResult.data)
+      setProduct(product)
       
       // Check if it's in favorites (mock)
       const favoriteItems = JSON.parse(localStorage.getItem('favorites') || '[]')
