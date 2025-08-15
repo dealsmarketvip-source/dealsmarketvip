@@ -347,7 +347,10 @@ export default function MarketplacePage() {
   }
 
   const handleProductClick = (productId: string) => {
-    // Increment view count (mock)
+    // Increment view count for real products
+    if (productId.startsWith('prod-')) {
+      realProductManager.incrementViews(productId)
+    }
     console.log('Product viewed:', productId)
   }
 
