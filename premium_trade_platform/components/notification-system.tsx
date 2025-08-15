@@ -357,15 +357,15 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                   <CardContent className="p-0">
                     {/* Database Status Info */}
                     {(() => {
-                      const connectionInfo = getConnectionInfo()
-                      const isConnected = enhancedDbService.isConnected()
+                      const dbInfo = getUnifiedDatabaseInfo()
+                      const isConnected = isUnifiedDatabaseConnected()
 
-                      if (isConnected && connectionInfo.provider === 'Neon PostgreSQL') {
+                      if (isConnected) {
                         return (
                           <div className="p-3 bg-green-500/10 border-b border-green-500/20">
                             <div className="flex items-center gap-2 text-green-400 text-xs">
                               <Check className="h-3 w-3" />
-                              <span>Neon PostgreSQL conectado ✅</span>
+                              <span>{dbInfo.provider.toUpperCase()} conectado ✅</span>
                             </div>
                           </div>
                         )
@@ -374,7 +374,7 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                           <div className="p-3 bg-orange-500/10 border-b border-orange-500/20">
                             <div className="flex items-center gap-2 text-orange-400 text-xs">
                               <AlertCircle className="h-3 w-3" />
-                              <span>{connectionInfo.message || 'Usando datos demo'}</span>
+                              <span>Usando datos demo - Conecta {dbInfo.provider.toUpperCase()}</span>
                             </div>
                           </div>
                         )
