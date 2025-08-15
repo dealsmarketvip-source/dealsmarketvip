@@ -4,37 +4,37 @@
 
 @layer base {
   :root {
-    /* Dark Green and Black Theme - No White/Light Colors */
-    --background: 120 100% 3%; /* #001a00 - Very Dark Green */
-    --foreground: 120 50% 85%; /* #b3d9b3 - Light Green Text */
+    /* Premium B2B Theme Colors - Enhanced */
+    --background: 215 28% 6%; /* #0A1628 - Deep Navy */
+    --foreground: 210 20% 98%; /* #FAFBFC - Crisp White */
 
-    --muted: 120 100% 5%; /* #002600 - Dark Green Muted */
-    --muted-foreground: 120 30% 60%; /* #73a673 - Medium Green */
+    --muted: 215 25% 10%; /* #141B2D - Muted Navy */
+    --muted-foreground: 215 15% 65%; /* #9DAAB8 - Professional Gray */
 
-    --card: 120 100% 4%; /* #002000 - Card Dark Green */
-    --card-foreground: 120 50% 85%; /* #b3d9b3 - Light Green Text */
+    --card: 215 25% 8%; /* #101827 - Card Navy */
+    --card-foreground: 210 20% 98%; /* #FAFBFC */
 
-    --popover: 120 100% 3%; /* #001a00 - Very Dark Green */
-    --popover-foreground: 120 50% 85%; /* #b3d9b3 - Light Green Text */
+    --popover: 215 28% 6%; /* #0A1628 */
+    --popover-foreground: 210 20% 98%; /* #FAFBFC */
 
-    /* Primary Colors - Bright Green with Black Text */
-    --primary: 120 100% 40%; /* #00cc00 - Bright Green */
-    --primary-foreground: 0 0% 0%; /* #000000 - Pure Black */
+    /* Primary Colors - Premium Gold Enhanced */
+    --primary: 45 100% 50%; /* #FFD700 - Brighter Gold */
+    --primary-foreground: 215 28% 6%; /* #0A1628 - Dark text on gold */
 
-    /* Secondary Colors - Dark Green Variations */
-    --secondary: 120 100% 8%; /* #003300 - Secondary Dark Green */
-    --secondary-foreground: 120 50% 85%; /* #b3d9b3 - Light Green Text */
+    /* Secondary Colors */
+    --secondary: 215 20% 15%; /* #1E293B - Professional Dark */
+    --secondary-foreground: 210 20% 98%; /* #FAFBFC */
 
-    /* Accent Colors - Neon Green */
-    --accent: 120 100% 50%; /* #00ff00 - Neon Green */
-    --accent-foreground: 0 0% 0%; /* #000000 - Pure Black */
+    /* Accent Colors - Trust Blue Enhanced */
+    --accent: 217 91% 60%; /* #3B82F6 - Enhanced Trust Blue */
+    --accent-foreground: 210 20% 98%; /* #FAFBFC */
 
-    --destructive: 0 100% 30%; /* #990000 - Dark Red */
-    --destructive-foreground: 120 50% 85%; /* #b3d9b3 - Light Green Text */
+    --destructive: 0 84% 55%; /* #DC2626 - Professional Red */
+    --destructive-foreground: 210 20% 98%; /* #FAFBFC */
 
-    --border: 120 100% 10%; /* #004000 - Dark Green Border */
-    --input: 120 100% 8%; /* #003300 - Input Dark Green */
-    --ring: 120 100% 50%; /* #00ff00 - Neon Green Focus Ring */
+    --border: 215 25% 12%; /* #1A2332 - Subtle Border */
+    --input: 215 25% 12%; /* #1A2332 */
+    --ring: 45 100% 50%; /* #FFD700 - Gold focus */
 
     --radius: 0.75rem;
   }
@@ -61,10 +61,10 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Focus styles with green glow */
+  /* Focus styles with glow */
   *:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.6), 0 0 12px rgba(0, 255, 0, 0.4);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5), 0 0 8px rgba(255, 215, 0, 0.3);
   }
 
   /* Enhanced Custom Scrollbar */
@@ -79,12 +79,12 @@
 
   ::-webkit-scrollbar-thumb {
     @apply bg-primary rounded-full;
-    box-shadow: 0 2px 8px rgba(0, 255, 0, 0.4);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-accent;
-    box-shadow: 0 4px 12px rgba(0, 255, 0, 0.6);
+    @apply bg-primary/90;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
   }
 
   /* Firefox scrollbar */
@@ -94,112 +94,51 @@
   }
 }
 
-/* Dark Green Gradients with Glow Effects */
+/* Premium Gradients - Enhanced */
 .gradient-primary {
-  background: linear-gradient(135deg, #00ff00 0%, #00cc00 50%, #009900 100%);
-  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.3);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
 }
 
 .gradient-card {
-  background: linear-gradient(135deg, rgba(0, 26, 0, 0.95) 0%, rgba(0, 51, 0, 0.98) 100%);
+  background: linear-gradient(135deg, rgba(16, 24, 39, 0.9) 0%, rgba(10, 22, 40, 0.95) 100%);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 255, 0, 0.1);
-  box-shadow: 0 4px 15px rgba(0, 255, 0, 0.1);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #00ff00 0%, #66ff66 50%, #ccffcc 100%);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFFF66 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Green Glow Effects */
+/* Subtle Glow Effects */
 .glow-primary {
-  box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.1);
   transition: all 0.3s ease;
 }
 
-.glow-primary:hover {
-  box-shadow: 0 8px 25px rgba(0, 255, 0, 0.4);
-  transform: translateY(-2px);
-}
-
 .glow-primary-strong {
-  box-shadow: 0 6px 20px rgba(0, 255, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
   transition: all 0.3s ease;
 }
 
 .glow-accent {
-  box-shadow: 0 4px 12px rgba(0, 255, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
   transition: all 0.3s ease;
 }
 
 .glow-card {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 255, 0, 0.2);
 }
 
 .glow-card-hover:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 255, 0, 0.2);
-  transform: translateY(-3px);
-  border-color: rgba(0, 255, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .glow-text {
-  text-shadow: 0 2px 8px rgba(0, 255, 0, 0.3);
+  text-shadow: 0 1px 4px rgba(255, 215, 0, 0.2);
 }
 
-/* Neon Green Glow for Buttons */
-.btn-neon {
-  background: linear-gradient(135deg, #00ff00, #00cc00);
-  color: #000000;
-  border: 2px solid #00ff00;
-  box-shadow: 
-    0 0 10px rgba(0, 255, 0, 0.3),
-    inset 0 0 10px rgba(0, 255, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.btn-neon:hover {
-  box-shadow: 
-    0 0 20px rgba(0, 255, 0, 0.6),
-    0 0 40px rgba(0, 255, 0, 0.3),
-    inset 0 0 15px rgba(0, 255, 0, 0.2);
-  transform: scale(1.05);
-}
-
-/* Background Patterns */
-.bg-matrix {
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(0, 255, 0, 0.05) 0%, transparent 50%);
-}
-
-/* Animations */
-@keyframes pulse-green {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(0, 255, 0, 0.6);
-  }
-}
-
-.animate-pulse-green {
-  animation: pulse-green 2s ease-in-out infinite;
-}
-
-@keyframes glow-border {
-  0%, 100% {
-    border-color: rgba(0, 255, 0, 0.3);
-  }
-  50% {
-    border-color: rgba(0, 255, 0, 0.8);
-  }
-}
-
-.animate-glow-border {
-  animation: glow-border 2s ease-in-out infinite;
-}
+/* Removed excessive animations - keeping only essential transitions */
