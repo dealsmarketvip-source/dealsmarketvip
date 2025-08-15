@@ -363,9 +363,17 @@ export default function MarketplacePage() {
     setFavoriteLoading(productId)
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
-      toast.success('Added to favorites')
+
+      // Use real product manager for favorites
+      const isFavorite = realProductManager.toggleFavorite(productId, userProfile.id)
+
+      if (isFavorite) {
+        toast.success('Added to favorites')
+      } else {
+        toast.success('Removed from favorites')
+      }
     } catch (error) {
-      toast.error('Error adding to favorites')
+      toast.error('Error updating favorites')
     } finally {
       setFavoriteLoading(null)
     }
