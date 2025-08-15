@@ -249,7 +249,15 @@ export default function MarketplacePage() {
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 800))
+      await new Promise(resolve => setTimeout(resolve, 600)) // Reduced loading time
+
+      // Get real products created by users
+      const realProducts = realProductManager.getAllProducts({
+        category: selectedCategory !== 'all' ? selectedCategory : undefined,
+        searchQuery: searchQuery.trim() || undefined,
+        minPrice: priceRange[0],
+        maxPrice: priceRange[1]
+      })
 
       // Get mock products with error handling
       let mockProducts = []
@@ -260,8 +268,13 @@ export default function MarketplacePage() {
         mockProducts = []
       }
 
+      // Combine real and mock products
+      const allProducts = [...realProducts, ...mockProducts]
+
       // Ensure we have a valid array
-      let filteredProducts = Array.isArray(mockProducts) ? [...mockProducts] : []
+      let filteredProducts = Array.isArray(allProducts) ? [...allProducts] : []
+
+      console.log(`📦 Loaded ${realProducts.length} real products + ${mockProducts.length} mock products`)
 
       // Apply search filter
       if (searchQuery.trim()) {
