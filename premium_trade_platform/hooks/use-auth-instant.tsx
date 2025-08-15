@@ -42,6 +42,7 @@ interface AuthContextType {
   user: AuthUser | null
   userProfile: AuthUser | null
   loading: boolean
+  isHydrated: boolean
   signIn: (email: string, password: string) => Promise<{ error?: any; data?: any }>
   signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ error?: any; data?: any }>
   signInWithCode: (accessCode: string) => Promise<{ error?: any; data?: any }>
