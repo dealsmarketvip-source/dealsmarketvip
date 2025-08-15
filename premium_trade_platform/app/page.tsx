@@ -41,7 +41,7 @@ export default function HomePage() {
     });
 
     if (user) {
-      window.location.href = '/marketplace'
+      navigateTo('/marketplace')
     } else {
       setShowWelcomePanel(true)
     }
