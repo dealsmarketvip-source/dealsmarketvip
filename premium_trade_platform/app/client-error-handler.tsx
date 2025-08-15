@@ -25,7 +25,14 @@ export default function ClientErrorHandler() {
         event.preventDefault()
         return
       }
-      
+
+      if (event.error?.message?.includes('Hydration failed')) {
+        // Suppress hydration errors in development
+        console.warn('Hydration error suppressed:', event.error.message)
+        event.preventDefault()
+        return
+      }
+
       // Log other errors for debugging
       console.error('Global error:', event.error)
     }
