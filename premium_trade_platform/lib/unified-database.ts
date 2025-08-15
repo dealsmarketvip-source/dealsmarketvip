@@ -221,10 +221,10 @@ export class UnifiedDatabaseService {
     switch (this.provider) {
       case 'neon':
         return await enhancedDbService.createNotification(notification)
-      
+
       case 'supabase':
         if (!this.client) return null
-        
+
         const { data, error } = await this.client
           .from('notifications')
           .insert({
@@ -240,11 +240,125 @@ export class UnifiedDatabaseService {
         }
 
         return data
-      
+
       case 'mock':
       default:
         return { ...notification, id: 'mock-' + Date.now() }
     }
+  }
+
+  // Product operations
+  async createProduct(productData: any): Promise<any> {
+    switch (this.provider) {
+      case 'neon':
+      case 'supabase':
+        if (!this.client && this.provider === 'supabase') {
+          console.log('📦 No database client, using mock product creation')
+          return this.createMockProduct(productData)
+        }
+
+        try {
+          if (this.provider === 'supabase') {
+            const { data, error } = await this.client!
+              .from('products')
+              .insert({
+                ...productData,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .select()
+              .single()
+
+            if (error) {
+              console.error('Supabase error creating product:', error)
+              return this.createMockProduct(productData)
+            }
+
+            console.log('✅ Product saved to Supabase:', data.id)
+            return data
+          } else {
+            // Neon - for now use mock since we don't have product table setup
+            console.log('📦 Neon product creation (mock mode)')
+            return this.createMockProduct(productData)
+          }
+        } catch (error) {
+          console.error('Error creating product:', error)
+          return this.createMockProduct(productData)
+        }
+
+      case 'mock':
+      default:
+        return this.createMockProduct(productData)
+    }
+  }
+
+  private createMockProduct(productData: any): any {
+    const mockProduct = {
+      ...productData,
+      id: productData.id || `mock-product-${Date.now()}`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+
+    console.log('📦 Mock product created:', mockProduct.id)
+
+    // Store in localStorage for persistence during demo
+    try {
+      const existingProducts = JSON.parse(localStorage.getItem('mock_products') || '[]')
+      existingProducts.push(mockProduct)
+      localStorage.setItem('mock_products', JSON.stringify(existingProducts))
+      console.log('💾 Product saved to localStorage')
+    } catch (error) {
+      console.warn('Could not save to localStorage:', error)
+    }
+
+    return mockProduct
+  }
+
+  async getProducts(filters?: any): Promise<any[]> {
+    switch (this.provider) {
+      case 'supabase':
+        if (!this.client) return this.getMockProducts()
+
+        try {
+          let query = this.client
+            .from('products')
+            .select('*')
+            .eq('status', 'active')
+
+          const { data, error } = await query.order('created_at', { ascending: false })
+
+          if (error) {
+            console.error('Supabase error fetching products:', error)
+            return this.getMockProducts()
+          }
+
+          return data || []
+        } catch (error) {
+          console.error('Error fetching products:', error)
+          return this.getMockProducts()
+        }
+
+      case 'neon':
+      case 'mock':
+      default:
+        return this.getMockProducts()
+    }
+  }
+
+  private getMockProducts(): any[] {
+    try {
+      const stored = localStorage.getItem('mock_products')
+      if (stored) {
+        const products = JSON.parse(stored)
+        console.log(`📦 Loaded ${products.length} products from localStorage`)
+        return products
+      }
+    } catch (error) {
+      console.warn('Could not load from localStorage:', error)
+    }
+
+    return []
   }
 
   // Mock notifications for development
