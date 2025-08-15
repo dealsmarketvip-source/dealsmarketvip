@@ -263,7 +263,7 @@ export function VipBenefits() {
         <div className="absolute inset-0 opacity-10">
           <div className="grid grid-cols-8 gap-4 transform rotate-12 scale-150">
             {Array.from({ length: 32 }).map((_, i) => (
-              <div key={i} className="aspect-square bg-primary rounded-lg" />
+              <div key={`vip-benefits-bg-${i}`} className="aspect-square bg-primary rounded-lg" />
             ))}
           </div>
         </div>
