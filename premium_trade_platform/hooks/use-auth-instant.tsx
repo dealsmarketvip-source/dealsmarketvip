@@ -36,6 +36,7 @@ interface AuthUser {
   profile_data?: Record<string, any>
   preferences?: Record<string, any>
   role?: string
+  is_admin?: boolean
 }
 
 interface AuthContextType {
