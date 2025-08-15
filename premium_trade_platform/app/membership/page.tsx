@@ -283,7 +283,7 @@ export default function MembershipPage() {
               
               <ul className="space-y-2 text-sm text-gray-400">
                 {SUBSCRIPTION_PLANS.premium.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
+                  <li key={`premium-feature-${index}`} className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary" />
                     {feature}
                   </li>
