@@ -3,6 +3,7 @@
 import React, { createContext, useContext } from 'react'
 import { usePageTransition } from '@/hooks/use-page-transition'
 import { PageLoadingOverlay } from './page-loading-overlay'
+import NavigationErrorBoundary from './navigation-error-boundary'
 
 interface PageTransitionContextType {
   isLoading: boolean
