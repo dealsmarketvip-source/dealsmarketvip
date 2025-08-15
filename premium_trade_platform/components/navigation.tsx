@@ -194,7 +194,7 @@ export function Navigation() {
             {user && !['//', '/login', '/access', '/'].includes(pathname) && (
               <div className="hidden md:flex items-center space-x-2">
                 {navItems.map((item) => (
-                  <NavButton key={item.href} item={item} />
+                  <NavButton key={`desktop-${item.href}`} item={item} />
                 ))}
               </div>
             )}
