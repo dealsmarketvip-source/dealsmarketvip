@@ -152,7 +152,7 @@ const ParallelCodingAgents: React.FC<ParallelCodingAgentsProps> = ({ className =
       >
         {agents.map((agent, index) => (
           <div
-            key={index}
+            key={`parallel-agent-${index}`}
             style={{
               display: "flex",
               flexDirection: "row",
