@@ -427,21 +427,28 @@ export class DatabaseService {
       const { data, error } = await query
 
       if (error) {
-        console.error('Error fetching notifications:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        })
+        // Properly log Supabase errors
+        const errorInfo = {
+          message: error.message || 'Unknown database error',
+          details: error.details || 'No details available',
+          hint: error.hint || 'No hint available',
+          code: error.code || 'NO_CODE'
+        }
+        console.error('Database error fetching notifications:', errorInfo)
         return this.getMockNotifications(userId, options)
       }
 
       return data || []
     } catch (error: any) {
-      console.error('Error fetching notifications:', {
-        message: error?.message || 'Unknown error',
-        error: error
-      })
+      // Handle different types of errors properly
+      const errorInfo = {
+        message: error?.message || error?.error?.message || String(error) || 'Unknown error',
+        name: error?.name || 'UnknownError',
+        details: error?.details || error?.error?.details || 'No details available',
+        code: error?.code || error?.error?.code || 'NO_CODE',
+        originalError: error
+      }
+      console.error('Catch block - Error fetching notifications:', errorInfo)
       return this.getMockNotifications(userId, options)
     }
   }
@@ -508,21 +515,26 @@ export class DatabaseService {
         .eq('read', false)
 
       if (error) {
-        console.error('Error getting unread notification count:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        })
+        const errorInfo = {
+          message: error.message || 'Unknown database error',
+          details: error.details || 'No details available',
+          hint: error.hint || 'No hint available',
+          code: error.code || 'NO_CODE'
+        }
+        console.error('Database error getting unread notification count:', errorInfo)
         return 3 // Return mock count as fallback
       }
 
       return count || 0
     } catch (error: any) {
-      console.error('Error getting unread notification count:', {
-        message: error?.message || 'Unknown error',
-        error: error
-      })
+      const errorInfo = {
+        message: error?.message || error?.error?.message || String(error) || 'Unknown error',
+        name: error?.name || 'UnknownError',
+        details: error?.details || error?.error?.details || 'No details available',
+        code: error?.code || error?.error?.code || 'NO_CODE',
+        originalError: error
+      }
+      console.error('Catch block - Error getting unread notification count:', errorInfo)
       return 3 // Return mock count as fallback
     }
   }
