@@ -410,7 +410,7 @@ export function Navigation() {
             >
               <div className="space-y-2">
                 {navItems.map((item) => (
-                  <NavButton key={item.href} item={item} />
+                  <NavButton key={`mobile-${item.href}`} item={item} />
                 ))}
               </div>
             </motion.div>
