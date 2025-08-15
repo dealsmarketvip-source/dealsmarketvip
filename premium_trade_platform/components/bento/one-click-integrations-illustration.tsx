@@ -241,11 +241,11 @@ const OneClickIntegrationsIllustration: React.FC<OneClickIntegrationsIllustratio
         {/* Render rows of logo boxes */}
         {Array.from({ length: 4 }).map((_, rowIndex) => (
           <div
-            key={rowIndex}
+            key={`integration-row-${rowIndex}`}
             style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: "16px" }}
           >
             {gridItems.slice(rowIndex * 10, (rowIndex + 1) * 10).map((item, colIndex) => (
-              <LogoBox key={colIndex} {...item} />
+              <LogoBox key={`integration-${rowIndex}-${colIndex}`} {...item} />
             ))}
           </div>
         ))}
