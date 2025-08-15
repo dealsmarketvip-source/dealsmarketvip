@@ -36,6 +36,7 @@ import { getMockProducts } from "@/lib/mock-data"
 import { toast } from "sonner"
 import { ProductWithImages, ProductFilters, User } from "@/lib/types/database"
 import { DatabaseStatus } from "@/components/database-status"
+import { DebugNotifications } from "@/components/debug-notifications"
 import Link from "next/link"
 
 const CATEGORIES = [
@@ -277,6 +278,11 @@ export default function MarketplacePage() {
 
           {/* Database Status */}
           <DatabaseStatus className="mb-4" />
+
+          {/* Debug Notifications - Temporary */}
+          {process.env.NODE_ENV === 'development' && (
+            <DebugNotifications />
+          )}
 
           {/* Search and Stats Bar */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
