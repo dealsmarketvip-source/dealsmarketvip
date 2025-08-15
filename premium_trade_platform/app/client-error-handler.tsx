@@ -49,6 +49,14 @@ export default function ClientErrorHandler() {
         return
       }
 
+      if (event.error?.message?.includes('Clipboard API has been blocked') ||
+          event.error?.name === 'NotAllowedError') {
+        // Suppress clipboard errors from dev overlay
+        console.warn('Clipboard error suppressed (dev overlay):', event.error.message)
+        event.preventDefault()
+        return
+      }
+
       // Log other errors for debugging
       console.error('Global error:', event.error)
     }
