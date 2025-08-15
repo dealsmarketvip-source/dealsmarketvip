@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -218,7 +217,7 @@ export function PricingTiers() {
                   <div className="space-y-3">
                     {tier.features.map((feature, featureIndex) => (
                       <motion.div
-                        key={featureIndex}
+                        key={`tier-${index}-feature-${featureIndex}`}
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.4, delay: (index * 0.1) + (featureIndex * 0.05) + 0.3 }}
