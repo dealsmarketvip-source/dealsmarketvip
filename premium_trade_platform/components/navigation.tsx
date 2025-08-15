@@ -239,26 +239,25 @@ export function Navigation() {
               {/* Sell Button */}
               {user && (
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link href="/sell">
-                    <Button
-                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg relative overflow-hidden"
-                      size="sm"
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                        animate={{
-                          x: ['-100%', '100%']
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      />
-                      <Package className="mr-2 h-4 w-4" />
-                      <span className="hidden sm:inline">Sell</span>
-                    </Button>
-                  </Link>
+                  <Button
+                    className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg relative overflow-hidden"
+                    size="sm"
+                    onClick={() => transitionRouter.push('/sell')}
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                      animate={{
+                        x: ['-100%', '100%']
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                    />
+                    <Package className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Sell</span>
+                  </Button>
                 </motion.div>
               )}
 
@@ -312,18 +311,18 @@ export function Navigation() {
                     {/* Dropdown Menu */}
                     <div className="absolute right-0 top-full mt-2 w-48 bg-popover border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <div className="p-2 space-y-1">
-                        <Link href="/account">
+                        <button onClick={() => transitionRouter.push('/account')} className="w-full">
                           <div className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-md transition-colors">
                             <User className="h-4 w-4" />
                             My Account
                           </div>
-                        </Link>
-                        <Link href="/favorites">
+                        </button>
+                        <button onClick={() => transitionRouter.push('/favorites')} className="w-full">
                           <div className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-md transition-colors">
                             <Heart className="h-4 w-4" />
                             Favorites
                           </div>
-                        </Link>
+                        </button>
                         <div className="border-t border-border my-1" />
                         <button
                           onClick={handleLogout}
