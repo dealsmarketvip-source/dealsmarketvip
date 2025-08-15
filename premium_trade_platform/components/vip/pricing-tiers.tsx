@@ -281,7 +281,7 @@ export function PricingTiers() {
         <div className="absolute inset-0 opacity-5">
           <div className="grid grid-cols-6 gap-6 transform rotate-12 scale-150">
             {Array.from({ length: 24 }).map((_, i) => (
-              <div key={i} className="aspect-square bg-primary rounded-lg" />
+              <div key={`pricing-bg-${i}`} className="aspect-square bg-primary rounded-lg" />
             ))}
           </div>
         </div>
