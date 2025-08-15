@@ -23,17 +23,10 @@ export const isDatabaseConnected = () => {
 
   const result = hasUrl && hasKey && urlNotPlaceholder && keyNotPlaceholder
 
-  console.log('🔍 Database connection check:', {
-    hasUrl,
-    hasKey,
-    urlNotPlaceholder,
-    keyNotPlaceholder,
-    isPlaceholderUrl,
-    isPlaceholderKey,
-    url: supabaseUrl?.substring(0, 30) + '...',
-    key: supabaseAnonKey?.substring(0, 20) + '...',
-    finalResult: result
-  })
+  // Only log when database connection changes or in debug mode
+  if (process.env.NODE_ENV === 'development') {
+    console.log('��� Database connection:', result ? 'Connected' : 'Using mock data')
+  }
 
   return result
 }
