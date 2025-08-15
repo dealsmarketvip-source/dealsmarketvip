@@ -10,6 +10,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import ClientErrorHandler from './client-error-handler'
 import ClipboardFix from './clipboard-fix'
 import ErrorSuppression from '@/components/error-suppression'
+import { PageTransitionProvider } from '@/components/page-transition-provider'
 
 const inter = Inter({ subsets: ["latin"] })
 
