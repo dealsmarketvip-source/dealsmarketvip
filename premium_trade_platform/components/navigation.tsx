@@ -196,9 +196,9 @@ export function Navigation() {
           </button>
 
           {/* Desktop Navigation - Only show when authenticated and not on main/login pages */}
-          <ClientOnly fallback={<div className="hidden md:flex items-center space-x-2" suppressHydrationWarning />}>
+          <ClientOnly fallback={<div className="hidden lg:flex items-center space-x-2" suppressHydrationWarning />}>
             {user && !['//', '/login', '/access', '/'].includes(pathname) && (
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="hidden lg:flex items-center space-x-2">
                 {navItems.map((item) => (
                   <NavButton key={`desktop-${item.href}`} item={item} />
                 ))}
