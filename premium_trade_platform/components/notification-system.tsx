@@ -70,31 +70,31 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
   const fetchNotifications = useCallback(async () => {
     if (!user?.id) return
 
-    const neonConnected = isNeonConnected()
-    const connectionInfo = getConnectionInfo()
+    const isConnected = isUnifiedDatabaseConnected()
+    const dbInfo = getUnifiedDatabaseInfo()
 
     console.log('Fetching notifications:', {
       userId: user.id,
       filter,
-      provider: connectionInfo.provider,
-      neonConnected
+      provider: dbInfo.provider,
+      connected: isConnected
     })
 
     setLoading(true)
     try {
       const [notifs, count] = await Promise.all([
-        enhancedDbService.getNotifications(user.id, {
+        unifiedDb.getNotifications(user.id, {
           unreadOnly: filter === 'unread',
           limit: 50
         }),
-        enhancedDbService.getUnreadNotificationCount(user.id)
+        unifiedDb.getUnreadNotificationCount(user.id)
       ])
 
       console.log('Notifications fetched successfully:', {
         count: notifs.length,
         unreadCount: count,
-        provider: enhancedDbService.getProvider(),
-        connectionInfo
+        provider: dbInfo.provider,
+        features: dbInfo.features
       })
 
       setNotifications(notifs)
@@ -106,10 +106,10 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
 
       console.error('Error fetching notifications:', errorMessage)
       console.error('Error code:', errorCode)
-      console.error('Provider:', enhancedDbService.getProvider())
+      console.error('Provider:', dbInfo.provider)
 
       // Show error toast only for unexpected errors
-      if (neonConnected && !errorMessage.includes('Failed to fetch')) {
+      if (isConnected && !errorMessage.includes('Failed to fetch')) {
         toast.error('Error al cargar notificaciones')
       }
     } finally {
