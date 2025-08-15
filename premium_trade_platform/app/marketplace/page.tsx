@@ -249,22 +249,36 @@ export default function MarketplacePage() {
     setLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 800))
-      const mockProducts = getMockProductsArray()
+
+      // Get mock products with error handling
+      let mockProducts = []
+      try {
+        mockProducts = getMockProductsArray()
+      } catch (error) {
+        console.error('Error getting mock products:', error)
+        mockProducts = []
+      }
 
       // Ensure we have a valid array
       let filteredProducts = Array.isArray(mockProducts) ? [...mockProducts] : []
 
       // Apply search filter
       if (searchQuery.trim()) {
-        filteredProducts = filteredProducts.filter(product =>
-          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        filteredProducts = filteredProducts.filter(product => {
+          try {
+            return product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                   product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+          } catch {
+            return false
+          }
+        })
       }
 
       // Apply category filter
       if (selectedCategory !== 'all') {
-        filteredProducts = filteredProducts.filter(product => product.category === selectedCategory)
+        filteredProducts = filteredProducts.filter(product =>
+          product.category === selectedCategory
+        )
       }
 
       // Apply price range filter
@@ -273,25 +287,30 @@ export default function MarketplacePage() {
         return price >= priceRange[0] && price <= priceRange[1]
       })
 
-      // Apply sorting
+      // Apply sorting with error handling
       filteredProducts.sort((a, b) => {
-        switch (filters.sort_by) {
-          case 'price':
-            return filters.sort_order === 'asc' 
-              ? (a.price || 0) - (b.price || 0)
-              : (b.price || 0) - (a.price || 0)
-          case 'views_count':
-            return filters.sort_order === 'asc'
-              ? (a.views_count || 0) - (b.views_count || 0)
-              : (b.views_count || 0) - (a.views_count || 0)
-          case 'created_at':
-          default:
-            return filters.sort_order === 'asc'
-              ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-              : new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        try {
+          switch (filters.sort_by) {
+            case 'price':
+              return filters.sort_order === 'asc'
+                ? (a.price || 0) - (b.price || 0)
+                : (b.price || 0) - (a.price || 0)
+            case 'views_count':
+              return filters.sort_order === 'asc'
+                ? (a.views_count || 0) - (b.views_count || 0)
+                : (b.views_count || 0) - (a.views_count || 0)
+            case 'created_at':
+            default:
+              const dateA = new Date(a.created_at || 0).getTime()
+              const dateB = new Date(b.created_at || 0).getTime()
+              return filters.sort_order === 'asc' ? dateA - dateB : dateB - dateA
+          }
+        } catch {
+          return 0
         }
       })
 
+      // Apply pagination
       const startIndex = (currentPage - 1) * itemsPerPage
       const endIndex = startIndex + itemsPerPage
       const paginatedProducts = filteredProducts.slice(startIndex, endIndex)
@@ -299,9 +318,14 @@ export default function MarketplacePage() {
       setProducts(paginatedProducts)
       setTotalProducts(filteredProducts.length)
 
+      console.log(`✅ Loaded ${paginatedProducts.length} products of ${filteredProducts.length} total`)
+
     } catch (error) {
       console.error('Error fetching products:', error)
       toast.error('Error al cargar productos')
+      // Set empty array as fallback
+      setProducts([])
+      setTotalProducts(0)
     } finally {
       setLoading(false)
       setInitialLoading(false)
