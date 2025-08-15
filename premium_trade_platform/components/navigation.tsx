@@ -33,6 +33,7 @@ export function Navigation() {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { router: transitionRouter } = usePageTransitionContext()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
