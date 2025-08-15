@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth-instant'
 import { dbService, type Notification, formatDateTime, isDatabaseConnected } from '@/lib/database'
+import { enhancedDbService, isNeonConnected, getConnectionInfo } from '@/lib/neon-adapter'
 import { toast } from 'sonner'
 
 interface NotificationSystemProps {
