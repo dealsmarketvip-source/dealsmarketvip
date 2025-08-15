@@ -306,7 +306,7 @@ export default function ProductPage() {
                   <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
                     {product.images.map((_, index) => (
                       <button
-                        key={index}
+                        key={`product-dot-${index}`}
                         onClick={() => setCurrentImageIndex(index)}
                         className={`w-3 h-3 rounded-full transition-colors ${
                           currentImageIndex === index 
@@ -325,7 +325,7 @@ export default function ProductPage() {
               <div className="grid grid-cols-4 gap-2">
                 {product.images.map((image, index) => (
                   <button
-                    key={index}
+                    key={`product-thumb-${index}`}
                     onClick={() => setCurrentImageIndex(index)}
                     className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
                       currentImageIndex === index 
@@ -352,7 +352,7 @@ export default function ProductPage() {
               <CardContent>
                 <div className="prose prose-sm max-w-none text-muted-foreground">
                   {product.description.split('\n').map((paragraph, index) => (
-                    <p key={index} className="mb-4 last:mb-0">
+                    <p key={`product-desc-${index}`} className="mb-4 last:mb-0">
                       {paragraph}
                     </p>
                   ))}
