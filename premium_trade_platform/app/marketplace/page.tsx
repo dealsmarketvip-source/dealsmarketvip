@@ -246,25 +246,6 @@ export default function MarketplacePage() {
             </div>
             
             <div className="flex items-center gap-3">
-              <Link href="/sell">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button className="bg-primary hover:bg-primary/90 relative overflow-hidden">
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                      animate={{
-                        x: ['-100%', '100%']
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                    />
-                    <Package className="h-4 w-4 mr-2" />
-                    Sell Product
-                  </Button>
-                </motion.div>
-              </Link>
               <Button
                 variant="outline"
                 onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
