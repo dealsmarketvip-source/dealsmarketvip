@@ -59,9 +59,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [userProfile, setUserProfile] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    // Check for existing auth immediately
+    // Mark as hydrated first
+    setIsHydrated(true)
+
+    // Check for existing auth
     const existingAuth = getInstantAuth()
     if (existingAuth) {
       setUser(existingAuth)
