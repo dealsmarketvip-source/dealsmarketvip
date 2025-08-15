@@ -202,40 +202,38 @@ export function Navigation() {
           <div className="flex items-center space-x-4">
             <ClientOnly fallback={
               <div className="flex items-center space-x-2">
-                <Link href="/login">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      Sign In
-                    </Button>
-                  </motion.div>
-                </Link>
-                <Link href="/membership">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button
-                      size="sm"
-                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg relative overflow-hidden"
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                        animate={{
-                          x: ['-100%', '100%']
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      />
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Join
-                    </Button>
-                  </motion.div>
-                </Link>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-primary/30 text-primary hover:bg-primary/10"
+                    onClick={() => transitionRouter.push('/login')}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg relative overflow-hidden"
+                    onClick={() => transitionRouter.push('/membership')}
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                      animate={{
+                        x: ['-100%', '100%']
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                    />
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Join
+                  </Button>
+                </motion.div>
               </div>
             }>
               {/* Sell Button */}
