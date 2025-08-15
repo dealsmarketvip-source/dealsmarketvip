@@ -89,15 +89,15 @@ export default function ProductPage() {
       setLoading(true)
 
       // Use mock data for instant functionality
-      const product = getMockProductById(params.id as string)
+      const productResult = getMockProductById(params.id as string)
 
-      if (!product) {
-        toast.error('Product not found')
+      if (!productResult.data || productResult.error) {
+        toast.error(productResult.error?.message || 'Product not found')
         router.push('/marketplace')
         return
       }
 
-      setProduct(product)
+      setProduct(productResult.data)
 
     } catch (error) {
       console.error('Error fetching product:', error)
