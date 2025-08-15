@@ -98,7 +98,7 @@ export function Navigation() {
         return
       }
       transitionRouter.push(item.href)
-      setIsMenuOpen(false)
+      setIsMenuOpen(false) // Close mobile menu
     }
 
     return (
@@ -308,12 +308,6 @@ export function Navigation() {
                             My Account
                           </div>
                         </button>
-                        <button onClick={() => transitionRouter.push('/favorites')} className="w-full">
-                          <div className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted rounded-md transition-colors">
-                            <Heart className="h-4 w-4" />
-                            Favorites
-                          </div>
-                        </button>
                         {user?.is_admin && (
                           <button onClick={() => setShowAdminPanel(true)} className="w-full">
                             <div className="flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-md transition-colors">
@@ -378,7 +372,7 @@ export function Navigation() {
               )}
             </ClientOnly>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Only show when authenticated */}
             {user && !['//', '/login', '/access', '/'].includes(pathname) && (
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -392,22 +386,8 @@ export function Navigation() {
         </div>
 
         {/* Mobile Navigation - Only show when authenticated and not on main/login pages */}
-        <AnimatePresence>
-          {isMenuOpen && user && !['//', '/login', '/access', '/'].includes(pathname) && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-border/40 py-4"
-            >
-              <div className="space-y-2">
-                {navItems.map((item) => (
-                  <NavButton key={`mobile-${item.href}`} item={item} />
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* REMOVED DUPLICATE MOBILE NAVIGATION - The main nav buttons are sufficient */}
+        {/* NO MORE DUPLICATE BUTTONS HERE */}
       </div>
 
       {/* Admin Panel Modal */}
