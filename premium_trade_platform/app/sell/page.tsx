@@ -420,7 +420,7 @@ export default function SellPage() {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                       {imagePreviews.map((preview, index) => (
                         <motion.div
-                          key={index}
+                          key={`sell-preview-${index}`}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           className="relative group"
