@@ -161,55 +161,72 @@ export default function SellPage() {
     setIsSubmitting(true)
 
     try {
-      const dbInfo = getUnifiedDatabaseInfo()
-      console.log(`🛒 Creating product using ${dbInfo.provider} database...`)
+      console.log('🛒 Creating real product...')
 
-      const productData = {
-        id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        ...formData,
+      const realProductData = {
+        title: formData.title,
+        description: formData.description,
         price: parseFloat(formData.price),
+        currency: 'EUR',
+        category: formData.category,
+        condition: formData.condition as 'new' | 'used' | 'refurbished',
+        location: formData.location || 'Madrid, Spain',
+        shipping_included: !formData.shipping_cost || parseFloat(formData.shipping_cost) === 0,
         shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : 0,
-        seller_id: userProfile?.id || user?.id,
-        seller_name: userProfile?.full_name || user?.email || 'Unknown',
-        status: 'active',
+        seller_id: userProfile?.id || user?.id || 'unknown',
+        seller_name: userProfile?.full_name || user?.email || 'Vendedor Verificado',
+        seller_email: user?.email || 'seller@example.com',
+        status: 'active' as const,
         images: imagePreviews.length > 0 ? imagePreviews : ['/placeholder.svg'],
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
         featured: false,
-        views_count: 0,
-        inquiries_count: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        published_at: new Date().toISOString()
+        verified: true,
+        specifications: {
+          condition: formData.condition,
+          category: formData.category,
+          ...(formData.specifications ? JSON.parse(formData.specifications) : {})
+        }
       }
 
-      // Try to save to database (real or mock)
-      const savedProduct = await unifiedDb.createProduct(productData)
+      // Create real product that will appear in marketplace
+      const savedProduct = await realProductManager.createProduct(realProductData)
 
-      if (savedProduct) {
-        console.log('✅ Product created successfully:', savedProduct.id)
+      console.log('✅ Real product created successfully:', savedProduct.id)
 
-        // Create notification for successful product creation
-        await unifiedDb.createNotification({
-          user_id: userProfile?.id || user?.id,
-          type: 'product_created',
-          title: '🎉 Producto publicado exitosamente',
-          message: `Tu producto "${formData.title}" ha sido publicado en el marketplace.`,
-          data: {
-            product_id: savedProduct.id,
-            product_title: formData.title,
-            price: parseFloat(formData.price),
-            provider: dbInfo.provider
-          },
-          read: false,
-          priority: 'medium',
-          delivery_method: 'in_app'
+      // Also try to save to database for backup
+      try {
+        await unifiedDb.createProduct({
+          ...realProductData,
+          id: savedProduct.id,
+          views_count: 0,
+          inquiries_count: 0,
+          created_at: savedProduct.created_at,
+          updated_at: savedProduct.updated_at,
+          published_at: savedProduct.created_at
         })
-
-        toast.success(`Producto guardado exitosamente usando ${dbInfo.provider}!`)
-        router.push('/marketplace')
-      } else {
-        throw new Error('Failed to save product')
+      } catch (dbError) {
+        console.warn('Database backup failed:', dbError)
       }
+
+      // Create notification for successful product creation
+      await unifiedDb.createNotification({
+        user_id: userProfile?.id || user?.id,
+        type: 'product_created',
+        title: '🎉 Producto publicado exitosamente',
+        message: `Tu producto "${formData.title}" está ahora disponible en el marketplace para todos los usuarios.`,
+        data: {
+          product_id: savedProduct.id,
+          product_title: formData.title,
+          price: parseFloat(formData.price),
+          marketplace_visible: true
+        },
+        read: false,
+        priority: 'medium',
+        delivery_method: 'in_app'
+      })
+
+      toast.success('¡Producto publicado exitosamente! Ya es visible en el marketplace.')
+      router.push('/marketplace')
 
     } catch (error: any) {
       console.error('❌ Error creating product:', error)
