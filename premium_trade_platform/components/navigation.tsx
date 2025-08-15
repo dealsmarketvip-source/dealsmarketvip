@@ -45,7 +45,7 @@ export function Navigation() {
       if (response.ok) {
         await signOut()
         toast.success('Session closed successfully')
-        window.location.href = '/'
+        transitionRouter.push('/')
       } else {
         throw new Error('Error signing out')
       }
