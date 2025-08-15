@@ -7,6 +7,23 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Permissions-Policy',
+            value: 'clipboard-read=*, clipboard-write=*'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          }
+        ],
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {
