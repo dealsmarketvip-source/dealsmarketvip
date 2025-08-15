@@ -399,12 +399,12 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                           <Bell className="h-8 w-8 text-muted-foreground mb-2" />
                           <p className="text-sm text-muted-foreground">
                             {filter === 'unread' ? 'No tienes notificaciones sin leer' : 'No tienes notificaciones'}
+                        </p>
+                        {!enhancedDbService.isConnected() && (
+                          <p className="text-xs text-orange-400 mt-1">
+                            {getConnectionInfo().message || 'Conecta la base de datos para ver notificaciones reales'}
                           </p>
-                          {!isDatabaseConnected() && (
-                            <p className="text-xs text-orange-400 mt-1">
-                              Conecta la base de datos para ver notificaciones reales
-                            </p>
-                          )}
+                        )}
                         </div>
                       ) : (
                         <div>
