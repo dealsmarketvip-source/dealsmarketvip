@@ -513,7 +513,7 @@ export default function VerificationPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {formData.documents.map((doc, index) => (
-                  <div key={index} className="border border-gray-600 rounded-lg p-4">
+                  <div key={`verification-doc-${index}`} className="border border-gray-600 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <FileText className="h-5 w-5 text-primary" />
