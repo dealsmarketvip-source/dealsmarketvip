@@ -491,17 +491,48 @@ export class DatabaseService {
   }
 
   async markAllNotificationsAsRead(userId: string): Promise<void> {
-    const { error } = await this.client
-      .from('notifications')
-      .update({
-        read: true,
-        read_at: new Date().toISOString()
-      })
-      .eq('user_id', userId)
-      .eq('read', false)
+    // Check if database is connected
+    if (!isDatabaseConnected()) {
+      console.warn('Database not connected, cannot mark notifications as read')
+      return
+    }
 
-    if (error) {
-      console.error('Error marking all notifications as read:', error)
+    try {
+      const { error } = await this.client
+        .from('notifications')
+        .update({
+          read: true,
+          read_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('read', false)
+
+      if (error) {
+        // Properly log Supabase errors
+        const errorInfo = {
+          message: error.message || 'Unknown database error',
+          details: error.details || 'No details available',
+          hint: error.hint || 'No hint available',
+          code: error.code || 'NO_CODE'
+        }
+        console.error('Database error marking all notifications as read:', errorInfo.message)
+        console.error('Error details:', errorInfo.details)
+        console.error('Error code:', errorInfo.code)
+        throw new Error(`Failed to mark notifications as read: ${errorInfo.message}`)
+      }
+    } catch (error: any) {
+      // Handle different types of errors properly
+      const errorInfo = {
+        message: error?.message || error?.error?.message || String(error) || 'Unknown error',
+        name: error?.name || 'UnknownError',
+        details: error?.details || error?.error?.details || 'No details available',
+        code: error?.code || error?.error?.code || 'NO_CODE',
+        originalError: error
+      }
+      console.error('Catch block - Error marking all notifications as read:', errorInfo.message)
+      console.error('Error name:', errorInfo.name)
+      console.error('Error details:', errorInfo.details)
+      throw new Error(`Failed to mark notifications as read: ${errorInfo.message}`)
     }
   }
 
