@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/use-auth-instant"
 import { Navigation } from "@/components/navigation"
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import ClientErrorHandler from './client-error-handler'
 
 const inter = Inter({ subsets: ["latin"] })
 
