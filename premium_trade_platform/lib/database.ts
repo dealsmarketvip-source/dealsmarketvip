@@ -6,10 +6,24 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 // Check if database is properly configured
 export const isDatabaseConnected = () => {
-  return supabaseUrl &&
-         supabaseAnonKey &&
-         !supabaseUrl.includes('placeholder') &&
-         !supabaseAnonKey.includes('placeholder')
+  const hasUrl = !!supabaseUrl
+  const hasKey = !!supabaseAnonKey
+  const urlNotPlaceholder = !supabaseUrl.includes('placeholder')
+  const keyNotPlaceholder = !supabaseAnonKey.includes('placeholder')
+
+  const result = hasUrl && hasKey && urlNotPlaceholder && keyNotPlaceholder
+
+  console.log('🔍 Database connection check:', {
+    hasUrl,
+    hasKey,
+    urlNotPlaceholder,
+    keyNotPlaceholder,
+    url: supabaseUrl?.substring(0, 30) + '...',
+    key: supabaseAnonKey?.substring(0, 20) + '...',
+    finalResult: result
+  })
+
+  return result
 }
 
 export const database = createClient(supabaseUrl, supabaseAnonKey)
