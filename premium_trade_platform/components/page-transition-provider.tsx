@@ -55,14 +55,16 @@ export function PageTransitionProvider({
   }
 
   return (
-    <PageTransitionContext.Provider value={contextValue}>
-      {children}
-      <PageLoadingOverlay 
-        isLoading={transition.isLoading}
-        message={transition.loadingMessage}
-        type="navigation"
-      />
-    </PageTransitionContext.Provider>
+    <NavigationErrorBoundary>
+      <PageTransitionContext.Provider value={contextValue}>
+        {children}
+        <PageLoadingOverlay
+          isLoading={transition.isLoading}
+          message={transition.loadingMessage}
+          type="navigation"
+        />
+      </PageTransitionContext.Provider>
+    </NavigationErrorBoundary>
   )
 }
 
