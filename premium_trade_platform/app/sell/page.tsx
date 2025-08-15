@@ -48,17 +48,11 @@ const CONDITIONS = [
 ]
 
 export default function SellPage() {
-  const { user, userProfile, loading } = useAuth()
+  const { user, userProfile, loading, isHydrated } = useAuth()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [isHydrated, setIsHydrated] = useState(false)
-
-  // Ensure hydration is complete before conditional rendering
-  useEffect(() => {
-    setIsHydrated(true)
-  }, [])
 
   // Redirect if not authenticated (only after hydration and loading is complete)
   useEffect(() => {
