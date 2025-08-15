@@ -162,7 +162,7 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
+          <button onClick={() => transitionRouter.push('/')} className="flex items-center space-x-3 group">
             <motion.div
               className="w-10 h-10 bg-gradient-to-br from-primary to-primary/60 rounded-xl flex items-center justify-center"
               whileHover={{ scale: 1.05 }}
@@ -185,7 +185,7 @@ export function Navigation() {
               </h1>
               <p className="text-xs text-muted-foreground -mt-1">Premium B2B Platform</p>
             </div>
-          </Link>
+          </button>
 
           {/* Desktop Navigation - Only show when authenticated and not on main/login pages */}
           <ClientOnly fallback={<div className="hidden md:flex items-center space-x-2" suppressHydrationWarning />}>
