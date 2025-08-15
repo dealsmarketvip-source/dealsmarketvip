@@ -111,8 +111,18 @@ export function usePageTransition(options: UsePageTransitionOptions = {}) {
           setTargetPath(undefined)
           setLoadingMessage(undefined)
         }
-      } catch (error) {
-        console.error('Navigation error:', error)
+      } catch (error: any) {
+        // Handle different types of navigation errors
+        const errorMessage = error?.message || ''
+
+        if (errorMessage.includes('Failed to fetch') || errorMessage.includes('RSC payload')) {
+          // For HMR/RSC errors, fall back to window.location
+          console.debug('Router error detected, falling back to window.location:', errorMessage)
+          window.location.href = path
+        } else {
+          console.error('Navigation error:', error)
+        }
+
         setIsLoading(false)
         setTargetPath(undefined)
         setLoadingMessage(undefined)
