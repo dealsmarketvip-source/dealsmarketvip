@@ -26,6 +26,7 @@ import {
 import { useAuth } from "@/hooks/use-auth-instant"
 import { toast } from "sonner"
 import { EnhancedLoading, UploadLoading } from "@/components/ui/enhanced-loading"
+import ClientOnly from "@/components/client-only"
 
 const CATEGORIES = [
   { value: 'electronics', label: 'Electronics' },
