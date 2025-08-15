@@ -134,7 +134,7 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await enhancedDbService.markNotificationAsRead(notificationId)
+      await unifiedDb.markNotificationAsRead(notificationId)
       setNotifications(prev =>
         prev.map(notif =>
           notif.id === notificationId
