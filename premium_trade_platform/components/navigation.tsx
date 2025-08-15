@@ -103,15 +103,16 @@ export function Navigation() {
     return (
       <motion.button
         onClick={handleClick}
+        disabled={isLoading}
         className={`relative group px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-          isActive 
-            ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg' 
+          isActive
+            ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg'
             : canAccess
             ? 'text-foreground hover:text-primary hover:bg-primary/10'
             : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-        }`}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        whileHover={!isLoading ? { scale: 1.05 } : {}}
+        whileTap={!isLoading ? { scale: 0.95 } : {}}
         animate={isActive ? {
           boxShadow: [
             "0 0 20px rgba(245, 158, 11, 0.3)",
