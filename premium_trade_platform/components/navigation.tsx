@@ -417,6 +417,12 @@ export function Navigation() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Admin Panel Modal */}
+      <AdminPanel
+        isOpen={showAdminPanel}
+        onClose={() => setShowAdminPanel(false)}
+      />
     </motion.nav>
   )
 }
