@@ -71,27 +71,31 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
   const fetchNotifications = useCallback(async () => {
     if (!user?.id) return
 
-    const dbConnected = isDatabaseConnected()
+    const neonConnected = isNeonConnected()
+    const connectionInfo = getConnectionInfo()
+
     console.log('Fetching notifications:', {
       userId: user.id,
       filter,
-      databaseConnected: dbConnected
+      provider: connectionInfo.provider,
+      neonConnected
     })
 
     setLoading(true)
     try {
       const [notifs, count] = await Promise.all([
-        dbService.getNotifications(user.id, {
+        enhancedDbService.getNotifications(user.id, {
           unreadOnly: filter === 'unread',
           limit: 50
         }),
-        dbService.getUnreadNotificationCount(user.id)
+        enhancedDbService.getUnreadNotificationCount(user.id)
       ])
 
       console.log('Notifications fetched successfully:', {
         count: notifs.length,
         unreadCount: count,
-        usingMockData: !dbConnected
+        provider: enhancedDbService.getProvider(),
+        connectionInfo
       })
 
       setNotifications(notifs)
@@ -103,10 +107,10 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
 
       console.error('Error fetching notifications:', errorMessage)
       console.error('Error code:', errorCode)
-      console.error('Database connected:', dbConnected)
+      console.error('Provider:', enhancedDbService.getProvider())
 
-      // Don't show error toast if database is not connected (expected)
-      if (dbConnected) {
+      // Show error toast only for unexpected errors
+      if (neonConnected && !errorMessage.includes('Failed to fetch')) {
         toast.error('Error al cargar notificaciones')
       }
     } finally {
