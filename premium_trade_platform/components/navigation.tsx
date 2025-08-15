@@ -379,12 +379,15 @@ export function Navigation() {
             </ClientOnly>
 
             {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+            {user && !['//', '/login', '/access', '/'].includes(pathname) && (
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+                aria-label="Toggle mobile menu"
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            )}
           </div>
         </div>
 
