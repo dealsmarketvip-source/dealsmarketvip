@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useEffect, useRef, useState } from "react"
@@ -221,7 +220,7 @@ export function VipBenefits() {
                     <div className="space-y-3">
                       {benefit.details.map((detail, detailIndex) => (
                         <motion.div
-                          key={detailIndex}
+                          key={`benefit-${index}-detail-${detailIndex}`}
                           initial={{ x: -20, opacity: 0 }}
                           animate={visibleCards[index] ? { x: 0, opacity: 1 } : { x: -20, opacity: 0 }}
                           transition={{ 
