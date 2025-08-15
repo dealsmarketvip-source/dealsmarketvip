@@ -238,6 +238,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     userProfile,
     loading,
+    isHydrated,
     signIn,
     signUp,
     signInWithCode,
