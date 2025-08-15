@@ -80,9 +80,10 @@ const nextConfig = {
       },
     },
     // Improve RSC and HMR reliability
-    serverComponentsExternalPackages: [],
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  // Move serverComponentsExternalPackages to the correct location
+  serverExternalPackages: [],
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       // Enhanced HMR configuration for hosted environments
