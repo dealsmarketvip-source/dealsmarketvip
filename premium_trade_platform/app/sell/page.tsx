@@ -28,6 +28,7 @@ import { toast } from "sonner"
 import { EnhancedLoading, UploadLoading } from "@/components/ui/enhanced-loading"
 import ClientOnly from "@/components/client-only"
 import { unifiedDb, getUnifiedDatabaseInfo } from "@/lib/unified-database"
+import { realProductManager } from "@/lib/real-products"
 
 const CATEGORIES = [
   { value: 'electronics', label: 'Electronics' },
