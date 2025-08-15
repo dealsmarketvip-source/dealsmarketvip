@@ -60,12 +60,12 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
-                Where Verified Companies
-                <span className="text-primary block">Trade Excellence</span>
+                European B2B Marketplace
+                <span className="text-primary block">Connecting Buyers & Sellers</span>
               </h1>
 
               <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
-                Exclusive B2B marketplace connecting verified companies in Europe and the Middle East for premium deals worth millions.
+                Post what you're selling. Find what you need. Connect with verified European businesses for million-euro deals with complete security and verification.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -82,16 +82,16 @@ export default function HomePage() {
               {/* Stats Section */}
               <div className="grid grid-cols-3 gap-6 pt-8">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">€50M+</div>
-                  <div className="text-sm text-muted-foreground">Monthly Volume</div>
+                  <div className="text-2xl font-bold text-primary">€125K</div>
+                  <div className="text-sm text-muted-foreground">Average Deal Value</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">500+</div>
-                  <div className="text-sm text-muted-foreground">Verified Companies</div>
+                  <div className="text-2xl font-bold text-primary">847</div>
+                  <div className="text-sm text-muted-foreground">Active Listings</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">98%</div>
-                  <div className="text-sm text-muted-foreground">Success Rate</div>
+                  <div className="text-2xl font-bold text-primary">2,341</div>
+                  <div className="text-sm text-muted-foreground">Successful Connections</div>
                 </div>
               </div>
             </div>
@@ -131,37 +131,37 @@ export default function HomePage() {
       <section className="py-20 px-6 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">Why Premium Members Choose Us</h2>
-            <p className="text-xl text-muted-foreground">Exclusive benefits that pay for themselves with your first deal</p>
+            <h2 className="text-4xl font-bold text-foreground mb-4">How DealsMarket Works</h2>
+            <p className="text-xl text-muted-foreground">Connect buyers and sellers in Europe's most trusted B2B marketplace</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Users className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Verified Network</CardTitle>
+                <Store className="h-12 w-12 text-primary mb-4" />
+                <CardTitle>Post Your Services</CardTitle>
                 <CardDescription>
-                  Access 500+ pre-screened companies with verified credentials
+                  List what you're selling or create a "Wanted Post" for what you need. Reach verified buyers and sellers across Europe.
                 </CardDescription>
               </CardHeader>
             </Card>
 
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <DollarSign className="h-12 w-12 text-green-500 mb-4" />
-                <CardTitle>High-Value Deals</CardTitle>
+                <Users className="h-12 w-12 text-green-500 mb-4" />
+                <CardTitle>Connect & Negotiate</CardTitle>
                 <CardDescription>
-                  Average deal value of $125,000 with payment protection included
+                  Direct communication with verified businesses. Negotiate terms, pricing, and delivery details securely.
                 </CardDescription>
               </CardHeader>
             </Card>
 
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <CardHeader>
-                <Globe className="h-12 w-12 text-blue-500 mb-4" />
-                <CardTitle>Global Reach</CardTitle>
+                <DollarSign className="h-12 w-12 text-blue-500 mb-4" />
+                <CardTitle>Close Deals Safely</CardTitle>
                 <CardDescription>
-                  Access deals from 50+ countries with 24/7 premium support
+                  Complete transactions with payment protection, escrow services, and legal compliance across all EU jurisdictions.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -173,30 +173,30 @@ export default function HomePage() {
       <section className="py-20 px-6 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-6">What We Do</h2>
+            <h2 className="text-4xl font-bold text-foreground mb-6">Your European B2B Connection</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DealsMarket is Europe's premier B2B marketplace where verified companies create million-dollar opportunities through secure, high-value transactions.
+              Just like FindersFee connects businesses globally, DealsMarket specializes in European B2B connections. Post services, find suppliers, and create lasting business relationships.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h3 className="text-3xl font-bold text-foreground">Connecting Enterprise Excellence</h3>
+              <h3 className="text-3xl font-bold text-foreground">Marketplace for Business Services</h3>
               <p className="text-lg text-muted-foreground">
-                We facilitate exclusive business relationships between verified companies across Europe and the Middle East, ensuring every transaction meets the highest standards of security and profitability.
+                Whether you're offering services or searching for suppliers, our platform connects European businesses for mutually beneficial partnerships. Every member is verified for authenticity and capability.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span>Rigorous company verification process</span>
+                  <span>Post services or "Wanted" listings</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span>Secure payment protection on all deals</span>
+                  <span>Connect with verified European businesses</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span>Real-time market intelligence and analytics</span>
+                  <span>10% success fee on completed transactions</span>
                 </li>
               </ul>
             </div>
@@ -217,19 +217,19 @@ export default function HomePage() {
       <section className="py-20 px-6 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-6">How We Help Your Business Progress</h2>
+            <h2 className="text-4xl font-bold text-foreground mb-6">Services & Wanted Posts</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our platform provides the tools, connections, and security your enterprise needs to scale internationally and achieve unprecedented growth.
+              Two powerful ways to connect: Offer your services to European businesses or post exactly what you're looking for. Our verification system ensures quality connections.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-primary/20">
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-blue-500/20">
               <CardHeader>
-                <Globe className="h-16 w-16 text-primary mb-4 mx-auto" />
-                <CardTitle className="text-xl text-center">Global Market Access</CardTitle>
+                <ShoppingBag className="h-16 w-16 text-blue-500 mb-4 mx-auto" />
+                <CardTitle className="text-xl text-center">Service Listings</CardTitle>
                 <CardDescription className="text-center">
-                  Expand your reach across 50+ countries with our verified partner network, opening doors to markets previously inaccessible.
+                  Showcase your business services to a network of verified European companies. From manufacturing to consulting, connect with buyers actively seeking your expertise.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -237,20 +237,21 @@ export default function HomePage() {
             <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-green-500/20">
               <CardHeader>
                 <DollarSign className="h-16 w-16 text-green-500 mb-4 mx-auto" />
-                <CardTitle className="text-xl text-center">Revenue Acceleration</CardTitle>
+                <CardTitle className="text-xl text-center">Wanted Posts</CardTitle>
                 <CardDescription className="text-center">
-                  Our members report 300% average revenue growth within 12 months of joining, with deals averaging $125,000.
+                  Tell us exactly what you need and let verified suppliers come to you. Post your requirements and receive proposals from qualified European service providers.
                 </CardDescription>
               </CardHeader>
             </Card>
+          </div>
 
-            <Card className="p-8 hover:shadow-xl transition-all hover:scale-[1.02] border-blue-500/20">
+          <div className="mt-12 text-center">
+            <Card className="p-8 border-primary/20">
               <CardHeader>
-                <Zap className="h-16 w-16 text-blue-500 mb-4 mx-auto" />
-                <CardTitle className="text-xl text-center">Operational Excellence</CardTitle>
-                <CardDescription className="text-center">
-                  Streamline your B2B operations with our advanced analytics, automated matching, and 24/7 premium support.
-                </CardDescription>
+                <h3 className="text-2xl font-bold text-primary mb-4">Success Fee Model</h3>
+                <p className="text-lg text-muted-foreground">
+                  Only pay when you succeed. We charge a 10% commission on completed transactions, aligning our success with yours. No upfront fees, no hidden costs.
+                </p>
               </CardHeader>
             </Card>
           </div>
