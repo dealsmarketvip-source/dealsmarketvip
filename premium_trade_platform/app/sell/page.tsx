@@ -27,6 +27,7 @@ import { useAuth } from "@/hooks/use-auth-instant"
 import { toast } from "sonner"
 import { EnhancedLoading, UploadLoading } from "@/components/ui/enhanced-loading"
 import ClientOnly from "@/components/client-only"
+import { unifiedDb, getUnifiedDatabaseInfo } from "@/lib/unified-database"
 
 const CATEGORIES = [
   { value: 'electronics', label: 'Electronics' },
