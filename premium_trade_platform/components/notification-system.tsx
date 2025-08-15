@@ -72,17 +72,26 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
 
     setLoading(true)
     try {
-      const notifs = await dbService.getNotifications(user.id, {
-        unreadOnly: filter === 'unread',
-        limit: 50
-      })
-      setNotifications(notifs)
+      const [notifs, count] = await Promise.all([
+        dbService.getNotifications(user.id, {
+          unreadOnly: filter === 'unread',
+          limit: 50
+        }),
+        dbService.getUnreadNotificationCount(user.id)
+      ])
 
-      const count = await dbService.getUnreadNotificationCount(user.id)
+      setNotifications(notifs)
       setUnreadCount(count)
-    } catch (error) {
-      console.error('Error fetching notifications:', error)
-      toast.error('Error al cargar notificaciones')
+    } catch (error: any) {
+      console.error('Error fetching notifications:', {
+        message: error?.message || 'Unknown error',
+        error: error
+      })
+
+      // Don't show error toast if database is not connected (expected)
+      if (!error?.message?.includes('placeholder')) {
+        toast.error('Error al cargar notificaciones')
+      }
     } finally {
       setLoading(false)
     }
