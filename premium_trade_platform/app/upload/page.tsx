@@ -637,7 +637,7 @@ export default function UploadPage() {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {imagesPreviews.map((preview, index) => (
-                    <div key={index} className="relative group">
+                    <div key={`upload-preview-${index}`} className="relative group">
                       <img 
                         src={preview} 
                         alt={`Preview ${index + 1}`}
