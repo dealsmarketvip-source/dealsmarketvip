@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/use-auth-instant"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { analytics } from "@/lib/analytics"
+import { useNavigationWithLoading } from "@/components/page-transition-provider"
 
 // Import the WelcomePanel component directly since lazy loading is causing issues
 import { WelcomePanel } from "@/components/WelcomePanel"
