@@ -8,8 +8,18 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 export const isDatabaseConnected = () => {
   const hasUrl = !!supabaseUrl
   const hasKey = !!supabaseAnonKey
-  const urlNotPlaceholder = !supabaseUrl.includes('placeholder')
-  const keyNotPlaceholder = !supabaseAnonKey.includes('placeholder')
+
+  // Check for placeholder or demo URLs (both indicate no real database)
+  const isPlaceholderUrl = supabaseUrl.includes('placeholder') ||
+                          supabaseUrl.includes('demo.supabase.co') ||
+                          supabaseUrl.includes('your-project.supabase.co')
+
+  const isPlaceholderKey = supabaseAnonKey.includes('placeholder') ||
+                          supabaseAnonKey.includes('demo_key') ||
+                          supabaseAnonKey.includes('your-anon-key')
+
+  const urlNotPlaceholder = !isPlaceholderUrl
+  const keyNotPlaceholder = !isPlaceholderKey
 
   const result = hasUrl && hasKey && urlNotPlaceholder && keyNotPlaceholder
 
@@ -18,6 +28,8 @@ export const isDatabaseConnected = () => {
     hasKey,
     urlNotPlaceholder,
     keyNotPlaceholder,
+    isPlaceholderUrl,
+    isPlaceholderKey,
     url: supabaseUrl?.substring(0, 30) + '...',
     key: supabaseAnonKey?.substring(0, 20) + '...',
     finalResult: result
@@ -448,7 +460,9 @@ export class DatabaseService {
           hint: error.hint || 'No hint available',
           code: error.code || 'NO_CODE'
         }
-        console.error('Database error fetching notifications:', errorInfo)
+        console.error('Database error fetching notifications:', errorInfo.message)
+        console.error('Error details:', errorInfo.details)
+        console.error('Error code:', errorInfo.code)
         return this.getMockNotifications(userId, options)
       }
 
@@ -462,7 +476,9 @@ export class DatabaseService {
         code: error?.code || error?.error?.code || 'NO_CODE',
         originalError: error
       }
-      console.error('Catch block - Error fetching notifications:', errorInfo)
+      console.error('Catch block - Error fetching notifications:', errorInfo.message)
+      console.error('Error name:', errorInfo.name)
+      console.error('Error details:', errorInfo.details)
       return this.getMockNotifications(userId, options)
     }
   }
@@ -535,7 +551,9 @@ export class DatabaseService {
           hint: error.hint || 'No hint available',
           code: error.code || 'NO_CODE'
         }
-        console.error('Database error getting unread notification count:', errorInfo)
+        console.error('Database error getting unread notification count:', errorInfo.message)
+        console.error('Error details:', errorInfo.details)
+        console.error('Error code:', errorInfo.code)
         return 3 // Return mock count as fallback
       }
 
@@ -548,7 +566,9 @@ export class DatabaseService {
         code: error?.code || error?.error?.code || 'NO_CODE',
         originalError: error
       }
-      console.error('Catch block - Error getting unread notification count:', errorInfo)
+      console.error('Catch block - Error getting unread notification count:', errorInfo.message)
+      console.error('Error name:', errorInfo.name)
+      console.error('Error details:', errorInfo.details)
       return 3 // Return mock count as fallback
     }
   }
