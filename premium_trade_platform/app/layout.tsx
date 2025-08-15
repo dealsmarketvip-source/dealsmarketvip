@@ -14,6 +14,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Deals Market - Where Verified Companies Trade Excellence",
   description: "Exclusive B2B marketplace connecting verified companies in Europe and the Middle East for premium deals",
+  other: {
+    'permissions-policy': 'clipboard-read=*, clipboard-write=*'
+  }
 }
 
 export default function RootLayout({
