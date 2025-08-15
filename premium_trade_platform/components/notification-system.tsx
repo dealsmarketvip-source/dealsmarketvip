@@ -395,9 +395,9 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                           <p className="text-sm text-muted-foreground">
                             {filter === 'unread' ? 'No tienes notificaciones sin leer' : 'No tienes notificaciones'}
                         </p>
-                        {!enhancedDbService.isConnected() && (
+                        {!isUnifiedDatabaseConnected() && (
                           <p className="text-xs text-orange-400 mt-1">
-                            {getConnectionInfo().message || 'Conecta la base de datos para ver notificaciones reales'}
+                            Conecta la base de datos para ver notificaciones reales
                           </p>
                         )}
                         </div>
