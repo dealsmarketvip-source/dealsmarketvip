@@ -53,14 +53,20 @@ export default function SellPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [isHydrated, setIsHydrated] = useState(false)
 
-  // Redirect if not authenticated (only after loading is complete)
+  // Ensure hydration is complete before conditional rendering
   useEffect(() => {
-    if (!loading && !user) {
+    setIsHydrated(true)
+  }, [])
+
+  // Redirect if not authenticated (only after hydration and loading is complete)
+  useEffect(() => {
+    if (isHydrated && !loading && !user) {
       toast.error("You must be logged in to sell products")
       router.push('/login')
     }
-  }, [user, router, loading])
+  }, [user, router, loading, isHydrated])
 
   const [formData, setFormData] = useState({
     title: '',
