@@ -325,6 +325,14 @@ export function Navigation() {
                             Favorites
                           </div>
                         </button>
+                        {user?.is_admin && (
+                          <button onClick={() => setShowAdminPanel(true)} className="w-full">
+                            <div className="flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-md transition-colors">
+                              <Crown className="h-4 w-4" />
+                              Admin Panel
+                            </div>
+                          </button>
+                        )}
                         <div className="border-t border-border my-1" />
                         <button
                           onClick={handleLogout}
