@@ -26,22 +26,24 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ClientErrorHandler />
-        <AuthProvider>
-          <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Cargando...</div></div>}>
-            <Navigation />
-            {children}
-          </Suspense>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: 'hsl(var(--card))',
-                color: 'hsl(var(--card-foreground))',
-                border: '1px solid hsl(var(--border))',
-              },
-            }}
-          />
-        </AuthProvider>
+        <HydrationBoundary>
+          <AuthProvider>
+            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Cargando...</div></div>}>
+              <Navigation />
+              {children}
+            </Suspense>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: 'hsl(var(--card))',
+                  color: 'hsl(var(--card-foreground))',
+                  border: '1px solid hsl(var(--border))',
+                },
+              }}
+            />
+          </AuthProvider>
+        </HydrationBoundary>
         <Analytics />
         <SpeedInsights />
       </body>
