@@ -286,7 +286,7 @@ export default function VipPage() {
                     
                     <div className="space-y-2">
                       {feature.details.map((detail, detailIndex) => (
-                        <div key={detailIndex} className="flex items-center gap-3 text-sm">
+                        <div key={`vip-page-${index}-detail-${detailIndex}`} className="flex items-center gap-3 text-sm">
                           <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
                           <span className="text-foreground">{detail}</span>
                         </div>
