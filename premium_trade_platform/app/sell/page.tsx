@@ -196,6 +196,19 @@ export default function SellPage() {
     }
   }
 
+  // Prevent hydration mismatch by showing consistent loading state
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="flex items-center justify-center min-h-96">
+            <EnhancedLoading type="auth" message="Loading..." />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (!user) {
     return <EnhancedLoading type="auth" fullscreen message="Checking authentication..." />
   }
