@@ -16,13 +16,17 @@ const INVITATION_CODES = {
     email: 'admin@astero.trading',
     company_name: 'Astero Trading Group',
     subscription_type: 'enterprise',
-    verification_status: 'verified'
+    verification_status: 'verified',
+    is_admin: true,
+    role: 'admin'
   },
   'BETA50': {
-    email: 'beta@dealsmarket.vip', 
+    email: 'beta@dealsmarket.vip',
     company_name: 'Beta Tester Company',
     subscription_type: 'enterprise',
-    verification_status: 'verified'
+    verification_status: 'verified',
+    is_admin: false,
+    role: 'user'
   }
 } as const
 
