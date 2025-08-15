@@ -24,7 +24,7 @@ import {
 import { useAuth } from '@/hooks/use-auth-instant'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { toast } from 'sonner'
-import { ClientOnly } from '@/components/client-only'
+import ClientOnly from '@/components/client-only'
 
 export function Navigation() {
   const { user, userProfile, signOut } = useAuth()
