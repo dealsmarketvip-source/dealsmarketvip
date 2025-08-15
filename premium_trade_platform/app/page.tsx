@@ -20,6 +20,7 @@ export default function HomePage() {
   const [showWelcomePanel, setShowWelcomePanel] = useState(false)
   const { user } = useAuth()
   const router = useRouter()
+  const { navigateTo } = useNavigationWithLoading()
 
   // Track page view
   useEffect(() => {
