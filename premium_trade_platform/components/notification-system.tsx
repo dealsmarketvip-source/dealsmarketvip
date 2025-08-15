@@ -337,6 +337,16 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                   <Separator />
 
                   <CardContent className="p-0">
+                    {/* Database Status Info */}
+                    {!isDatabaseConnected() && (
+                      <div className="p-3 bg-orange-500/10 border-b border-orange-500/20">
+                        <div className="flex items-center gap-2 text-orange-400 text-xs">
+                          <AlertCircle className="h-3 w-3" />
+                          <span>Modo demo - Conecta a Neon para notificaciones reales</span>
+                        </div>
+                      </div>
+                    )}
+
                     <ScrollArea className="h-96">
                       {loading ? (
                         <div className="flex items-center justify-center py-8">
@@ -351,6 +361,11 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                           <p className="text-sm text-muted-foreground">
                             {filter === 'unread' ? 'No tienes notificaciones sin leer' : 'No tienes notificaciones'}
                           </p>
+                          {!isDatabaseConnected() && (
+                            <p className="text-xs text-orange-400 mt-1">
+                              Conecta la base de datos para ver notificaciones reales
+                            </p>
+                          )}
                         </div>
                       ) : (
                         <div>
