@@ -61,7 +61,7 @@ export function Header() {
             <nav className="hidden md:flex items-center gap-2">
               {navItems.map((item, index) => (
                 <motion.div
-                  key={item.name}
+                  key={`header-desktop-${item.name}`}
                   initial={{ y: -20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
