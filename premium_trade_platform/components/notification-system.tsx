@@ -96,17 +96,13 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
       setNotifications(notifs)
       setUnreadCount(count)
     } catch (error: any) {
-      console.error('Error fetching notifications - RAW ERROR:', error)
-      console.error('Error fetching notifications - DETAILED:', {
-        message: error?.message || 'Unknown error',
-        name: error?.name,
-        stack: error?.stack,
-        cause: error?.cause,
-        databaseConnected: dbConnected,
-        errorType: typeof error,
-        errorString: String(error),
-        errorKeys: Object.keys(error || {})
-      })
+      // Extract meaningful error information
+      const errorMessage = error?.message || error?.error?.message || String(error) || 'Unknown error'
+      const errorCode = error?.code || error?.error?.code || 'NO_CODE'
+
+      console.error('Error fetching notifications:', errorMessage)
+      console.error('Error code:', errorCode)
+      console.error('Database connected:', dbConnected)
 
       // Don't show error toast if database is not connected (expected)
       if (dbConnected) {
