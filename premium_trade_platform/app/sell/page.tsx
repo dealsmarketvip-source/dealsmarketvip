@@ -160,33 +160,78 @@ export default function SellPage() {
     setIsSubmitting(true)
 
     try {
-      // In a real app, you would upload images to storage first
-      // For now, we'll simulate this process
-      
+      const dbInfo = getUnifiedDatabaseInfo()
+      console.log(`🛒 Creating product using ${dbInfo.provider} database...`)
+
       const productData = {
+        id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ...formData,
         price: parseFloat(formData.price),
         shipping_cost: formData.shipping_cost ? parseFloat(formData.shipping_cost) : 0,
-        seller_id: userProfile?.id,
+        seller_id: userProfile?.id || user?.id,
+        seller_name: userProfile?.full_name || user?.email || 'Unknown',
         status: 'active',
-        images: imagePreviews, // In real app, these would be storage URLs
+        images: imagePreviews.length > 0 ? imagePreviews : ['/placeholder.svg'],
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+        featured: false,
+        views_count: 0,
+        inquiries_count: 0,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
+        published_at: new Date().toISOString()
       }
 
-      // Simulate product creation for instant functionality
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Try to save to database (real or mock)
+      const savedProduct = await unifiedDb.createProduct(productData)
 
-      // Mock successful creation
-      console.log('Product created:', productData)
+      if (savedProduct) {
+        console.log('✅ Product created successfully:', savedProduct.id)
 
-      toast.success("Product listed successfully!")
-      router.push('/marketplace')
+        // Create notification for successful product creation
+        await unifiedDb.createNotification({
+          user_id: userProfile?.id || user?.id,
+          type: 'product_created',
+          title: '🎉 Producto publicado exitosamente',
+          message: `Tu producto "${formData.title}" ha sido publicado en el marketplace.`,
+          data: {
+            product_id: savedProduct.id,
+            product_title: formData.title,
+            price: parseFloat(formData.price),
+            provider: dbInfo.provider
+          },
+          read: false,
+          priority: 'medium',
+          delivery_method: 'in_app'
+        })
+
+        toast.success(`Producto guardado exitosamente usando ${dbInfo.provider}!`)
+        router.push('/marketplace')
+      } else {
+        throw new Error('Failed to save product')
+      }
 
     } catch (error: any) {
-      console.error('Error creating product:', error)
-      toast.error(error.message || "Failed to create product listing")
+      console.error('❌ Error creating product:', error)
+
+      // Create error notification
+      if (userProfile?.id || user?.id) {
+        await unifiedDb.createNotification({
+          user_id: userProfile?.id || user?.id,
+          type: 'system_error',
+          title: '⚠️ Error al publicar producto',
+          message: `No se pudo guardar el producto "${formData.title}". Inténtalo de nuevo.`,
+          data: {
+            error: error.message,
+            product_title: formData.title,
+            timestamp: new Date().toISOString()
+          },
+          read: false,
+          priority: 'high',
+          delivery_method: 'in_app'
+        })
+      }
+
+      toast.error(error.message || "Error al guardar el producto")
     } finally {
       setIsSubmitting(false)
     }
