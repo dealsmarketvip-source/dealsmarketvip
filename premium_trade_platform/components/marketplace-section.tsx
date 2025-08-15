@@ -178,7 +178,7 @@ export function MarketplaceSection() {
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16"
         >
           {categories.map((category, index) => (
-            <motion.div key={index} variants={itemVariants}>
+            <motion.div key={`marketplace-category-${index}`} variants={itemVariants}>
               <Button
                 variant="outline"
                 className="group w-full h-24 gradient-card hover:bg-card/80 border-border/50 hover:border-primary/50 rounded-2xl transition-all duration-300 hover:scale-105 bg-transparent"
