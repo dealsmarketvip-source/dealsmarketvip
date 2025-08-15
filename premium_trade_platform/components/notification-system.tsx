@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth-instant'
-import { dbService, type Notification, formatDateTime } from '@/lib/database'
+import { dbService, type Notification, formatDateTime, isDatabaseConnected } from '@/lib/database'
 import { toast } from 'sonner'
 
 interface NotificationSystemProps {
@@ -70,6 +70,13 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
   const fetchNotifications = useCallback(async () => {
     if (!user?.id) return
 
+    const dbConnected = isDatabaseConnected()
+    console.log('Fetching notifications:', {
+      userId: user.id,
+      filter,
+      databaseConnected: dbConnected
+    })
+
     setLoading(true)
     try {
       const [notifs, count] = await Promise.all([
@@ -80,16 +87,23 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
         dbService.getUnreadNotificationCount(user.id)
       ])
 
+      console.log('Notifications fetched successfully:', {
+        count: notifs.length,
+        unreadCount: count,
+        usingMockData: !dbConnected
+      })
+
       setNotifications(notifs)
       setUnreadCount(count)
     } catch (error: any) {
       console.error('Error fetching notifications:', {
         message: error?.message || 'Unknown error',
+        databaseConnected: dbConnected,
         error: error
       })
 
       // Don't show error toast if database is not connected (expected)
-      if (!error?.message?.includes('placeholder')) {
+      if (dbConnected) {
         toast.error('Error al cargar notificaciones')
       }
     } finally {
