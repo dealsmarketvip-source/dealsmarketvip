@@ -96,10 +96,16 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
       setNotifications(notifs)
       setUnreadCount(count)
     } catch (error: any) {
-      console.error('Error fetching notifications:', {
+      console.error('Error fetching notifications - RAW ERROR:', error)
+      console.error('Error fetching notifications - DETAILED:', {
         message: error?.message || 'Unknown error',
+        name: error?.name,
+        stack: error?.stack,
+        cause: error?.cause,
         databaseConnected: dbConnected,
-        error: error
+        errorType: typeof error,
+        errorString: String(error),
+        errorKeys: Object.keys(error || {})
       })
 
       // Don't show error toast if database is not connected (expected)
