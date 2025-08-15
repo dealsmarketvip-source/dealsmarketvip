@@ -9,8 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth-instant'
-import { dbService, type Notification, formatDateTime, isDatabaseConnected } from '@/lib/database'
-import { enhancedDbService, isNeonConnected, getConnectionInfo } from '@/lib/neon-adapter'
+import { unifiedDb, type Notification, formatDateTime, isUnifiedDatabaseConnected, getUnifiedDatabaseInfo } from '@/lib/unified-database'
 import { toast } from 'sonner'
 
 interface NotificationSystemProps {
