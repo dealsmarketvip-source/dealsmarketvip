@@ -249,9 +249,10 @@ export default function MarketplacePage() {
     setLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 800))
-      const mockProducts = getMockProducts()
-      
-      let filteredProducts = [...mockProducts]
+      const mockProducts = getMockProducts({}, 1, 100) // Get all products without pagination
+
+      // Ensure mockProducts is an array
+      let filteredProducts = Array.isArray(mockProducts) ? [...mockProducts] : []
 
       // Apply search filter
       if (searchQuery.trim()) {
