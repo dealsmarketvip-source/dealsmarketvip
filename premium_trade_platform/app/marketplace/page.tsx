@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth-instant"
 import { getMockProductsArray } from "@/lib/mock-data"
+import { realProductManager, type RealProduct } from "@/lib/real-products"
 import { toast } from "sonner"
 import { ProductWithImages, ProductFilters, User } from "@/lib/types/database"
 import Link from "next/link"
