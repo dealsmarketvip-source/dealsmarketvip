@@ -85,8 +85,12 @@ export function Navigation() {
   const NavButton = ({ item }: { item: typeof navItems[0] }) => {
     const isActive = pathname === item.href
     const canAccess = !item.requiresAuth || user
+    const { isLoading } = usePageTransitionContext()
 
     const handleClick = () => {
+      // Prevent navigation while loading
+      if (isLoading) return
+
       if (item.requiresAuth && !user) {
         toast.error('Please sign in to access this feature')
         transitionRouter.push('/login')
