@@ -112,7 +112,7 @@ export function EnhancedLoading({
       <div className="flex space-x-1">
         {[0, 1, 2].map((i) => (
           <motion.div
-            key={i}
+            key={`enhanced-loading-dot-${i}`}
             className="w-2 h-2 bg-primary rounded-full"
             animate={{
               scale: [1, 1.5, 1],
