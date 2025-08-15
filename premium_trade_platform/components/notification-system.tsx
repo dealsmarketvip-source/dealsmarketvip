@@ -135,7 +135,7 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      await dbService.markNotificationAsRead(notificationId)
+      await enhancedDbService.markNotificationAsRead(notificationId)
       setNotifications(prev =>
         prev.map(notif =>
           notif.id === notificationId
@@ -144,8 +144,9 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
         )
       )
       setUnreadCount(prev => Math.max(0, prev - 1))
-    } catch (error) {
-      console.error('Error marking notification as read:', error)
+    } catch (error: any) {
+      const errorMessage = error?.message || String(error) || 'Unknown error'
+      console.error('Error marking notification as read:', errorMessage)
     }
   }
 
