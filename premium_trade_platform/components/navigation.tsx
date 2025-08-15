@@ -87,10 +87,10 @@ export function Navigation() {
     const handleClick = () => {
       if (item.requiresAuth && !user) {
         toast.error('Please sign in to access this feature')
-        window.location.href = '/login'
+        transitionRouter.push('/login')
         return
       }
-      window.location.href = item.href
+      transitionRouter.push(item.href)
       setIsMenuOpen(false)
     }
 
