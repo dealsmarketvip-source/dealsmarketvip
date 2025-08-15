@@ -147,6 +147,21 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
   const markAllAsRead = async () => {
     if (!user?.id) return
 
+    const dbConnected = isDatabaseConnected()
+    if (!dbConnected) {
+      // In demo mode, just update local state
+      setNotifications(prev =>
+        prev.map(notif => ({
+          ...notif,
+          read: true,
+          read_at: new Date().toISOString()
+        }))
+      )
+      setUnreadCount(0)
+      toast.success('Todas las notificaciones marcadas como leídas (modo demo)')
+      return
+    }
+
     try {
       await dbService.markAllNotificationsAsRead(user.id)
       setNotifications(prev =>
@@ -158,8 +173,15 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
       )
       setUnreadCount(0)
       toast.success('Todas las notificaciones marcadas como leídas')
-    } catch (error) {
-      console.error('Error marking all notifications as read:', error)
+    } catch (error: any) {
+      // Extract meaningful error information
+      const errorMessage = error?.message || error?.error?.message || String(error) || 'Unknown error'
+      const errorCode = error?.code || error?.error?.code || 'NO_CODE'
+
+      console.error('Error marking all notifications as read:', errorMessage)
+      console.error('Error code:', errorCode)
+      console.error('Database connected:', dbConnected)
+
       toast.error('Error al marcar notificaciones como leídas')
     }
   }
