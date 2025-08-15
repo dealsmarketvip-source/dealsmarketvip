@@ -9,6 +9,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import ClientErrorHandler from './client-error-handler'
 import ClipboardFix from './clipboard-fix'
+import ErrorSuppression from '@/components/error-suppression'
 
 const inter = Inter({ subsets: ["latin"] })
 
