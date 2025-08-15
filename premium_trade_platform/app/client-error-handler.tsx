@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import '@/lib/clipboard-utils' // Import clipboard fallback
 
 export default function ClientErrorHandler() {
   useEffect(() => {
