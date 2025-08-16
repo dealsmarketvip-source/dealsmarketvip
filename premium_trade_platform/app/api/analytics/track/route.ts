@@ -28,7 +28,21 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Analytics tracking error:', error)
+    // Handle null/undefined errors gracefully
+    const errorMessage = error instanceof Error
+      ? error.message
+      : error
+      ? String(error)
+      : 'Unknown error occurred'
+
+    console.error('Analytics tracking error:', {
+      message: errorMessage,
+      error: error instanceof Error ? {
+        name: error.name,
+        stack: error.stack
+      } : error
+    })
+
     return NextResponse.json(
       { success: false, error: 'Failed to track event' },
       { status: 500 }
