@@ -303,13 +303,15 @@ export class UnifiedDatabaseService {
     console.log('📦 Mock product created:', mockProduct.id)
 
     // Store in localStorage for persistence during demo
-    try {
-      const existingProducts = JSON.parse(localStorage.getItem('mock_products') || '[]')
-      existingProducts.push(mockProduct)
-      localStorage.setItem('mock_products', JSON.stringify(existingProducts))
-      console.log('💾 Product saved to localStorage')
-    } catch (error) {
-      console.warn('Could not save to localStorage:', error)
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        const existingProducts = JSON.parse(localStorage.getItem('mock_products') || '[]')
+        existingProducts.push(mockProduct)
+        localStorage.setItem('mock_products', JSON.stringify(existingProducts))
+        console.log('💾 Product saved to localStorage')
+      } catch (error) {
+        console.warn('Could not save to localStorage:', error)
+      }
     }
 
     return mockProduct
@@ -347,6 +349,10 @@ export class UnifiedDatabaseService {
   }
 
   private getMockProducts(): any[] {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return [] // Return empty array on server-side
+    }
+
     try {
       const stored = localStorage.getItem('mock_products')
       if (stored) {
