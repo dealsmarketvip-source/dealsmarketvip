@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -217,7 +218,7 @@ export function PricingTiers() {
                   <div className="space-y-3">
                     {tier.features.map((feature, featureIndex) => (
                       <motion.div
-                        key={`tier-${index}-feature-${featureIndex}`}
+                        key={featureIndex}
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.4, delay: (index * 0.1) + (featureIndex * 0.05) + 0.3 }}
@@ -281,7 +282,7 @@ export function PricingTiers() {
         <div className="absolute inset-0 opacity-5">
           <div className="grid grid-cols-6 gap-6 transform rotate-12 scale-150">
             {Array.from({ length: 24 }).map((_, i) => (
-              <div key={`pricing-bg-${i}`} className="aspect-square bg-primary rounded-lg" />
+              <div key={i} className="aspect-square bg-primary rounded-lg" />
             ))}
           </div>
         </div>

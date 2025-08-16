@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -137,7 +138,7 @@ export default function StaticLandingPage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
                   {categories.map((category, index) => (
-                    <div key={`static-category-${index}`}>
+                    <div key={index}>
                       <Button
                         variant="outline"
                         className="group gradient-card hover:bg-card/80 text-foreground border-border/50 hover:border-primary/50 py-8 px-6 rounded-2xl font-medium text-sm h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg bg-transparent"

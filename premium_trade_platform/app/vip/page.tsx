@@ -1,3 +1,4 @@
+
 "use client"
 
 import { motion } from "framer-motion"
@@ -17,11 +18,8 @@ import {
 import Link from "next/link"
 import { VipBenefits } from "@/components/vip/vip-benefits"
 import { PricingTiers } from "@/components/vip/pricing-tiers"
-import SubscribeButton from "@/components/SubscribeButton"
-import { useAuth } from "@/hooks/use-auth-instant"
 
 export default function VipPage() {
-  const { user, userProfile } = useAuth()
   const vipStats = [
     { 
       number: "5,000+", 
@@ -286,7 +284,7 @@ export default function VipPage() {
                     
                     <div className="space-y-2">
                       {feature.details.map((detail, detailIndex) => (
-                        <div key={`vip-page-${index}-detail-${detailIndex}`} className="flex items-center gap-3 text-sm">
+                        <div key={detailIndex} className="flex items-center gap-3 text-sm">
                           <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
                           <span className="text-foreground">{detail}</span>
                         </div>
@@ -351,23 +349,15 @@ export default function VipPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                {userProfile?.role !== 'premium' ? (
-                  <SubscribeButton
-                    userId={user?.id}
-                    email={user?.email || ''}
-                    className="gradient-primary text-primary-foreground px-16 py-6 text-xl font-bold rounded-2xl hover:scale-105 transition-all duration-300 glow-primary"
-                  />
-                ) : (
-                  <Button className="gradient-primary text-primary-foreground px-16 py-6 text-xl font-bold rounded-2xl hover:scale-105 transition-all duration-300 glow-primary" disabled>
-                    <Crown className="mr-3 h-7 w-7" />
-                    Ya eres Miembro VIP Elite
-                  </Button>
-                )}
+                <Button className="gradient-primary text-primary-foreground px-16 py-6 text-xl font-bold rounded-2xl hover:scale-105 transition-all duration-300 glow-primary">
+                  <Crown className="mr-3 h-7 w-7" />
+                  Acceso VIP Elite Inmediato
+                </Button>
                 <div className="text-center">
                   <div className="text-sm text-muted-foreground">
-                    <span className="line-through">€199/mes</span> → <span className="text-primary font-bold">€20/mes</span>
+                    <span className="line-through">€199/mes</span> → <span className="text-primary font-bold">€149/mes</span>
                   </div>
-                  <div className="text-xs text-green-400">Oferta especial - Suscripción premium</div>
+                  <div className="text-xs text-green-400">Promoción limitada - Solo este mes</div>
                 </div>
               </div>
               
