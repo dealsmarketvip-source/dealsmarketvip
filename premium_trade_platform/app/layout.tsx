@@ -13,6 +13,7 @@ import ErrorSuppression from '@/components/error-suppression'
 import { PageTransitionProvider } from '@/components/page-transition-provider'
 import HMRErrorSuppression from '@/components/hmr-error-suppression'
 import DuplicateKeyDetector from '@/components/duplicate-key-detector'
+import { GlobalErrorSuppressor } from '@/components/global-error-suppressor'
 
 const inter = Inter({ subsets: ["latin"] })
 
