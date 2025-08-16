@@ -182,11 +182,15 @@ class RealProductManager {
 
     if (isFavorite) {
       const updatedFavorites = favorites.filter(id => id !== productId)
-      localStorage.setItem(`favorites_${userId}`, JSON.stringify(updatedFavorites))
+      if (this.isBrowser()) {
+        localStorage.setItem(`favorites_${userId}`, JSON.stringify(updatedFavorites))
+      }
       product.favorites_count = Math.max(0, product.favorites_count - 1)
     } else {
       const updatedFavorites = [...favorites, productId]
-      localStorage.setItem(`favorites_${userId}`, JSON.stringify(updatedFavorites))
+      if (this.isBrowser()) {
+        localStorage.setItem(`favorites_${userId}`, JSON.stringify(updatedFavorites))
+      }
       product.favorites_count++
     }
 
@@ -197,6 +201,10 @@ class RealProductManager {
 
   // Get user favorites
   getUserFavorites(userId: string): string[] {
+    if (!this.isBrowser()) {
+      return [] // Return empty array on server-side
+    }
+
     try {
       const stored = localStorage.getItem(`favorites_${userId}`)
       return stored ? JSON.parse(stored) : []
@@ -289,14 +297,17 @@ class RealProductManager {
   clearAllData() {
     this.products = []
     this.userActivities.clear()
-    localStorage.removeItem('dealsmarket_products')
-    localStorage.removeItem('dealsmarket_user_activities')
-    // Clear all user favorites
-    Object.keys(localStorage).forEach(key => {
-      if (key.startsWith('favorites_')) {
-        localStorage.removeItem(key)
-      }
-    })
+
+    if (this.isBrowser()) {
+      localStorage.removeItem('dealsmarket_products')
+      localStorage.removeItem('dealsmarket_user_activities')
+      // Clear all user favorites
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('favorites_')) {
+          localStorage.removeItem(key)
+        }
+      })
+    }
   }
 }
 
