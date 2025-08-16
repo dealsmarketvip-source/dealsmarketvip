@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -320,7 +319,7 @@ export function MarketplaceAdvanced() {
           <div className="absolute inset-0 opacity-5">
             <div className="grid grid-cols-6 gap-8 transform rotate-12 scale-150">
               {Array.from({ length: 24 }).map((_, i) => (
-                <div key={i} className="aspect-square bg-primary rounded-lg" />
+                <div key={`marketplace-advanced-bg-${i}`} className="aspect-square bg-primary rounded-lg" />
               ))}
             </div>
           </div>

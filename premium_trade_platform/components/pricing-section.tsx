@@ -128,7 +128,7 @@ export function PricingSection() {
                           transform: `scale(${isAnnual ? 1 : 0.8})`,
                           filter: `blur(${isAnnual ? 0 : 4}px)`,
                         }}
-                        aria-hidden={!isAnnual}
+                        aria-hidden={(!isAnnual).toString()}
                       >
                         {plan.annualPrice}
                       </span>
@@ -139,7 +139,7 @@ export function PricingSection() {
                           transform: `scale(${!isAnnual ? 1 : 0.8})`,
                           filter: `blur(${!isAnnual ? 0 : 4}px)`,
                         }}
-                        aria-hidden={isAnnual}
+                        aria-hidden={isAnnual.toString()}
                       >
                         {plan.monthlyPrice}
                       </span>

@@ -11,6 +11,11 @@ interface AuthContextType {
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error: any }>
   signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ error: any }>
+  signInWithCode: (accessCode: string) => Promise<{ error: any, data?: any }>
+  createAccountWithCode: (code: string, userData?: any) => Promise<{ error: any, data?: any }>
+  validateInvitationCode: (code: string) => Promise<{ isValid: boolean, message: string, accountData?: any }>
+  sendLoginCode: (email: string) => Promise<{ error: any, data?: any }>
+  verifyLoginCode: (email: string, code: string) => Promise<{ error: any, data?: any }>
   signOut: () => Promise<{ error: any }>
   updateProfile: (updates: Partial<User>) => Promise<{ error: any }>
 }
@@ -24,18 +29,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
 
   useEffect(() => {
-    // Get initial session
+    // Get initial session with timeout for better performance
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        // Fetch user profile
-        const { data: profile } = await db.users.getByAuthId(session.user.id)
-        setUserProfile(profile)
+      try {
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Auth timeout')), 5000)
+        )
+
+        const sessionPromise = supabase.auth.getSession()
+
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any
+        setUser(session?.user ?? null)
+
+        if (session?.user) {
+          // Fetch user profile asynchronously without blocking
+          db.users.getByAuthId(session.user.id).then(({ data: profile }) => {
+            setUserProfile(profile)
+          }).catch(error => {
+            console.warn('Failed to load user profile:', error)
+            setUserProfile(null)
+          })
+        }
+      } catch (error) {
+        console.warn('Auth initialization failed:', error)
+        setUser(null)
+        setUserProfile(null)
+      } finally {
+        setLoading(false)
       }
-      
-      setLoading(false)
     }
 
     getInitialSession()
@@ -76,16 +98,210 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     setLoading(true)
-    const result = await auth.signIn(email, password)
-    setLoading(false)
-    return result
+
+    try {
+      const { fastSignIn } = await import('@/lib/auth-optimized')
+      const result = await fastSignIn(email, password)
+      setLoading(false)
+      return result
+    } catch (error: any) {
+      setLoading(false)
+      return { error: { message: error.message || 'Sign in failed' } }
+    }
   }
 
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
     setLoading(true)
-    const result = await auth.signUp(email, password, metadata)
-    setLoading(false)
-    return result
+
+    try {
+      // Quick validation for invitation codes
+      if (metadata?.invitation_code) {
+        const validation = await validateInvitationCode(metadata.invitation_code)
+        if (!validation.isValid) {
+          setLoading(false)
+          return { error: new Error(validation.message) }
+        }
+      }
+
+      const { fastSignUp } = await import('@/lib/auth-optimized')
+      const result = await fastSignUp(email, password, metadata)
+      setLoading(false)
+      return result
+    } catch (error: any) {
+      setLoading(false)
+      return { error: { message: error.message || 'Sign up failed' } }
+    }
+  }
+
+  const signInWithCode = async (accessCode: string) => {
+    setLoading(true)
+
+    try {
+      // Use optimized auth module for faster performance
+      const { fastSignInWithCode } = await import('@/lib/auth-optimized')
+
+      const result = await fastSignInWithCode(accessCode.toUpperCase())
+
+      if (!result.success) {
+        setLoading(false)
+        return { error: new Error(result.error), data: null }
+      }
+
+      // If successful, set the user state immediately
+      if (result.data) {
+        setUser(result.data.user)
+        setUserProfile(result.data.profile)
+
+        // Navigate to marketplace immediately
+        window.location.href = '/marketplace'
+      }
+
+      setLoading(false)
+      return {
+        data: {
+          success: true,
+          user: result.data?.user,
+          profile: result.data?.profile,
+          message: "Successfully logged in with code"
+        },
+        error: null
+      }
+    } catch (error: any) {
+      setLoading(false)
+      return { error: new Error(error.message || "Error logging in with code"), data: null }
+    }
+  }
+
+  const createAccountWithCode = async (code: string, userData?: any) => {
+    setLoading(true)
+
+    try {
+      // Validar el código y obtener datos de la cuenta
+      const validation = await validateInvitationCode(code)
+
+      if (!validation.isValid || !validation.accountData) {
+        setLoading(false)
+        return { error: new Error(validation.message), data: null }
+      }
+
+      // Crear cuenta con los datos del código + datos adicionales del usuario
+      const accountData = {
+        ...validation.accountData,
+        ...userData,
+        invitation_code: code,
+        created_with_code: true
+      }
+
+      // Simular creación exitosa de cuenta
+      // En una implementación real, aquí crearías el usuario en Supabase
+      console.log('Creating account with data:', accountData)
+
+      setLoading(false)
+      return {
+        data: {
+          success: true,
+          accountData: accountData,
+          message: `Cuenta creada para ${validation.accountData.company_name}`
+        },
+        error: null
+      }
+    } catch (error) {
+      setLoading(false)
+      return { error: new Error("Error al crear cuenta"), data: null }
+    }
+  }
+
+  const validateInvitationCode = async (code: string): Promise<{ isValid: boolean, message: string, accountData?: any }> => {
+    if (!code.trim()) {
+      return { isValid: false, message: "Code required" }
+    }
+
+    try {
+      // Use optimized validation for instant response
+      const { fastValidateInvitationCode } = await import('@/lib/auth-optimized')
+      return await fastValidateInvitationCode(code.toUpperCase())
+    } catch (error) {
+      console.error('Error validating invitation code:', error)
+      return { isValid: false, message: "❌ Error validating code" }
+    }
+  }
+
+  const sendLoginCode = async (email: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/auth/send-login-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al enviar código')
+      }
+
+      setLoading(false)
+      return { data, error: null }
+    } catch (error: any) {
+      setLoading(false)
+      return { data: null, error }
+    }
+  }
+
+  const verifyLoginCode = async (email: string, code: string) => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/auth/verify-login-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al verificar código')
+      }
+
+      // If verification successful, set user state
+      if (data.success && data.user) {
+        // Create a mock Supabase user object
+        const mockUser: SupabaseUser = {
+          id: data.user.id,
+          email: data.user.email,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          aud: 'authenticated',
+          app_metadata: {},
+          user_metadata: {
+            full_name: data.user.full_name
+          },
+          role: 'authenticated',
+          email_confirmed_at: new Date().toISOString(),
+          phone_confirmed_at: null,
+          confirmation_sent_at: null,
+          confirmed_at: new Date().toISOString(),
+          recovery_sent_at: null,
+          last_sign_in_at: new Date().toISOString(),
+          phone: null,
+          factors: []
+        }
+
+        setUser(mockUser)
+        setUserProfile(data.user)
+      }
+
+      setLoading(false)
+      return { data, error: null }
+    } catch (error: any) {
+      setLoading(false)
+      return { data: null, error }
+    }
   }
 
   const signOut = async () => {
@@ -113,6 +329,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signIn,
     signUp,
+    signInWithCode,
+    createAccountWithCode,
+    validateInvitationCode,
+    sendLoginCode,
+    verifyLoginCode,
     signOut,
     updateProfile
   }

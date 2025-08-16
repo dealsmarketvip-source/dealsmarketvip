@@ -105,7 +105,7 @@ export function FAQSection() {
       </div>
       <div className="w-full max-w-[600px] pt-0.5 pb-10 flex flex-col justify-start items-start gap-4 relative z-10">
         {faqData.map((faq, index) => (
-          <FAQItem key={index} {...faq} isOpen={openItems.has(index)} onToggle={() => toggleItem(index)} />
+          <FAQItem key={`faq-${index}`} {...faq} isOpen={openItems.has(index)} onToggle={() => toggleItem(index)} />
         ))}
       </div>
     </section>

@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
-import { stripe } from '@/lib/stripe'
+import { stripe, SUBSCRIPTION_PLANS } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase'
+import { sendNotificationEmail, EMAIL_TEMPLATES } from '@/lib/email'
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
-  const signature = headers().get('stripe-signature')!
+  const headersList = await headers()
+  const signature = headersList.get('stripe-signature')!
 
   let event: Stripe.Event
 
@@ -25,100 +27,40 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session
         
         if (session.mode === 'subscription') {
-          const userId = session.metadata?.userId
-          const invitationCode = session.metadata?.invitationCode
-          
-          if (userId) {
-            // Update user subscription status
-            await supabaseAdmin
-              .from('users')
-              .update({
-                subscription_type: 'premium',
-                subscription_status: 'active',
-                verification_status: invitationCode ? 'verified' : 'pending'
-              })
-              .eq('id', userId)
-
-            // Create subscription record
-            await supabaseAdmin
-              .from('subscriptions')
-              .insert({
-                user_id: userId,
-                subscription_type: 'premium',
-                status: 'active',
-                price_paid: 20.00,
-                currency: 'USD',
-                billing_period: 'monthly',
-                stripe_subscription_id: session.subscription as string,
-                current_period_start: new Date().toISOString(),
-                current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-              })
-
-            // If invitation code was used, mark user as verified and use the code
-            if (invitationCode) {
-              await supabaseAdmin.rpc('use_invitation_code', {
-                code_input: invitationCode,
-                user_id_input: userId
-              })
-            }
-
-            // Log the subscription creation
-            await supabaseAdmin
-              .from('audit_logs')
-              .insert({
-                user_id: userId,
-                action: 'subscription_created',
-                resource_type: 'subscriptions',
-                details: {
-                  stripe_session_id: session.id,
-                  invitation_code: invitationCode,
-                  amount: session.amount_total
-                }
-              })
-          }
+          await handleSubscriptionPayment(session)
+        } else if (session.mode === 'payment') {
+          await handleProductPurchase(session)
         }
+        break
+      }
+
+      case 'payment_intent.succeeded': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent
+        await handlePaymentIntentSucceeded(paymentIntent)
         break
       }
 
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription
-        const userId = subscription.metadata?.userId
-
-        if (userId) {
-          await supabaseAdmin
-            .from('subscriptions')
-            .update({
-              status: subscription.status,
-              current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-              current_period_end: new Date(subscription.current_period_end * 1000).toISOString()
-            })
-            .eq('stripe_subscription_id', subscription.id)
-        }
+        await handleSubscriptionUpdated(subscription)
         break
       }
 
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription
-        const userId = subscription.metadata?.userId
+        await handleSubscriptionDeleted(subscription)
+        break
+      }
 
-        if (userId) {
-          // Update subscription status
-          await supabaseAdmin
-            .from('subscriptions')
-            .update({
-              status: 'cancelled',
-              cancelled_at: new Date().toISOString()
-            })
-            .eq('stripe_subscription_id', subscription.id)
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object as Stripe.Invoice
+        await handleInvoicePaymentSucceeded(invoice)
+        break
+      }
 
-          // Update user status
-          await supabaseAdmin
-            .from('users')
-            .update({
-              subscription_status: 'inactive'
-            })
-            .eq('id', userId)
-        }
+      case 'invoice.payment_failed': {
+        const failedInvoice = event.data.object as Stripe.Invoice
+        await handleInvoicePaymentFailed(failedInvoice)
         break
       }
 
@@ -128,10 +70,365 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('Error handling webhook:', error)
+    console.error('Error processing webhook:', error)
     return NextResponse.json(
-      { error: 'Webhook handler failed' },
+      { error: 'Webhook processing failed' },
       { status: 500 }
     )
   }
+}
+
+// Handle subscription payments (Premium plan)
+async function handleSubscriptionPayment(session: Stripe.Checkout.Session) {
+  const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+  const customerId = session.customer as string
+  const userId = session.metadata?.userId
+  const invitationCode = session.metadata?.invitationCode
+
+  if (!userId) return
+
+  try {
+    // Update user subscription status and limits
+    await supabaseAdmin
+      .from('users')
+      .update({
+        subscription_type: 'premium',
+        subscription_status: 'active',
+        stripe_customer_id: customerId
+      })
+      .eq('id', userId)
+
+    // Update user limits to premium
+    await supabaseAdmin
+      .from('user_limits')
+      .update({
+        max_products: SUBSCRIPTION_PLANS.premium.limits.max_products,
+        max_purchases: SUBSCRIPTION_PLANS.premium.limits.max_purchases
+      })
+      .eq('user_id', userId)
+
+    // Create subscription record
+    await supabaseAdmin
+      .from('subscriptions')
+      .insert({
+        user_id: userId,
+        plan_type: 'premium',
+        status: 'active',
+        price_paid: (subscription.items.data[0].price.unit_amount || 0) / 100,
+        currency: subscription.items.data[0].price.currency,
+        billing_period: subscription.items.data[0].price.recurring?.interval === 'month' ? 'monthly' : 'yearly',
+        stripe_subscription_id: subscription.id,
+        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+        current_period_end: new Date(subscription.current_period_end * 1000).toISOString()
+      })
+
+    // Create transaction record
+    await supabaseAdmin
+      .from('transactions')
+      .insert({
+        user_id: userId,
+        type: 'subscription',
+        amount: (subscription.items.data[0].price.unit_amount || 0) / 100,
+        currency: subscription.items.data[0].price.currency,
+        description: `Suscripción Premium - ${subscription.items.data[0].price.recurring?.interval}`,
+        stripe_transaction_id: subscription.id,
+        status: 'completed'
+      })
+
+    // Use invitation code if provided
+    if (invitationCode) {
+      await supabaseAdmin.rpc('use_invitation_code', {
+        code_input: invitationCode,
+        user_id_input: userId
+      })
+    }
+
+    // Log the subscription creation
+    await supabaseAdmin
+      .from('audit_logs')
+      .insert({
+        user_id: userId,
+        action: 'subscription_created',
+        resource_type: 'subscription',
+        resource_id: subscription.id,
+        new_values: {
+          plan: 'premium',
+          amount: (subscription.items.data[0].price.unit_amount || 0) / 100,
+          currency: subscription.items.data[0].price.currency
+        }
+      })
+
+    // Send welcome email for subscription
+    const { data: user } = await supabaseAdmin
+      .from('users')
+      .select('email, full_name')
+      .eq('id', userId)
+      .single()
+
+    if (user) {
+      await sendNotificationEmail(EMAIL_TEMPLATES.SUBSCRIPTION_CREATED, user.email, {
+        userName: user.full_name || 'Usuario',
+        planType: 'Premium',
+        amount: (subscription.items.data[0].price.unit_amount || 0) / 100
+      })
+    }
+
+    console.log(`Subscription created for user ${userId}`)
+  } catch (error) {
+    console.error('Error handling subscription payment:', error)
+    throw error
+  }
+}
+
+// Handle product purchases
+async function handleProductPurchase(session: Stripe.Checkout.Session) {
+  const buyerId = session.metadata?.buyerId
+  const productId = session.metadata?.productId
+  const sellerId = session.metadata?.sellerId
+  const quantity = parseInt(session.metadata?.quantity || '1')
+
+  if (!buyerId || !productId || !sellerId) return
+
+  try {
+    // Get product details
+    const { data: product } = await supabaseAdmin
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single()
+
+    if (!product) throw new Error('Product not found')
+
+    const totalAmount = session.amount_total ? session.amount_total / 100 : product.price
+    const shippingCost = product.shipping_included ? 0 : product.shipping_cost
+
+    // Create order
+    const { data: order } = await supabaseAdmin
+      .from('orders')
+      .insert({
+        buyer_id: buyerId,
+        seller_id: sellerId,
+        product_id: productId,
+        quantity: quantity,
+        unit_price: product.price,
+        total_amount: totalAmount,
+        shipping_cost: shippingCost,
+        status: 'paid',
+        payment_method: 'stripe',
+        stripe_payment_intent_id: session.payment_intent as string,
+        shipping_address: session.shipping_details
+      })
+      .select()
+      .single()
+
+    if (!order) throw new Error('Failed to create order')
+
+    // Update product status if it's a single item
+    if (quantity >= 1) {
+      await supabaseAdmin
+        .from('products')
+        .update({ status: 'sold' })
+        .eq('id', productId)
+    }
+
+    // Create transaction for buyer
+    await supabaseAdmin
+      .from('transactions')
+      .insert({
+        user_id: buyerId,
+        order_id: order.id,
+        type: 'purchase',
+        amount: -totalAmount,
+        currency: 'eur',
+        description: `Compra: ${product.title}`,
+        stripe_transaction_id: session.payment_intent as string,
+        status: 'completed'
+      })
+
+    // Create transaction for seller (minus platform fee)
+    const platformFee = totalAmount * 0.05 // 5% platform fee
+    const sellerAmount = totalAmount - platformFee
+
+    await supabaseAdmin
+      .from('transactions')
+      .insert({
+        user_id: sellerId,
+        order_id: order.id,
+        type: 'sale',
+        amount: sellerAmount,
+        currency: 'eur',
+        description: `Venta: ${product.title}`,
+        stripe_transaction_id: session.payment_intent as string,
+        status: 'completed'
+      })
+
+    // Update seller's account balance
+    const { data: seller } = await supabaseAdmin
+      .from('users')
+      .select('account_balance')
+      .eq('id', sellerId)
+      .single()
+
+    await supabaseAdmin
+      .from('users')
+      .update({
+        account_balance: (seller?.account_balance || 0) + sellerAmount
+      })
+      .eq('id', sellerId)
+
+    // Update buyer's purchase count
+    const { data: buyerLimits } = await supabaseAdmin
+      .from('user_limits')
+      .select('current_purchases')
+      .eq('user_id', buyerId)
+      .single()
+
+    await supabaseAdmin
+      .from('user_limits')
+      .update({
+        current_purchases: (buyerLimits?.current_purchases || 0) + 1
+      })
+      .eq('user_id', buyerId)
+
+    // Log the purchase
+    await supabaseAdmin
+      .from('audit_logs')
+      .insert({
+        user_id: buyerId,
+        action: 'product_purchased',
+        resource_type: 'order',
+        resource_id: order.id,
+        new_values: {
+          product_id: productId,
+          amount: totalAmount,
+          seller_id: sellerId
+        }
+      })
+
+    // Send email notifications
+    const [buyerData, sellerData] = await Promise.all([
+      supabaseAdmin
+        .from('users')
+        .select('email, full_name')
+        .eq('id', buyerId)
+        .single(),
+      supabaseAdmin
+        .from('users')
+        .select('email, full_name')
+        .eq('id', sellerId)
+        .single()
+    ])
+
+    // Send purchase confirmation email to buyer
+    if (buyerData.data) {
+      await sendNotificationEmail(EMAIL_TEMPLATES.PRODUCT_PURCHASED, buyerData.data.email, {
+        buyerName: buyerData.data.full_name || 'Comprador',
+        productTitle: product.title,
+        totalAmount: totalAmount,
+        sellerName: sellerData.data?.full_name || 'Vendedor',
+        orderId: order.id
+      })
+    }
+
+    // Send sale notification email to seller
+    if (sellerData.data) {
+      await sendNotificationEmail(EMAIL_TEMPLATES.PRODUCT_SOLD, sellerData.data.email, {
+        sellerName: sellerData.data.full_name || 'Vendedor',
+        productTitle: product.title,
+        salePrice: sellerAmount,
+        buyerName: buyerData.data?.full_name || 'Comprador'
+      })
+    }
+
+    console.log(`Product purchase completed for order ${order.id}`)
+  } catch (error) {
+    console.error('Error handling product purchase:', error)
+    throw error
+  }
+}
+
+// Handle payment intent succeeded
+async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent) {
+  console.log(`Payment intent ${paymentIntent.id} succeeded`)
+  // Additional processing if needed
+}
+
+// Handle subscription updated
+async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
+  const { data: existingSubscription } = await supabaseAdmin
+    .from('subscriptions')
+    .select('user_id')
+    .eq('stripe_subscription_id', subscription.id)
+    .single()
+
+  if (existingSubscription) {
+    const userId = existingSubscription.user_id
+
+    await supabaseAdmin
+      .from('subscriptions')
+      .update({
+        status: subscription.status === 'active' ? 'active' : 'cancelled',
+        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+        current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+        cancelled_at: subscription.canceled_at ? new Date(subscription.canceled_at * 1000).toISOString() : null
+      })
+      .eq('stripe_subscription_id', subscription.id)
+
+    await supabaseAdmin
+      .from('users')
+      .update({
+        subscription_status: subscription.status === 'active' ? 'active' : 'cancelled'
+      })
+      .eq('id', userId)
+  }
+}
+
+// Handle subscription deleted
+async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+  const { data: deletedSub } = await supabaseAdmin
+    .from('subscriptions')
+    .select('user_id')
+    .eq('stripe_subscription_id', subscription.id)
+    .single()
+
+  if (deletedSub) {
+    const userId = deletedSub.user_id
+
+    // Revert to free plan limits
+    await supabaseAdmin
+      .from('user_limits')
+      .update({
+        max_products: SUBSCRIPTION_PLANS.free.limits.max_products,
+        max_purchases: SUBSCRIPTION_PLANS.free.limits.max_purchases
+      })
+      .eq('user_id', userId)
+
+    await supabaseAdmin
+      .from('subscriptions')
+      .update({
+        status: 'cancelled',
+        cancelled_at: new Date().toISOString()
+      })
+      .eq('stripe_subscription_id', subscription.id)
+
+    await supabaseAdmin
+      .from('users')
+      .update({
+        subscription_type: 'free',
+        subscription_status: 'inactive'
+      })
+      .eq('id', userId)
+  }
+}
+
+// Handle invoice payment succeeded
+async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
+  console.log(`Invoice payment succeeded: ${invoice.id}`)
+}
+
+// Handle invoice payment failed
+async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
+  console.log(`Invoice payment failed: ${invoice.id}`)
+  
+  // Could implement retry logic or notification here
 }
