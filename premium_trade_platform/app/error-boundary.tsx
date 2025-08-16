@@ -9,12 +9,22 @@ interface ErrorBoundaryProps {
 
 export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
   useEffect(() => {
-    // Log the error to console for debugging
-    console.error('Application error:', error)
-    
-    // Handle specific fetch errors
-    if (error.message.includes('Failed to fetch')) {
-      console.warn('HMR fetch error detected, this is usually non-critical in development')
+    // Only log actual errors, not null/undefined
+    if (error && error.message) {
+      console.error('Application error:', {
+        message: error.message,
+        stack: error.stack,
+        digest: error.digest
+      })
+
+      // Handle specific fetch errors
+      if (error.message.includes('Failed to fetch')) {
+        console.warn('HMR fetch error detected, this is usually non-critical in development')
+      }
+    } else if (error === null || error === undefined) {
+      console.warn('Null or undefined error caught by error boundary - likely a React development issue')
+    } else {
+      console.error('Non-standard error object:', error)
     }
   }, [error])
 
