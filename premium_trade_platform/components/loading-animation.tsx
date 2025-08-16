@@ -47,7 +47,7 @@ export function LoadingAnimation({ isLoading, children, className = "" }: Loadin
             <div className="flex gap-1 justify-center">
               {[0, 1, 2].map((i) => (
                 <motion.div
-                  key={`loading-animation-dot-${i}`}
+                  key={i}
                   className="w-2 h-2 bg-primary rounded-full"
                   animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
                   transition={{

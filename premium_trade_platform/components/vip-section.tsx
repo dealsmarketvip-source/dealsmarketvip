@@ -227,7 +227,7 @@ export function VipSection() {
               >
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={`testimonial-${index}-star-${i}`} className="h-5 w-5 fill-primary text-primary" />
+                    <Star key={i} className="h-5 w-5 fill-primary text-primary" />
                   ))}
                 </div>
 

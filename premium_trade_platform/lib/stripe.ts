@@ -5,59 +5,22 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_place
   apiVersion: '2024-06-20',
 })
 
-// Subscription plans with specific limits
+// Subscription plans
 export const SUBSCRIPTION_PLANS = {
-  free: {
-    name: 'Gratuito',
-    price: 0,
-    currency: 'usd',
-    interval: 'month' as const,
-    limits: {
-      max_products: 0, // No products allowed
-      max_purchases: 1 // Only 1 purchase allowed
-    },
-    features: [
-      'Navegación básica del marketplace',
-      '1 compra por mes',
-      'Sin verificación empresarial'
-    ]
-  },
   premium: {
     name: 'Premium',
     price: 20, // $20 USD
     currency: 'usd',
     interval: 'month' as const,
-    limits: {
-      max_products: 3, // Maximum 3 products to sell
-      max_purchases: 5 // Maximum 5 purchases per month
-    },
     features: [
-      'Hasta 3 productos para vender',
-      'Hasta 5 compras por mes',
       'Verificación empresarial completa',
-      'Acceso a deals exclusivos',
+      'Acceso a deals exclusivos de lujo',
       'Networking con empresas verificadas',
       'Soporte prioritario 24/7',
-      'Dashboard analytics avanzado',
-      'Comisiones reducidas en ventas'
+      'Dashboard analytics avanzado'
     ]
   }
 } as const
-
-// Plan utilities
-export const getPlanLimits = (planType: 'free' | 'premium') => {
-  return SUBSCRIPTION_PLANS[planType].limits
-}
-
-export const canUserPerformAction = (userLimits: any, action: 'create_product' | 'make_purchase') => {
-  if (action === 'create_product') {
-    return userLimits.current_products < userLimits.max_products
-  }
-  if (action === 'make_purchase') {
-    return userLimits.current_purchases < userLimits.max_purchases
-  }
-  return false
-}
 
 // Create a checkout session for subscription
 export async function createCheckoutSession({
@@ -115,7 +78,7 @@ export async function createCheckoutSession({
             currency: SUBSCRIPTION_PLANS.premium.currency,
             product_data: {
               name: 'DealsMarket Premium',
-              description: 'Plan Premium: 3 productos para vender, 5 compras mensuales, verificación empresarial',
+              description: 'Acceso premium a DealsMarket con verificación empresarial',
             },
             unit_amount: SUBSCRIPTION_PLANS.premium.price * 100, // Convert to cents
             recurring: {
