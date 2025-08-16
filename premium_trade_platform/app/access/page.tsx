@@ -3,19 +3,23 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ROIPresentation } from "@/app/components/roi-presentation"
-import { useAuth } from "@/hooks/use-auth-instant"
+import { useAuth } from "@/hooks/use-auth"
 
 export default function AccessPage() {
   const [showPresentation, setShowPresentation] = useState(true)
   const { user } = useAuth()
   const router = useRouter()
 
-  // Removed auto-redirect to prevent fetch errors
-  // Users will navigate manually through presentation
+  useEffect(() => {
+    // If user is already authenticated, redirect to marketplace
+    if (user) {
+      router.push('/marketplace')
+    }
+  }, [user, router])
 
   const handlePresentationComplete = () => {
     setShowPresentation(false)
-    window.location.href = '/marketplace'
+    router.push('/marketplace')
   }
 
   if (!showPresentation) {
