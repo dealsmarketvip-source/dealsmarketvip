@@ -51,8 +51,17 @@ class RealProductManager {
     this.loadFromStorage()
   }
 
+  // Check if running in browser
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+  }
+
   // Load data from localStorage
   private loadFromStorage() {
+    if (!this.isBrowser()) {
+      return // Skip on server-side
+    }
+
     try {
       const stored = localStorage.getItem('dealsmarket_products')
       if (stored) {
@@ -71,9 +80,13 @@ class RealProductManager {
 
   // Save data to localStorage
   private saveToStorage() {
+    if (!this.isBrowser()) {
+      return // Skip on server-side
+    }
+
     try {
       localStorage.setItem('dealsmarket_products', JSON.stringify(this.products))
-      
+
       const activitiesObj = Object.fromEntries(this.userActivities)
       localStorage.setItem('dealsmarket_user_activities', JSON.stringify(activitiesObj))
     } catch (error) {
