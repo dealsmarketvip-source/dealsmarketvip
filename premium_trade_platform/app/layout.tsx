@@ -38,6 +38,7 @@ export default function RootLayout({
         <ClientErrorHandler />
         <HMRErrorSuppression />
         <DuplicateKeyDetector />
+        <GlobalErrorSuppressor />
         <AuthProvider>
           <PageTransitionProvider minLoadingTime={600} enableTransitions={true}>
             <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Cargando...</div></div>}>
