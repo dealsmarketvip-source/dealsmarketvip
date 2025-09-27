@@ -195,62 +195,95 @@ export class UnifiedDatabaseService {
   }
 
   async markNotificationAsRead(notificationId: string): Promise<void> {
+    const isNetworkError = (err: any) =>
+      err?.name === 'AbortError' ||
+      (typeof err?.message === 'string' && /Failed to fetch|NetworkError|TypeError/i.test(err.message))
+
     switch (this.provider) {
       case 'neon':
         await enhancedDbService.markNotificationAsRead(notificationId)
-        break
-      
+        return
+
       case 'supabase':
         if (!this.client) return
-        
-        const { error } = await this.client
-          .from('notifications')
-          .update({
-            read: true,
-            read_at: new Date().toISOString()
-          })
-          .eq('id', notificationId)
+        try {
+          const { error } = await this.client
+            .from('notifications')
+            .update({
+              read: true,
+              read_at: new Date().toISOString()
+            })
+            .eq('id', notificationId)
 
-        if (error) {
-          console.warn('Supabase error marking notification as read:', formatSupabaseError(error))
+          if (error) {
+            console.warn('Supabase error marking notification as read:', formatSupabaseError(error))
+            const code = (error as any)?.code
+            const message = (error as any)?.message || ''
+            if (isNetworkError(error) || code === '42P01' || /relation .* does not exist/i.test(message) || /permission denied/i.test(message)) {
+              this.fallbackToMock(`Mark single notification failed; switching to mock (${code || 'network'})`)
+            }
+          }
+        } catch (err: any) {
+          console.warn('Supabase network error marking notification as read:', formatSupabaseError(err))
+          if (isNetworkError(err)) this.fallbackToMock('Network error on markNotificationAsRead')
+          return
         }
-        break
-      
+        return
+
       case 'mock':
       default:
         console.log('Mock: Marking notification as read:', notificationId)
-        break
+        return
     }
   }
 
   async markAllNotificationsAsRead(userId: string): Promise<void> {
+    const isNetworkError = (err: any) =>
+      err?.name === 'AbortError' ||
+      (typeof err?.message === 'string' && /Failed to fetch|NetworkError|TypeError/i.test(err.message))
+
     switch (this.provider) {
       case 'neon':
         await enhancedDbService.markAllNotificationsAsRead(userId)
-        break
-      
+        return
+
       case 'supabase':
         if (!this.client) return
-        
-        const { error } = await this.client
-          .from('notifications')
-          .update({
-            read: true,
-            read_at: new Date().toISOString()
-          })
-          .eq('user_id', userId)
-          .eq('read', false)
+        try {
+          const { error } = await this.client
+            .from('notifications')
+            .update({
+              read: true,
+              read_at: new Date().toISOString()
+            })
+            .eq('user_id', userId)
+            .eq('read', false)
 
-        if (error) {
-          console.warn('Supabase error marking all notifications as read:', formatSupabaseError(error))
-          throw new Error(`Failed to mark all notifications as read: ${'message' in (error as any) ? (error as any).message : 'Unknown error'}`)
+          if (error) {
+            console.warn('Supabase error marking all notifications as read:', formatSupabaseError(error))
+            const code = (error as any)?.code
+            const message = (error as any)?.message || ''
+            if (isNetworkError(error)) {
+              this.fallbackToMock('Network error on markAllNotificationsAsRead')
+              return
+            }
+            if (code === '42P01' || /relation .* does not exist/i.test(message) || /permission denied/i.test(message)) {
+              this.fallbackToMock(`Notifications table unavailable or access denied (${code || 'no-code'})`)
+              return
+            }
+            throw new Error(`Failed to mark all notifications as read: ${'message' in (error as any) ? (error as any).message : 'Unknown error'}`)
+          }
+        } catch (err: any) {
+          console.warn('Supabase network error marking all notifications as read:', formatSupabaseError(err))
+          if (isNetworkError(err)) this.fallbackToMock('Network error on markAllNotificationsAsRead')
+          return
         }
-        break
-      
+        return
+
       case 'mock':
       default:
         console.log('Mock: Marking all notifications as read for user:', userId)
-        break
+        return
     }
   }
 
