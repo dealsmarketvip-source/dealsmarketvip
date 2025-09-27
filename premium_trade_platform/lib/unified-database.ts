@@ -62,6 +62,15 @@ export class UnifiedDatabaseService {
   private provider: 'neon' | 'supabase' | 'mock'
   private client: ReturnType<typeof createClient> | null
 
+  // Gracefully fallback to mock provider when Supabase is not fully configured
+  private fallbackToMock(reason: string) {
+    if (this.provider !== 'mock') {
+      console.warn('⚠️ Switching database provider to MOCK:', reason)
+      this.provider = 'mock'
+      this.client = null
+    }
+  }
+
   constructor() {
     this.provider = getDatabaseProvider()
     this.client = createDatabaseClient()
@@ -137,6 +146,11 @@ export class UnifiedDatabaseService {
 
         if (error) {
           console.warn('Supabase error fetching notifications:', formatSupabaseError(error))
+          const code = (error as any)?.code
+          const message = (error as any)?.message || ''
+          if (code === '42P01' || /relation .* does not exist/i.test(message) || /permission denied/i.test(message)) {
+            this.fallbackToMock(`Notifications table unavailable or access denied (${code || 'no-code'})`)
+          }
           return this.getMockNotifications(userId, options)
         }
 
@@ -164,6 +178,11 @@ export class UnifiedDatabaseService {
 
         if (error) {
           console.warn('Supabase error getting unread count:', formatSupabaseError(error))
+          const code = (error as any)?.code
+          const message = (error as any)?.message || ''
+          if (code === '42P01' || /relation .* does not exist/i.test(message) || /permission denied/i.test(message)) {
+            this.fallbackToMock(`Notifications table unavailable or access denied (${code || 'no-code'})`)
+          }
           return 3 // Mock count
         }
 
