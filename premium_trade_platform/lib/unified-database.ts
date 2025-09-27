@@ -2,6 +2,24 @@
 import { createClient } from '@supabase/supabase-js'
 import { enhancedDbService, isNeonConnected } from './neon-adapter'
 
+// Helper to format Supabase errors into readable strings
+function formatSupabaseError(error: any): string {
+  if (!error) return 'Unknown error'
+  if (typeof error === 'string') return error
+  const { message, details, hint, code } = (error || {}) as Record<string, any>
+  const parts: string[] = []
+  if (code) parts.push(`code=${code}`)
+  if (message) parts.push(message)
+  if (details) parts.push(`details=${details}`)
+  if (hint) parts.push(`hint=${hint}`)
+  if (parts.length) return parts.join(' | ')
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return String(error)
+  }
+}
+
 // Environment configuration
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -118,7 +136,7 @@ export class UnifiedDatabaseService {
         const { data, error } = await query
 
         if (error) {
-          console.error('Supabase error fetching notifications:', error)
+          console.warn('Supabase error fetching notifications:', formatSupabaseError(error))
           return this.getMockNotifications(userId, options)
         }
 
@@ -145,7 +163,7 @@ export class UnifiedDatabaseService {
           .eq('read', false)
 
         if (error) {
-          console.error('Supabase error getting unread count:', error)
+          console.warn('Supabase error getting unread count:', formatSupabaseError(error))
           return 3 // Mock count
         }
 
@@ -175,7 +193,7 @@ export class UnifiedDatabaseService {
           .eq('id', notificationId)
 
         if (error) {
-          console.error('Supabase error marking notification as read:', error)
+          console.warn('Supabase error marking notification as read:', formatSupabaseError(error))
         }
         break
       
@@ -205,8 +223,8 @@ export class UnifiedDatabaseService {
           .eq('read', false)
 
         if (error) {
-          console.error('Supabase error marking all notifications as read:', error)
-          throw new Error(`Failed to mark all notifications as read: ${error.message}`)
+          console.warn('Supabase error marking all notifications as read:', formatSupabaseError(error))
+          throw new Error(`Failed to mark all notifications as read: ${'message' in (error as any) ? (error as any).message : 'Unknown error'}`)
         }
         break
       
@@ -235,7 +253,7 @@ export class UnifiedDatabaseService {
           .single()
 
         if (error) {
-          console.error('Supabase error creating notification:', error)
+          console.warn('Supabase error creating notification:', formatSupabaseError(error))
           return null
         }
 
@@ -270,7 +288,7 @@ export class UnifiedDatabaseService {
               .single()
 
             if (error) {
-              console.error('Supabase error creating product:', error)
+              console.warn('Supabase error creating product:', formatSupabaseError(error))
               return this.createMockProduct(productData)
             }
 
@@ -282,7 +300,7 @@ export class UnifiedDatabaseService {
             return this.createMockProduct(productData)
           }
         } catch (error) {
-          console.error('Error creating product:', error)
+          console.warn('Error creating product:', formatSupabaseError(error))
           return this.createMockProduct(productData)
         }
 
@@ -331,13 +349,13 @@ export class UnifiedDatabaseService {
           const { data, error } = await query.order('created_at', { ascending: false })
 
           if (error) {
-            console.error('Supabase error fetching products:', error)
+            console.warn('Supabase error fetching products:', formatSupabaseError(error))
             return this.getMockProducts()
           }
 
           return data || []
         } catch (error) {
-          console.error('Error fetching products:', error)
+          console.warn('Error fetching products:', formatSupabaseError(error))
           return this.getMockProducts()
         }
 
