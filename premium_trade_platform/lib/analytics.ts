@@ -59,24 +59,30 @@ class AnalyticsService {
   }
 
   private sendToCustomAnalytics(event: TrackingEvent) {
-    // Send to custom endpoint for detailed tracking
-    if (typeof window !== 'undefined') {
-      fetch('/api/analytics/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...event,
-          sessionId: this.sessionId,
-          timestamp: new Date().toISOString(),
-          url: window.location.href,
-          userAgent: navigator.userAgent,
-        }),
-      }).catch(error => {
-        console.warn('Failed to send analytics event:', error);
-      });
+    if (typeof window === 'undefined') return
+
+    const payload = JSON.stringify({
+      ...event,
+      sessionId: this.sessionId,
+      timestamp: new Date().toISOString(),
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+    })
+
+    if (navigator.sendBeacon) {
+      const blob = new Blob([payload], { type: 'application/json' })
+      navigator.sendBeacon('/api/analytics/track', blob)
+      return
     }
+
+    fetch('/api/analytics/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: payload,
+      keepalive: true,
+    }).catch(error => {
+      console.warn('Failed to send analytics event:', error)
+    })
   }
 
   public trackView(event: ViewEvent) {
