@@ -87,9 +87,6 @@ export default function ProductPage() {
     setInitialLoading(true)
     
     try {
-      // Show loading for realistic UX
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
       // First try to get real product
       let product = realProductManager.getProductById(params.id as string)
 
