@@ -76,6 +76,35 @@ export default function ProfilePage() {
     country: ''
   })
 
+  const [avatarDataUrl, setAvatarDataUrl] = useState<string | null>(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      setAvatarDataUrl(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleSaveAvatar = async () => {
+    if (!userProfile || !avatarDataUrl) return
+    try {
+      setAvatarUploading(true)
+      const { error } = await db.users.update(userProfile.id, { profile_image_url: avatarDataUrl })
+      if (error) throw error
+      toast.success('Foto de perfil actualizada')
+      window.location.reload()
+    } catch (err) {
+      console.error('Error saving avatar:', err)
+      toast.error('No se pudo actualizar la foto de perfil')
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
+
   useEffect(() => {
     if (userProfile) {
       setEditForm({
@@ -309,6 +338,24 @@ export default function ProfilePage() {
                 <CardTitle className="text-white">Editar Perfil</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-gray-300">Foto de Perfil</Label>
+                  <div className="flex items-center gap-4 mt-2">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={avatarDataUrl || userProfile.profile_image_url} />
+                      <AvatarFallback>
+                        {userProfile.full_name?.charAt(0) || userProfile.email.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex items-center gap-2">
+                      <Input type="file" accept="image/*" onChange={handleAvatarChange} className="bg-gray-700 border-gray-600 text-white" />
+                      <Button onClick={handleSaveAvatar} disabled={avatarUploading || !avatarDataUrl}>
+                        {avatarUploading ? 'Guardando...' : 'Guardar Foto'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="full_name" className="text-gray-300">Nombre Completo</Label>
