@@ -176,6 +176,9 @@ export function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
               <Button variant="outline" onClick={onClose} className="flex-1">
                 Cerrar
               </Button>
+              <Button onClick={() => { window.location.href = '/admin' }} className="flex-1">
+                Abrir Panel Completo
+              </Button>
             </div>
           </motion.div>
         </motion.div>
