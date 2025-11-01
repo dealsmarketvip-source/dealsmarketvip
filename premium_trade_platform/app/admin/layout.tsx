@@ -9,6 +9,7 @@ export default function AdminLayout({ children }: PropsWithChildren) {
   const pathname = usePathname()
   const tabs = [
     { href: '/admin', label: 'Dashboard' },
+    { href: '/admin/users', label: 'Usuarios' },
     { href: '/admin/notifications', label: 'Notificaciones' },
   ]
 
