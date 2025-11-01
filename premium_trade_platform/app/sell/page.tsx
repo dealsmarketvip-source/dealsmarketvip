@@ -160,9 +160,9 @@ export default function SellPage() {
     setIsSubmitting(true)
 
     try {
-      console.log('🛒 Creating real product...')
+      console.log('🛒 Creating product (database persistence) ...')
 
-      const realProductData = {
+      const productData = {
         title: formData.title,
         description: formData.description,
         price: parseFloat(formData.price),
@@ -187,25 +187,18 @@ export default function SellPage() {
         }
       }
 
-      // Create real product that will appear in marketplace
-      const savedProduct = await realProductManager.createProduct(realProductData)
+      // Persist product in database (visible to everyone)
+      const savedProduct = await unifiedDb.createProduct({
+        ...productData,
+        status: 'active',
+        views_count: 0,
+        inquiries_count: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        published_at: new Date().toISOString()
+      })
 
-      console.log('✅ Real product created successfully:', savedProduct.id)
-
-      // Also try to save to database for backup
-      try {
-        await unifiedDb.createProduct({
-          ...realProductData,
-          id: savedProduct.id,
-          views_count: 0,
-          inquiries_count: 0,
-          created_at: savedProduct.created_at,
-          updated_at: savedProduct.updated_at,
-          published_at: savedProduct.created_at
-        })
-      } catch (dbError) {
-        console.warn('Database backup failed:', dbError)
-      }
+      console.log('✅ Product created:', savedProduct.id)
 
       // Create notification for successful product creation
       await unifiedDb.createNotification({
