@@ -11,6 +11,7 @@ export default function AdminLayout({ children }: PropsWithChildren) {
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/users', label: 'Usuarios' },
     { href: '/admin/notifications', label: 'Notificaciones' },
+    { href: '/admin/communications', label: 'Comunicaciones' },
   ]
 
   return (
