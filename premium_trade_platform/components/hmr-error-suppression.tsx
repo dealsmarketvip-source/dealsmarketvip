@@ -6,6 +6,11 @@ export default function HMRErrorSuppression() {
   useEffect(() => {
     // Suppress HMR fetch errors in development
     if (process.env.NODE_ENV === 'development') {
+      const fetchStr = Function.prototype.toString.call(window.fetch)
+      const alreadyPatched = /messageHandler|eval at messageHandler|__builder_io|__overlay__/i.test(fetchStr)
+      if (alreadyPatched) {
+        return
+      }
       const originalFetch = window.fetch
       const originalConsoleError = console.error
       const originalConsoleWarn = console.warn
