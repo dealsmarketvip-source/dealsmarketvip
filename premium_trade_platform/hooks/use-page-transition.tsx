@@ -12,7 +12,7 @@ interface UsePageTransitionOptions {
 export function usePageTransition(options: UsePageTransitionOptions = {}) {
   const {
     enableTransitions = true,
-    minLoadingTime = 800,
+    minLoadingTime = 200,
     loadingMessages = {}
   } = options
 
@@ -64,7 +64,9 @@ export function usePageTransition(options: UsePageTransitionOptions = {}) {
 
   // Navigate with loading overlay
   const navigateWithLoading = async (path: string, options?: { replace?: boolean }) => {
-    if (!enableTransitions) {
+    const noTransitionRoutes = ['/sell', '/marketplace', '/product']
+    const skipTransition = noTransitionRoutes.some(r => path.startsWith(r))
+    if (!enableTransitions || skipTransition) {
       if (options?.replace) {
         router.replace(path)
       } else {
