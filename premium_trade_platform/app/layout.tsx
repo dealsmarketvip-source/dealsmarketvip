@@ -40,7 +40,7 @@ export default function RootLayout({
         <DuplicateKeyDetector />
         <GlobalErrorSuppressor />
         <AuthProvider>
-          <PageTransitionProvider minLoadingTime={600} enableTransitions={true}>
+          <PageTransitionProvider minLoadingTime={200} enableTransitions={true}>
             <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-lg">Cargando...</div></div>}>
               <Navigation />
               {children}
