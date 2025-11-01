@@ -31,8 +31,19 @@ export default function AdminDashboard() {
     fetchData()
   }, [])
 
+  const makeMeAdmin = async () => {
+    if (!user) return
+    await fetch('/api/admin/make-self-admin', { method: 'POST', body: JSON.stringify({ id: user.id, email: (user as any).email }) })
+    window.location.reload()
+  }
+
   if (!user?.is_admin) {
-    return <div className="text-center text-gray-300">Acceso restringido</div>
+    return (
+      <div className="space-y-4 text-center text-gray-300">
+        <div>Acceso restringido</div>
+        <Button onClick={makeMeAdmin}>Hacerme Admin</Button>
+      </div>
+    )
   }
 
   return (
